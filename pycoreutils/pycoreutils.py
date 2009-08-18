@@ -47,10 +47,10 @@ def hasher(algorithm):
     (opts, args) = p.parse_args()
 
     if len(args) == 0:
-        print myhash(sys.stdin)
+        print myhash(sys.stdin) + '  -'
     else:
         for arg in args:
-            print myhash(fopen(arg, 'r'))
+            print myhash(fopen(arg, 'r')) + '  ' + arg
 
 
 def optparse():
