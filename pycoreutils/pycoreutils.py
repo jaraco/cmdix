@@ -61,7 +61,7 @@ def optparse():
 
 
 def showlicense(option, opt, value, parser):
-    print(__license__)
+    print __license__
     sys.exit(0)
 
 

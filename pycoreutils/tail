@@ -3,6 +3,10 @@
 import pycoreutils, time
 
 p = pycoreutils.optparse()
+p.add_option("-f", "--follow", action="store_true", dest="follow",
+        help="output appended data as the file grows")
+p.add_option("-n", "--lines=N", action="store", dest="lines",
+        help="output the last N lines, instead of the last 10")
 (opts, args) = p.parse_args()
 
 interval = 1.0
