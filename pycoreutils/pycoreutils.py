@@ -46,7 +46,7 @@ def hasher(algorithm):
     p = optparse()
     (opts, args) = p.parse_args()
 
-    if len(args) == 0:
+    if len(args) == 0 or args == ['-']:
         print myhash(sys.stdin) + '  -'
     else:
         for arg in args:
