@@ -1,0 +1,8 @@
+#!/usr/bin/env python
+
+import platform, pycoreutils
+
+p = pycoreutils.optparse()
+(opts, args) = p.parse_args()
+
+print platform.machine(),
