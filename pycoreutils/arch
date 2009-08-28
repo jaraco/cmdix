@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 
-import platform, pycoreutils
+import platform, pycoreutils, sys
 
 p = pycoreutils.optparse()
 (opts, args) = p.parse_args()
+
+if len(args) > 0:
+    print u"dirname: extra operand `%s'" % (args[0])
+    print u"Try arch --help' for more information."
+    sys.exit(1)
 
 print platform.machine(),
