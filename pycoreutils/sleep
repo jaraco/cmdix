@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+import pycoreutils, sys, time
+
+p = pycoreutils.optparse()
+(opts, args) = p.parse_args()
+
+if len(args) == 0:
+    print u"sleep: missing operand"
+    print u"Try sleep --help' for more information."
+    sys.exit(1)
+
+a = []
+
+try:
+    for arg in args:
+        if arg.endswith('s'):
+            a.append(float(arg[0:-1]))
+        elif arg.endswith('m'):
+            a.append(float(arg[0:-1]) * 60)
+        elif arg.endswith('h'):
+            a.append(float(arg[0:-1]) * 3600)
+        elif arg.endswith('d'):
+            a.append(float(arg[0:-1]) * 86400)
+        else:
+            a.append(float(arg))
+except ValueError:
+        print u"sleep: invalid time interval `%s'" % (arg)
+        print u"Try sleep --help' for more information."
+        sys.exit(1)
+
+time.sleep(sum(a))
