@@ -4,7 +4,7 @@ import pycoreutils, shutil, sys
 
 p = pycoreutils.optparse()
 p.add_option("-v", "--verbose", action="store_true", dest="verbose",
-        help="print the kernel name")
+        help="explain what is being done")
 (opts, args) = p.parse_args()
 
 if len(args) == 0:
