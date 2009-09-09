@@ -8,7 +8,7 @@ p.add_option("-s", "--seperator", action="store", dest="seperator",
 (opts, args) = p.parse_args()
 
 if len(args) == 0:
-    print u"mv: missing operand"
+    print u"seq: missing operand"
     print u"Try 'seq --help' for more information."
     sys.exit(1)
 
