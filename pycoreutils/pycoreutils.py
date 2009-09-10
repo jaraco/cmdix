@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import hashlib, logging, optparse, os, platform, subprocess, sys
+import hashlib, logging, optparse, os, platform, shutil, subprocess, sys
 
 __version__ = '0.0.1'
 __license__ = '''
@@ -148,6 +148,33 @@ def mkdir():
             except OSError:
                 print "mkdir: cannot create directory '%s': No such file or directory" % (arg)
             print "mkdir: created directory '%s'" % (arg)
+
+
+def mv():
+    p = _optparse()
+    p.add_option("-v", "--verbose", action="store_true", dest="verbose",
+            help="explain what is being done")
+    (opts, args) = p.parse_args()
+
+    if len(args) == 0:
+        print u"mv: missing file operand"
+        print u"Try 'mv --help' for more information."
+        sys.exit(1)
+    if len(args) == 1:
+        print u"mv: missing destination file operand after '%s'" % (args[0])
+        print u"Try 'mv --help' for more information."
+        sys.exit(1)
+
+    dest = args.pop()
+
+    for src in args:
+        if opts.verbose:
+            print u"'%s' -> '%s'" % (src, dest)
+        try:
+            shutil.move(src, dest)
+        except IOError, err:
+            print u"mv: %s" % (err.strerror)
+            sys.exit(1)
 
 
 ############################## PRIVATE FUNCTIONS ##############################
