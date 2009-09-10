@@ -2,7 +2,7 @@
 
 import pycoreutils
 
-(opts, args) = pycoreutils.optparse()
+(opts, args) = pycoreutils.optparse().parse_args()
 
 for arg in args:
     print open(arg).read(),
