@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
-import hashlib, sys
-from optparse import OptionParser
-
+import hashlib, logging, optparse, os, platform, sys
 
 __version__ = '0.0.1'
 __license__ = '''
@@ -26,8 +24,23 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 '''
 
+def arch():
+    p = _optparse()
+    (opts, args) = p.parse_args()
 
-def fopen(filename, mode='r', bufsize=-1):
+    if len(args) > 0:
+        print u"dirname: extra operand `%s'" % (args[0])
+        print u"Try arch --help' for more information."
+        sys.exit(1)
+
+    print platform.machine(),
+
+
+
+############################## PRIVATE FUNCTIONS ##############################
+
+
+def _fopen(filename, mode='r', bufsize=-1):
     try:
         f = open(filename, mode, bufsize)
     except IOError:
@@ -36,7 +49,7 @@ def fopen(filename, mode='r', bufsize=-1):
     return f
 
 
-def hasher(algorithm):
+def _hasher(algorithm):
     def myhash(fd):
         h = hashlib.new(algorithm)
         with fd as f:
@@ -53,17 +66,23 @@ def hasher(algorithm):
             print myhash(fopen(arg, 'r')) + '  ' + arg
 
 
-def optparse():
-    optparser = OptionParser(version=__version__)
-    optparser.add_option("--license", action="callback", callback=showlicense,
+def _optparse():
+    optparser = optparse.OptionParser(version=__version__)
+    optparser.add_option("--license", action="callback", callback=_showlicense,
         help="show program's license and exit")
     return optparser
 
 
-def showlicense(option, opt, value, parser):
+def _showlicense(option, opt, value, parser):
     print __license__
     sys.exit(0)
 
 
 if __name__ == '__main__':
-    print optparse()
+    cmd = os.path.basename(sys.argv[0])
+    logging.debug("Running command %s" % (cmd))
+    try:
+        exec(cmd + '()')
+    except NameError:
+        sys.stderr.write("Command '%s' not part of pycoreutils\n" % (cmd))
+        sys.exit(1)
