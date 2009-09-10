@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import hashlib, logging, optparse, os, platform, sys
+import hashlib, logging, optparse, os, platform, subprocess, sys
 
 __version__ = '0.0.1'
 __license__ = '''
@@ -64,6 +64,27 @@ def cat():
     for arg in args:
         print open(arg).read(),
 
+
+def chroot():
+    # TODO: Testing!!!
+    (opts, args) = _optparse().parse_args()
+
+    if len(args) == 0:
+        print u"chroot: missing operand"
+        print u"Try chroot --help' for more information."
+        sys.exit(1)
+
+    # If no command is given, run ''${SHELL} -i''
+    if len(args) == 1:
+        args.append(os.environ['SHELL'])
+        args.append('-i')
+
+    try:
+        os.chroot(args[0])
+    except OSError, err:
+        print u"chroot: cannot change root directory to %s: %s" % (args[0], err.strerror)
+
+    subprocess.call(args)
 
 
 ############################## PRIVATE FUNCTIONS ##############################
