@@ -177,6 +177,22 @@ def mv():
             sys.exit(1)
 
 
+def pwd():
+    p = _optparse()
+    p.add_option("-L", "--logical", action="store_true", dest="logical",
+            help="use PWD from environment, even if it contains symlinks")
+    p.add_option("-P", "--physical", action="store_true", dest="physical",
+            help="avoid all symlinks")
+    (opts, args) = p.parse_args()
+
+    if opts.logical:
+        print os.getenv('PWD')
+    elif opts.physical:
+        print os.path.realpath(os.getcwdu())
+    else:
+        print os.getcwdu()
+
+
 ############################## PRIVATE FUNCTIONS ##############################
 
 
