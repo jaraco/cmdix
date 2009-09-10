@@ -335,6 +335,28 @@ def shuf():
             outfd.write(line)
 
 
+def tail():
+    # TODO: Everything!!!!!!!!
+    p = _optparse()
+    p.add_option("-f", "--follow", action="store_true", dest="follow",
+            help="output appended data as the file grows")
+    p.add_option("-n", "--lines=N", action="store", dest="lines",
+            help="output the last N lines, instead of the last 10")
+    (opts, args) = p.parse_args()
+
+    interval = 1.0
+    f = open('/var/log/messages')
+
+    while 1:
+        where = f.tell()
+        line = f.readline()
+        if not line:
+            time.sleep(interval)
+            f.seek(where)
+        else:
+            print line,
+
+
 def sleep():
     (opts, args) = _optparse().parse_args()
 
