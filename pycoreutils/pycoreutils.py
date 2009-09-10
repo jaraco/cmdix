@@ -36,6 +36,27 @@ def arch():
     print platform.machine(),
 
 
+def basename():
+    p = _optparse()
+    (opts, args) = p.parse_args()
+
+    if len(args) == 0:
+        print u"basename: missing operand"
+        print u"Try `basename --help' for more information."
+        sys.exit(1)
+
+    if len(args) > 2:
+        print u"basename: extra operand `%s'" % (args[2])
+        print u"Try `basename --help' for more information."
+        sys.exit(1)
+
+    b = os.path.basename(args[0])
+
+    if len(args) == 2:
+        b = b.rstrip(args[1])
+
+    print b
+
 
 ############################## PRIVATE FUNCTIONS ##############################
 
