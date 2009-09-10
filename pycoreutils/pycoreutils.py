@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import with_statement 
 import hashlib, logging, optparse, os, platform, random, shutil, subprocess, sys, time
 
 __version__ = '0.0.1'
