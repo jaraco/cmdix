@@ -108,6 +108,20 @@ def dirname():
     print d
 
 
+def ls():
+    # TODO: Everything :)
+    (opts, args) = _optparse().parse_args()
+
+    if len(args) < 1:
+        args = '.'
+
+    for arg in args:
+        dirlist = os.listdir(arg)
+        dirlist.sort()
+        for f in dirlist:
+            print(f)
+
+
 ############################## PRIVATE FUNCTIONS ##############################
 
 

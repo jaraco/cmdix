@@ -1,15 +1,1 @@
-#!/usr/bin/env python
-
-import os, pycoreutils
-
-p = pycoreutils.optparse()
-(opts, args) = p.parse_args()
-
-if len(args) < 1:
-    args = '.'
-
-for arg in args:
-    dirlist = os.listdir(arg)
-    dirlist.sort()
-    for f in dirlist:
-        print(f)
+pycoreutils.py
