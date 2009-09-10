@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import hashlib, logging, optparse, os, platform, shutil, subprocess, sys
+import hashlib, logging, optparse, os, platform, random, shutil, subprocess, sys
 
 __version__ = '0.0.1'
 __license__ = '''
@@ -244,6 +244,34 @@ def sha384sum():
 
 def sha512sum():
     _hasher('sha512')
+
+
+def shred():
+    # TODO: This program acts as 'shred -x', and doesn't round file sizes up to the next full block
+    p = _optparse()
+    p.add_option("-n", "--iterations", action="store", dest="iterations", default=3,
+            help="overwrite ITERATIONS times instead of the default (3)")
+    p.add_option("-v", "--verbose", action="store_true", dest="verbose",
+            help="show progress")
+    (opts, args) = p.parse_args()
+
+    if len(args) == 0:
+        print u"mv: missing file operand"
+        print u"Try 'shred --help' for more information."
+        sys.exit(1)
+
+    for arg in args:
+        for i in xrange(opts.iterations):
+            size = os.stat(arg).st_size
+            fd = _fopen(arg, mode='w')
+            logging.debug('Size:', size)
+            fd.seek(0)
+            for i in xrange(size):
+                # Get random byte
+                b = "".join(chr(random.randrange(0,256)))
+                fd.write(b)
+            fd.close()
+
 
 ############################## PRIVATE FUNCTIONS ##############################
 
