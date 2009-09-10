@@ -1,5 +1,1 @@
-#!/usr/bin/env python
-
-from pycoreutils import hasher
-
-hasher('sha256')
+pycoreutils.py

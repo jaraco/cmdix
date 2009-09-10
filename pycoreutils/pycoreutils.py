@@ -122,6 +122,10 @@ def ls():
             print(f)
 
 
+def md5sum():
+    _hasher('md5')
+
+
 def mkdir():
     # TODO: Implent -v
     p = _optparse()
@@ -222,6 +226,25 @@ def seq():
         print
 
 
+def sha1sum():
+    _hasher('sha1')
+
+
+def sha224sum():
+    _hasher('sha224')
+
+
+def sha256sum():
+    _hasher('sha256')
+
+
+def sha384sum():
+    _hasher('sha384')
+
+
+def sha512sum():
+    _hasher('sha512')
+
 ############################## PRIVATE FUNCTIONS ##############################
 
 
@@ -241,14 +264,13 @@ def _hasher(algorithm):
             h.update(f.read())
         return h.hexdigest()
 
-    p = optparse()
-    (opts, args) = p.parse_args()
+    (opts, args) = _optparse().parse_args()
 
     if len(args) == 0 or args == ['-']:
         print myhash(sys.stdin) + '  -'
     else:
         for arg in args:
-            print myhash(fopen(arg, 'r')) + '  ' + arg
+            print myhash(_fopen(arg, 'r')) + '  ' + arg
 
 
 def _optparse():
@@ -266,8 +288,9 @@ def _showlicense(option, opt, value, parser):
 if __name__ == '__main__':
     cmd = os.path.basename(sys.argv[0])
     logging.debug("Running command %s" % (cmd))
-    try:
-        exec(cmd + '()')
-    except NameError:
-        sys.stderr.write("Command '%s' not part of pycoreutils\n" % (cmd))
-        sys.exit(1)
+    #try:
+        #exec(cmd + '()')
+    #except NameError:
+        #sys.stderr.write("Command '%s' not part of pycoreutils\n" % (cmd))
+        #sys.exit(1)
+    exec(cmd + '()')
