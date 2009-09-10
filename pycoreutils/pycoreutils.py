@@ -539,6 +539,9 @@ def _showlicense(option, opt, value, parser):
 
 if __name__ == '__main__':
     cmd = os.path.basename(sys.argv[0])
+    if cmd == 'pycoreutils.py':
+        sys.argv.pop(0)
+        cmd = sys.argv[0]
     logging.debug("Running command %s" % (cmd))
     #try:
         #exec(cmd + '()')
