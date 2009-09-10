@@ -25,8 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 '''
 
 def arch():
-    p = _optparse()
-    (opts, args) = p.parse_args()
+    (opts, args) = _optparse().parse_args()
 
     if len(args) > 0:
         print u"dirname: extra operand `%s'" % (args[0])
@@ -37,8 +36,7 @@ def arch():
 
 
 def basename():
-    p = _optparse()
-    (opts, args) = p.parse_args()
+    (opts, args) = _optparse().parse_args()
 
     if len(args) == 0:
         print u"basename: missing operand"
