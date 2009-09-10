@@ -122,6 +122,34 @@ def ls():
             print(f)
 
 
+def mkdir():
+    # TODO: Implent -v
+    p = _optparse()
+    p.add_option("-p", "--parents", action="store_true", dest="recursive",
+            help="no error if existing, make parent directories as needed")
+    p.add_option("-m", "--mode=MODE", action="store", dest="mode", default=0777,
+            help="set file mode (as in chmod), not a=rwx - umask")
+    p.add_option("-v", "--verbose", action="store_true", dest="verbose",
+            help="print a message for each created directory")
+    (opts, args) = p.parse_args()
+
+    if len(args) < 1:
+        print "mkdir: missing operand"
+        print "Try `mkdir --help' for more information."
+        sys.exit(1)
+
+    for arg in args:
+        if opts.recursive:
+            os.makedirs(arg, int(opts.mode))
+            print "mkdir: created directory '%s'" % (arg)
+        else:
+            try:
+                os.mkdir(arg, int(opts.mode))
+            except OSError:
+                print "mkdir: cannot create directory '%s': No such file or directory" % (arg)
+            print "mkdir: created directory '%s'" % (arg)
+
+
 ############################## PRIVATE FUNCTIONS ##############################
 
 
