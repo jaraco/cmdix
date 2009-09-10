@@ -193,6 +193,35 @@ def pwd():
         print os.getcwdu()
 
 
+def seq():
+    p = _optparse()
+    p.add_option("-s", "--seperator", action="store", dest="seperator",
+            help="use SEPERATOR to separate numbers (default: \\n)")
+    (opts, args) = p.parse_args()
+
+    if len(args) == 0:
+        print u"seq: missing operand"
+        print u"Try 'seq --help' for more information."
+        sys.exit(1)
+
+    if len(args) == 1:
+        a = range(1, int(args[0])+1)
+    elif len(args) == 2:
+        a = range(int(args[0]), int(args[1])+1)
+    elif len(args) == 3:
+        a = range(int(args[0]), int(args[2])+1, int(args[1]))
+
+    if opts.seperator == None:
+        for x in a:
+            print x
+    else:
+        for x in xrange(len(a)-1, 0, -1):
+            a.insert(x, opts.seperator)
+        for x in a:
+            sys.stdout.write(str(x))
+        print
+
+
 ############################## PRIVATE FUNCTIONS ##############################
 
 
