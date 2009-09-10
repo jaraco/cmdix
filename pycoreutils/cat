@@ -1,8 +1,1 @@
-#!/usr/bin/env python
-
-import pycoreutils
-
-(opts, args) = pycoreutils.optparse().parse_args()
-
-for arg in args:
-    print open(arg).read(),
+pycoreutils.py

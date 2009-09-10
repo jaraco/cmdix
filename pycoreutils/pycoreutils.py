@@ -58,6 +58,14 @@ def basename():
     print b
 
 
+def cat():
+    (opts, args) = _optparse().parse_args()
+
+    for arg in args:
+        print open(arg).read(),
+
+
+
 ############################## PRIVATE FUNCTIONS ##############################
 
 
