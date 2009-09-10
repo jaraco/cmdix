@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+
+import pycoreutils, os, subprocess
+
+# TODO: Testing!!!
+
+p = pycoreutils.optparse()
+(opts, args) = p.parse_args()
+
+if len(args) == 0:
+    print u"chroot: missing operand"
+    print u"Try chroot --help' for more information."
+    sys.exit(1)
+
+# If no command is given, run ''${SHELL} -i''
+if len(args) == 1:
+    args.append(os.environ['SHELL'])
+    args.append('-i')
+
+try:
+    os.chroot(args[0])
+except OSError, err:
+    print u"chroot: cannot change root directory to %s: %s" % (args[0], err.strerror)
+
+subprocess.call(args)
