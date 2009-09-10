@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import hashlib, logging, optparse, os, platform, random, shutil, subprocess, sys
+import hashlib, logging, optparse, os, platform, random, shutil, subprocess, sys, time
 
 __version__ = '0.0.1'
 __license__ = '''
@@ -271,6 +271,97 @@ def shred():
                 b = "".join(chr(random.randrange(0,256)))
                 fd.write(b)
             fd.close()
+
+
+def shuf():
+    p = _optparse()
+    p.add_option("-e", "--echo", action="store_true", dest="echo",
+            help="treat each ARG as an input line")
+    p.add_option("-i", "--input-range", action="store", dest="inputrange",
+            help="treat each number LO through HI as an input line")
+    p.add_option("-n", "--head-count", action="store", dest="headcount",
+            help="output at most HEADCOUNT lines")
+    p.add_option("-o", "--output", action="store", dest="output",
+            help="write result to OUTPUT instead of standard output")
+    (opts, args) = p.parse_args()
+
+    lines = ''
+    outfd = sys.stdout
+
+    # Write to file if -o is specified
+    if opts.output:
+        outfd = pycoreutils.fopen(opts.output, 'w')
+
+    if opts.echo:
+        if opts.inputrange:
+            print u"shuf: cannot combine -e and -i options"
+            sys.exit(1)
+        lines = args
+        random.shuffle(lines)
+
+        if opts.headcount:
+            lines = lines[0:int(opts.headcount)]
+        for line in lines:
+            outfd.write("%s\n" % line)
+
+    elif len(args) > 1:
+        print u"shuf: extra operand `%s'" % (args[1])
+        print u"Try shuf --help' for more information."
+        sys.exit(1)
+
+    elif opts.inputrange:
+        (lo, hi) = opts.inputrange.split('-')
+        lines = range(int(lo), int(hi)+1)
+        random.shuffle(lines)
+
+        if opts.headcount:
+            lines = lines[0:int(opts.headcount)]
+        for line in lines:
+            outfd.write("%i\n" % line)
+
+    else:
+        # Use stdin for input if no file is specified
+        if len(args) == 0:
+            fd = sys.stdin
+        else:
+            fd = pycoreutils.fopen(args[0])
+
+        lines = fd.readlines()
+        random.shuffle(lines)
+
+        if opts.headcount:
+            lines = lines[0:int(opts.headcount)]
+        for line in lines:
+            outfd.write(line)
+
+
+def sleep():
+    (opts, args) = _optparse().parse_args()
+
+    if len(args) == 0:
+        print u"sleep: missing operand"
+        print u"Try sleep --help' for more information."
+        sys.exit(1)
+
+    a = []
+    try:
+        for arg in args:
+            if arg.endswith('s'):
+                a.append(float(arg[0:-1]))
+            elif arg.endswith('m'):
+                a.append(float(arg[0:-1]) * 60)
+            elif arg.endswith('h'):
+                a.append(float(arg[0:-1]) * 3600)
+            elif arg.endswith('d'):
+                a.append(float(arg[0:-1]) * 86400)
+            else:
+                a.append(float(arg))
+    except ValueError:
+            print u"sleep: invalid time interval `%s'" % (arg)
+            print u"Try sleep --help' for more information."
+            sys.exit(1)
+
+    time.sleep(sum(a))
 
 
 ############################## PRIVATE FUNCTIONS ##############################
