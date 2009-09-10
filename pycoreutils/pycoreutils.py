@@ -459,6 +459,24 @@ def uname():
         print platform.system(),
 
 
+def yes():
+    (opts, args) = _optparse().parse_args()
+
+    x = ''
+    for arg in args:
+        x += arg + ' '
+    x = x.strip()
+
+    if x == '':
+        x = 'y'
+
+    try:
+        while 1:
+            print x
+    except KeyboardInterrupt:
+        sys.exit()
+
+
 ############################## PRIVATE FUNCTIONS ##############################
 
 
