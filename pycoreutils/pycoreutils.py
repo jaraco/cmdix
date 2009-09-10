@@ -87,6 +87,27 @@ def chroot():
     subprocess.call(args)
 
 
+def dirname():
+    (opts, args) = _optparse().parse_args()
+
+    if len(args) == 0:
+        print u"dirname: missing operand"
+        print u"Try `dirname --help' for more information."
+        sys.exit(1)
+
+    if len(args) > 1:
+        print u"dirname: extra operand `%s'" % (args[1])
+        print u"Try `dirname --help' for more information."
+        sys.exit(1)
+
+    d = os.path.dirname(args[0].rstrip('/'))
+
+    if d == '':
+        d = '.'
+
+    print d
+
+
 ############################## PRIVATE FUNCTIONS ##############################
 
 
