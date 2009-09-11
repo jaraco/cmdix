@@ -2,6 +2,7 @@
 
 from __future__ import with_statement
 from gzip import GzipFile
+from pwd import getpwnam
 import hashlib, logging, optparse, os, platform, random, shutil, subprocess, sys, time
 
 __version__ = '0.0.2'
@@ -72,6 +73,28 @@ def cat():
 
     for arg in args:
         print open(arg).read(),
+
+
+@addcmd
+def chown():
+    # TODO: Support for groups
+    (opts, args) = _optparse().parse_args()
+
+    if len(args) == 0:
+        print u"chgrp: missing operand"
+        print u"Try chgrp --help' for more information."
+        sys.exit(1)
+
+    uid = args.pop(0)
+    if not uid.isdigit():
+        try:
+            user = getpwnam(uid)
+        except KeyError:
+            print u"chown: invalid user: '%s'" % (uid)
+        uid = user.pw_uid
+
+    for arg in args:
+        os.chown(arg, int(uid), -1)
 
 
 @addcmd
