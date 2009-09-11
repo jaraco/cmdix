@@ -665,5 +665,6 @@ if __name__ == '__main__':
     if cmd == False:
         print u"Command %s not supported." % (sys.argv[0])
         print u"Use pycoreutils.py --help for a list of valid commands."
+        sys.exit(1)
     # Run the command
     cmd()
