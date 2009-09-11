@@ -25,6 +25,13 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 '''
 
+_cmds = []
+def addcmd(f):
+    """ Register a command with pycoreutils """
+    _cmds.append(f)
+
+
+@addcmd
 def arch():
     (opts, args) = _optparse().parse_args()
 
@@ -36,6 +43,7 @@ def arch():
     print platform.machine(),
 
 
+@addcmd
 def basename():
     (opts, args) = _optparse().parse_args()
 
@@ -57,6 +65,7 @@ def basename():
     print b
 
 
+@addcmd
 def cat():
     (opts, args) = _optparse().parse_args()
 
@@ -64,6 +73,7 @@ def cat():
         print open(arg).read(),
 
 
+@addcmd
 def chroot():
     # TODO: Testing!!!
     (opts, args) = _optparse().parse_args()
@@ -86,6 +96,7 @@ def chroot():
     subprocess.call(args)
 
 
+@addcmd
 def dirname():
     (opts, args) = _optparse().parse_args()
 
@@ -107,6 +118,7 @@ def dirname():
     print d
 
 
+@addcmd
 def ls():
     # TODO: Everything :)
     (opts, args) = _optparse().parse_args()
@@ -121,10 +133,12 @@ def ls():
             print(f)
 
 
+@addcmd
 def md5sum():
     _hasher('md5')
 
 
+@addcmd
 def mkdir():
     # TODO: Implent -v
     p = _optparse()
@@ -153,6 +167,7 @@ def mkdir():
             print "mkdir: created directory '%s'" % (arg)
 
 
+@addcmd
 def mv():
     p = _optparse()
     p.add_option("-v", "--verbose", action="store_true", dest="verbose",
@@ -180,6 +195,7 @@ def mv():
             sys.exit(1)
 
 
+@addcmd
 def pwd():
     p = _optparse()
     p.add_option("-L", "--logical", action="store_true", dest="logical",
@@ -196,6 +212,7 @@ def pwd():
         print os.getcwdu()
 
 
+@addcmd
 def seq():
     p = _optparse()
     p.add_option("-s", "--seperator", action="store", dest="seperator",
@@ -225,26 +242,32 @@ def seq():
         print
 
 
+@addcmd
 def sha1sum():
     _hasher('sha1')
 
 
+@addcmd
 def sha224sum():
     _hasher('sha224')
 
 
+@addcmd
 def sha256sum():
     _hasher('sha256')
 
 
+@addcmd
 def sha384sum():
     _hasher('sha384')
 
 
+@addcmd
 def sha512sum():
     _hasher('sha512')
 
 
+@addcmd
 def shred():
     # TODO: This program acts as 'shred -x', and doesn't round file sizes up to the next full block
     p = _optparse()
@@ -272,6 +295,7 @@ def shred():
             fd.close()
 
 
+@addcmd
 def shuf():
     p = _optparse()
     p.add_option("-e", "--echo", action="store_true", dest="echo",
@@ -334,6 +358,7 @@ def shuf():
             outfd.write(line)
 
 
+@addcmd
 def tail():
     # TODO: Everything!!!!!!!!
     p = _optparse()
@@ -356,6 +381,7 @@ def tail():
             print line,
 
 
+@addcmd
 def sleep():
     (opts, args) = _optparse().parse_args()
 
@@ -385,6 +411,7 @@ def sleep():
     time.sleep(sum(a))
 
 
+@addcmd
 def touch():
     # TODO: Implement --date, --time and -t
     p = _optparse()
@@ -427,6 +454,7 @@ def touch():
         os.utime(arg, (atime, mtime))
 
 
+@addcmd
 def uname():
     p = _optparse()
     p.add_option("-a", "--all", action="store_true", dest="all",
@@ -480,6 +508,7 @@ def uname():
         print platform.system(),
 
 
+@addcmd
 def yes():
     (opts, args) = _optparse().parse_args()
 
@@ -498,7 +527,19 @@ def yes():
         sys.exit()
 
 
+
 ############################## PRIVATE FUNCTIONS ##############################
+
+
+def _checkcmd(command):
+    ''' Check a command is available '''
+    a = [cmd for cmd in _cmds if cmd.func_name == command]
+    l = len(a)
+    if l == 0:
+        return False
+    if l > 1:
+        raise "Command '%s' has multiple functions associated with it!" % (command)
+    return a[0]
 
 
 def _fopen(filename, mode='r', bufsize=-1):
@@ -526,6 +567,15 @@ def _hasher(algorithm):
             print myhash(_fopen(arg, 'r')) + '  ' + arg
 
 
+def _help():
+    print "Pycoreutils should be run with a command as first parameter."
+    print
+    print "Valid commands:"
+    for cmd in _cmds:
+        print cmd.func_name,
+    sys.exit(1)
+
+
 def _optparse():
     optparser = optparse.OptionParser(version=__version__)
     optparser.add_option("--license", action="callback", callback=_showlicense,
@@ -538,15 +588,19 @@ def _showlicense(option, opt, value, parser):
     sys.exit(0)
 
 
+
 if __name__ == '__main__':
-    cmd = os.path.basename(sys.argv[0])
-    if cmd == 'pycoreutils.py':
+    # Get the requested command
+    requestcmd = os.path.basename(sys.argv[0])
+    if requestcmd == 'pycoreutils.py':
+        # Print help if pycoreutils.py is directly run without any arguments
+        if len(sys.argv) == 1:
+            _help()
         sys.argv.pop(0)
-        cmd = sys.argv[0]
-    logging.debug("Running command %s" % (cmd))
-    #try:
-        #exec(cmd + '()')
-    #except NameError:
-        #sys.stderr.write("Command '%s' not part of pycoreutils\n" % (cmd))
-        #sys.exit(1)
-    exec(cmd + '()')
+        requestcmd = sys.argv[0]
+    cmd = _checkcmd(requestcmd)
+    if cmd == False:
+        print u"Command %s not supported." % (sys.argv[0])
+        print u"Use pycoreutils.py --help for a list of valid commands."
+    # Run the command
+    cmd()
