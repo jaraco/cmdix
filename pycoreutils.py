@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-from __future__ import with_statement 
+from __future__ import with_statement
+from gzip import GzipFile
 import hashlib, logging, optparse, os, platform, random, shutil, subprocess, sys, time
 
 __version__ = '0.0.2'
@@ -116,6 +117,45 @@ def dirname():
         d = '.'
 
     print d
+
+
+@addcmd
+def gzip():
+    # TODO: Everything :)
+    p = _optparse()
+    p.add_option("-c", "--stdout", "--as-stdout", action="store_true", dest="stdout",
+            help="write on standard output, keep original files unchanged")
+    p.add_option("-C", "--compresslevel", action="store", dest="compresslevel", type="int", default=6,
+            help="set file mode (as in chmod), not a=rwx - umask")
+    p.add_option("-1", "--fast", action="store_const", dest="compresslevel", const=1,
+            help="Use the fastest type of compression")
+    p.add_option("-2", action="store_const", dest="compresslevel", const=2,
+            help="Use compression level 2")
+    p.add_option("-3", action="store_const", dest="compresslevel", const=3,
+            help="Use compression level 3")
+    p.add_option("-4", action="store_const", dest="compresslevel", const=4,
+            help="Use compression level 4")
+    p.add_option("-5", action="store_const", dest="compresslevel", const=5,
+            help="Use compression level 5")
+    p.add_option("-6", action="store_const", dest="compresslevel", const=6,
+            help="Use compression level 6")
+    p.add_option("-7", action="store_const", dest="compresslevel", const=7,
+            help="Use compression level 7")
+    p.add_option("-8", action="store_const", dest="compresslevel", const=8,
+            help="Use compression level 8")
+    p.add_option("-9", "--best", action="store_const", dest="compresslevel", const=9,
+            help="Use the best type of compression")
+    (opts, args) = p.parse_args()
+
+    # Use stdin for input if no file is specified or file is '-'
+    if len(args) == 0 or (len(args) == 1 and args[0] == '-'):
+        infile = sys.stdin
+
+    # Use stdout for output if no file is specified, or if -c is given
+    if len(args) == 0 or opts.stdout:
+        outfile = GzipFile(fileobj=sys.stdout, mode='wb', compresslevel=opts.compresslevel)
+
+    shutil.copyfileobj(infile, outfile)
 
 
 @addcmd
