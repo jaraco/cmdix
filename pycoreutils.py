@@ -184,7 +184,7 @@ def mkdir():
     p = _optparse()
     p.add_option("-p", "--parents", action="store_true", dest="recursive",
             help="no error if existing, make parent directories as needed")
-    p.add_option("-m", "--mode=MODE", action="store", dest="mode", default=0777,
+    p.add_option("-m", "--mode", action="store", dest="mode", default=0777,
             help="set file mode (as in chmod), not a=rwx - umask")
     p.add_option("-v", "--verbose", action="store_true", dest="verbose",
             help="print a message for each created directory")
