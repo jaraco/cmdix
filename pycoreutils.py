@@ -203,9 +203,8 @@ def md5sum():
 
 @addcmd
 def mkdir():
-    # TODO: Implent -v
     p = _optparse()
-    p.add_option("-p", "--parents", action="store_true", dest="recursive",
+    p.add_option("-p", "--parents", action="store_true", dest="parents",
             help="no error if existing, make parent directories as needed")
     p.add_option("-m", "--mode", action="store", dest="mode", default=0777,
             help="set file mode (as in chmod), not a=rwx - umask")
@@ -213,21 +212,37 @@ def mkdir():
             help="print a message for each created directory")
     (opts, args) = p.parse_args()
 
+    def _mkdir(path, mode, verbose):
+        try:
+            os.mkdir(path, mode)
+        except OSError:
+            print "mkdir: cannot create directory '%s': No such file or directory" % (path)
+        if verbose:
+            print "mkdir: created directory '%s'" % (path)
+
+
     if len(args) < 1:
         print "mkdir: missing operand"
         print "Try `mkdir --help' for more information."
         sys.exit(1)
 
     for arg in args:
-        if opts.recursive:
-            os.makedirs(arg, int(opts.mode))
-            print "mkdir: created directory '%s'" % (arg)
+        if opts.parents:
+            # Recursively create directories.
+            # We can't use os.makedirs because -v won't show all intermediate directories
+            path = arg
+            pathlist = []
+
+            # Create a list of directories to create
+            while not os.path.exists(path):
+                pathlist.insert(0, path)
+                path, tail = os.path.split(path)
+
+            # Create all directories in pathlist
+            for path in pathlist:
+                _mkdir(path, int(opts.mode), opts.verbose)
         else:
-            try:
-                os.mkdir(arg, int(opts.mode))
-            except OSError:
-                print "mkdir: cannot create directory '%s': No such file or directory" % (arg)
-            print "mkdir: created directory '%s'" % (arg)
+            _mkdir(arg, int(opts.mode), opts.verbose)
 
 
 @addcmd
