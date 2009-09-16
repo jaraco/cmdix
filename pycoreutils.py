@@ -144,12 +144,14 @@ def dirname():
 
 @addcmd
 def gzip():
-    # TODO: Everything :)
+    # TODO: Decompression
     p = _optparse()
     p.add_option("-c", "--stdout", "--as-stdout", action="store_true", dest="stdout",
             help="write on standard output, keep original files unchanged")
     p.add_option("-C", "--compresslevel", action="store", dest="compresslevel", type="int", default=6,
             help="set file mode (as in chmod), not a=rwx - umask")
+    #p.add_option("-d", "--decompress", action="store_true", dest="decompress",
+            #help="force decompression")
     p.add_option("-1", "--fast", action="store_const", dest="compresslevel", const=1,
             help="Use the fastest type of compression")
     p.add_option("-2", action="store_const", dest="compresslevel", const=2,
@@ -178,7 +180,16 @@ def gzip():
     if len(args) == 0 or opts.stdout:
         outfile = GzipFile(fileobj=sys.stdout, mode='wb', compresslevel=opts.compresslevel)
 
-    shutil.copyfileobj(infile, outfile)
+    for arg in args:
+        infile = _fopen(arg, 'r')
+        gzippath = arg + '.gz'
+        if os.path.exists(gzippath):
+            q = raw_input("gzip: %s already exists; do you wish to overwrite (y or n)? " % (gzippath))
+            if q.upper() != 'Y':
+                print u"not overwritten"
+                sys.exit(2)
+        outfile = GzipFile(filename=gzippath, mode='wb', compresslevel=opts.compresslevel)
+        shutil.copyfileobj(infile, outfile)
 
 
 @addcmd
