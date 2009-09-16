@@ -59,7 +59,12 @@ def basename():
         print u"Try `basename --help' for more information."
         sys.exit(1)
 
-    b = os.path.basename(args[0])
+    b = args[0]
+
+    # Remove trailing slash to make sure /foo/bar/ is the same as /foo/bar
+    if len(b) > 1:
+        b = b.rstrip('/')
+    b = os.path.basename(b)
 
     if len(args) == 2:
         b = b.rstrip(args[1])
