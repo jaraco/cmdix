@@ -699,11 +699,12 @@ def _hasher(algorithm):
 
 
 def _help():
-    print "Pycoreutils should be run with a command as first parameter."
+    print u"Pycoreutils should be run with a command as first parameter."
+    print u"Use 'pycoreutils.py <command> --help' for detailed help"
     print
-    print "Valid commands:"
+    print u"Valid commands:"
     for cmd in _cmds:
-        print cmd.func_name,
+        print '  ' + cmd.func_name
     sys.exit(1)
 
 
@@ -725,7 +726,7 @@ if __name__ == '__main__':
     requestcmd = os.path.basename(sys.argv[0])
     if requestcmd == 'pycoreutils.py':
         # Print help if pycoreutils.py is directly run without any arguments
-        if len(sys.argv) == 1:
+        if len(sys.argv) == 1 or sys.argv[1] == "--help":
             _help()
         sys.argv.pop(0)
         requestcmd = sys.argv[0]
