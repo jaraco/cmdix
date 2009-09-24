@@ -4,7 +4,7 @@
 from __future__ import with_statement
 from gzip import GzipFile
 from pwd import getpwnam
-import hashlib, logging, optparse, os, platform, random, shutil, subprocess, sys, time
+import hashlib, logging, optparse, os, platform, random, shutil, subprocess, sys, tempfile, time
 
 __version__ = '0.0.2'
 __license__ = '''
@@ -260,6 +260,28 @@ def ls():
 @addcmd
 def md5sum():
     _hasher('md5')
+
+
+@addcmd
+def mktemp():
+    # TODO: Templates, most of the options
+    p = _optparse()
+    p.usage = '%prog [OPTION]... [TEMPLATE]'
+    p.add_option("-d", "--directory", action="store_true", dest="directory",
+            help="create a directory, not a file")
+    (opts, args) = p.parse_args()
+
+    if len(args) == 0:
+        if opts.directory:
+            print tempfile.mkdtemp()
+        else:
+            print tempfile.mkstemp()[1]
+    elif len(args) == 1:
+        raise NotImplementedError("Templates are not yet implemented")
+    else:
+        print u"mktemp: too many templates"
+        print u"Try `mktemp --help' for more information."
+        
 
 
 @addcmd
