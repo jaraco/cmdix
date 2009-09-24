@@ -148,6 +148,35 @@ def dirname():
 
 
 @addcmd
+def env():
+    # TODO: --unset
+    p = _optparse()
+    p.usage = '%prog [OPTION]... [-] [NAME=VALUE]... [COMMAND [ARG]...]'
+    p.description = "Set each NAME to VALUE in the environment and run COMMAND."
+    p.add_option("-i", "--ignore-environment", action="store_true", dest="ignoreenvironment",
+            help="start with an empty environment")
+    #p.add_option("-u", "--unset", action="store", dest="unset",
+            #help="remove variable from the environment")
+    (opts, args) = p.parse_args()
+
+    if opts.ignoreenvironment:
+        env = {}
+    else:
+        env = os.environ
+
+    for arg in args:
+	x = arg.split('=')
+	if len(x) < 2:
+	    print u"Invalid argument %s." % (arg)
+	    print u"Arguments should be in the form of 'foo=bar'"
+	    sys.exit(127)
+	print x[0] + '=' + x[1]
+
+    for k, v in env.iteritems():
+        print k + '=' + v
+
+
+@addcmd
 def gzip():
     # TODO: Decompression
     p = _optparse()
