@@ -36,7 +36,9 @@ def addcmd(f):
 
 @addcmd
 def arch():
-    (opts, args) = _optparse().parse_args()
+    p = _optparse()
+    p.usage = '%prog [OPTION]'
+    (opts, args) = p.parse_args()
 
     if len(args) > 0:
         print u"dirname: extra operand `%s'" % (args[0])
@@ -48,8 +50,10 @@ def arch():
 
 @addcmd
 def basename():
-    (opts, args) = _optparse().parse_args()
-
+    p = _optparse()
+    p.usage = '%prog NAME\nor:    %prog [OPTION]'
+    (opts, args) = p.parse_args()
+    
     if len(args) == 0:
         print u"basename: missing operand"
         print u"Try `basename --help' for more information."
@@ -75,7 +79,9 @@ def basename():
 
 @addcmd
 def cat():
-    (opts, args) = _optparse().parse_args()
+    p = _optparse()
+    p.usage = '%prog [OPTION]... [FILE]...'
+    (opts, args) = p.parse_args()
 
     for arg in args:
         print open(arg).read(),
@@ -84,7 +90,9 @@ def cat():
 @addcmd
 def chown():
     # TODO: Support for groups
-    (opts, args) = _optparse().parse_args()
+    p = _optparse()
+    p.usage = '%prog [OWNER] FILE'
+    (opts, args) = p.parse_args()
 
     if len(args) == 0:
         print u"chgrp: missing operand"
@@ -106,7 +114,9 @@ def chown():
 @addcmd
 def chroot():
     # TODO: Testing!!!
-    (opts, args) = _optparse().parse_args()
+    p = _optparse()
+    p.usage = '%prog NEWROOT [COMMAND [ARG]...]\nor:    %prog [OPTION]'
+    (opts, args) = p.parse_args()
 
     if len(args) == 0:
         print u"chroot: missing operand"
@@ -128,7 +138,9 @@ def chroot():
 
 @addcmd
 def dirname():
-    (opts, args) = _optparse().parse_args()
+    p = _optparse()
+    p.usage = '%prog [NAME]\nor:    %prog [OPTION]'
+    (opts, args) = p.parse_args()
 
     if len(args) == 0:
         print u"dirname: missing operand"
@@ -181,6 +193,7 @@ def env():
 def gzip():
     # TODO: Decompression
     p = _optparse()
+    p.usage = '%prog [OPTION]... [FILE]...'
     p.add_option("-c", "--stdout", "--as-stdout", action="store_true", dest="stdout",
             help="write on standard output, keep original files unchanged")
     p.add_option("-C", "--compresslevel", action="store", dest="compresslevel", type="int", default=6,
@@ -230,7 +243,9 @@ def gzip():
 @addcmd
 def ls():
     # TODO: Everything :)
-    (opts, args) = _optparse().parse_args()
+    p = _optparse()
+    p.usage = '%prog [OPTION]... [FILE]...'
+    (opts, args) = p.parse_args()
 
     if len(args) < 1:
         args = '.'
@@ -250,6 +265,7 @@ def md5sum():
 @addcmd
 def mkdir():
     p = _optparse()
+    p.usage = '%prog [OPTION]... DIRECTORY...'
     p.add_option("-p", "--parents", action="store_true", dest="parents",
             help="no error if existing, make parent directories as needed")
     p.add_option("-m", "--mode", action="store", dest="mode", default=0777,
@@ -294,6 +310,7 @@ def mkdir():
 @addcmd
 def mv():
     p = _optparse()
+    p.usage = '%prog [OPTION]... [-T] SOURCE DEST\nor:    %prog [OPTION]... SOURCE... DIRECTORY\nor:    %prog [OPTION]... -t DIRECTORY SOURCE...'
     p.add_option("-v", "--verbose", action="store_true", dest="verbose",
             help="explain what is being done")
     (opts, args) = p.parse_args()
@@ -322,6 +339,7 @@ def mv():
 @addcmd
 def pwd():
     p = _optparse()
+    p.usage = '%prog [OPTION]...'
     p.add_option("-L", "--logical", action="store_true", dest="logical",
             help="use PWD from environment, even if it contains symlinks")
     p.add_option("-P", "--physical", action="store_true", dest="physical",
@@ -340,6 +358,7 @@ def pwd():
 def rmdir():
     # TODO: Implement -p
     p = _optparse()
+    p.usage = '%prog [OPTION]... DIRECTORY...'
     p.add_option("--ignore-fail-on-non-empty", action="store_true", dest="ignorefail",
             help="ignore each failure that is solely because a directory is non-empty")
     #p.add_option("-p", "--parent", action="store_true", dest="seperator",
@@ -376,6 +395,7 @@ def rmdir():
 @addcmd
 def seq():
     p = _optparse()
+    p.usage = '%prog [OPTION]... LAST\nor:    %prog [OPTION]... FIRST LAST\nor:    %prog [OPTION]... FIRST INCREMENT LAST'
     p.add_option("-s", "--seperator", action="store", dest="seperator",
             help="use SEPERATOR to separate numbers (default: \\n)")
     (opts, args) = p.parse_args()
@@ -432,6 +452,7 @@ def sha512sum():
 def shred():
     # TODO: This program acts as 'shred -x', and doesn't round file sizes up to the next full block
     p = _optparse()
+    p.usage = '%prog [OPTION]... FILE...'
     p.add_option("-n", "--iterations", action="store", dest="iterations", default=3,
             help="overwrite ITERATIONS times instead of the default (3)")
     p.add_option("-v", "--verbose", action="store_true", dest="verbose",
@@ -459,6 +480,7 @@ def shred():
 @addcmd
 def shuf():
     p = _optparse()
+    p.usage = '%prog [OPTION]... [FILE]\nor:    %prog -e [OPTION]... [ARG]...\nor:    %prog -i LO-HI [OPTION]...'
     p.add_option("-e", "--echo", action="store_true", dest="echo",
             help="treat each ARG as an input line")
     p.add_option("-i", "--input-range", action="store", dest="inputrange",
@@ -519,10 +541,11 @@ def shuf():
             outfd.write(line)
 
 
-@addcmd
+
 def tail():
     # TODO: Everything!!!!!!!!
     p = _optparse()
+    p.usage = '%prog [OPTION]... [FILE]...'
     p.add_option("-f", "--follow", action="store_true", dest="follow",
             help="output appended data as the file grows")
     p.add_option("-n", "--lines=N", action="store", dest="lines",
@@ -544,7 +567,9 @@ def tail():
 
 @addcmd
 def sleep():
-    (opts, args) = _optparse().parse_args()
+    p = _optparse()
+    p.usage = '%prog NUMBER[SUFFIX]...\nor:    %prog OPTION'
+    (opts, args) = p.parse_args()
 
     if len(args) == 0:
         print u"sleep: missing operand"
@@ -576,6 +601,7 @@ def sleep():
 def touch():
     # TODO: Implement --date, --time and -t
     p = _optparse()
+    p.usage = '%prog [OPTION]... FILE...'
     p.add_option("-a", action="store_true", dest="accessonly",
             help="change only the access time")
     p.add_option("-c", "--no-create", action="store_true", dest="nocreate",
@@ -618,6 +644,7 @@ def touch():
 @addcmd
 def uname():
     p = _optparse()
+    p.usage = '%prog [OPTION]...'
     p.add_option("-a", "--all", action="store_true", dest="all",
             help="print all information, in the following order, except omit -p and -i if unknown")
     p.add_option("-s", "--kernel-name", action="store_true", dest="kernelname",
@@ -671,7 +698,9 @@ def uname():
 
 @addcmd
 def yes():
-    (opts, args) = _optparse().parse_args()
+    p = _optparse()
+    p.usage = '%prog [OPTION]...'
+    (opts, args) = p.parse_args()
 
     x = ''
     for arg in args:
@@ -719,7 +748,9 @@ def _hasher(algorithm):
             h.update(f.read())
         return h.hexdigest()
 
-    (opts, args) = _optparse().parse_args()
+    p = _optparse()
+    p.usage = '%prog [OPTION]... FILE...'
+    (opts, args) = p.parse_args()
 
     if len(args) == 0 or args == ['-']:
         print myhash(sys.stdin) + '  -'
