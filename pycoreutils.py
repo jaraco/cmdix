@@ -1,12 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# WARNING: This is incomplete software, Not all the flags in the help-section
+# are implemented, and some behave different than one might expect!
+
 from __future__ import with_statement
 from gzip import GzipFile
 from pwd import getpwnam
 import hashlib, logging, optparse, os, platform, random, shutil, subprocess, sys, tempfile, time
 
-__version__ = '0.0.2'
+__version__ = '0.0.3'
 __license__ = '''
 Copyright (c) 2009 Hans van Leeuwen
 
@@ -37,6 +40,7 @@ def addcmd(f):
 @addcmd
 def arch():
     p = _optparse()
+    p.description = "Print machine architecture."
     p.usage = '%prog [OPTION]'
     (opts, args) = p.parse_args()
 
@@ -51,7 +55,9 @@ def arch():
 @addcmd
 def basename():
     p = _optparse()
-    p.usage = '%prog NAME\nor:    %prog [OPTION]'
+    p.description = "Print NAME with any leading directory components " + \
+                    "removed. If specified, also remove a trailing SUFFIX."
+    p.usage = '%prog NAME [SUFFIX]\nor:    %prog [OPTION]'
     (opts, args) = p.parse_args()
     
     if len(args) == 0:
@@ -80,6 +86,7 @@ def basename():
 @addcmd
 def cat():
     p = _optparse()
+    p.description = "Concatenate FILE(s), or standard input, to standard output."
     p.usage = '%prog [OPTION]... [FILE]...'
     (opts, args) = p.parse_args()
 
@@ -89,8 +96,11 @@ def cat():
 
 @addcmd
 def chown():
-    # TODO: Support for groups
+    # TODO: Support for groups and --reference
     p = _optparse()
+    p.description = "Change the owner and/or group of each FILE to OWNER " + \
+                     "and/or GROUP. With --reference, change the owner and" + \
+                     " group of each FILE to those of RFILE."
     p.usage = '%prog [OWNER] FILE'
     (opts, args) = p.parse_args()
 
@@ -115,6 +125,7 @@ def chown():
 def chroot():
     # TODO: Testing!!!
     p = _optparse()
+    p.description = "Run COMMAND with root directory set to NEWROOT."
     p.usage = '%prog NEWROOT [COMMAND [ARG]...]\nor:    %prog [OPTION]'
     (opts, args) = p.parse_args()
 
@@ -139,6 +150,9 @@ def chroot():
 @addcmd
 def dirname():
     p = _optparse()
+    p.description = "Print NAME with its trailing /component removed; if " + \
+                    "NAME contains no /'s, output `.' (meaning the current" + \
+                    " directory)."
     p.usage = '%prog [NAME]\nor:    %prog [OPTION]'
     (opts, args) = p.parse_args()
 
@@ -164,8 +178,8 @@ def dirname():
 def env():
     # TODO: --unset
     p = _optparse()
-    p.usage = '%prog [OPTION]... [-] [NAME=VALUE]... [COMMAND [ARG]...]'
     p.description = "Set each NAME to VALUE in the environment and run COMMAND."
+    p.usage = '%prog [OPTION]... [-] [NAME=VALUE]... [COMMAND [ARG]...]'
     p.add_option("-i", "--ignore-environment", action="store_true", dest="ignoreenvironment",
             help="start with an empty environment")
     #p.add_option("-u", "--unset", action="store", dest="unset",
@@ -192,6 +206,7 @@ def env():
 def gzip():
     # TODO: Decompression
     p = _optparse()
+    p.description = "Compress or uncompress FILEs (by default, compress FILES in-place)."
     p.usage = '%prog [OPTION]... [FILE]...'
     p.add_option("-c", "--stdout", "--as-stdout", action="store_true", dest="stdout",
             help="write on standard output, keep original files unchanged")
@@ -243,6 +258,9 @@ def gzip():
 def ls():
     # TODO: Everything :)
     p = _optparse()
+    p.description = "List information about the FILEs (the current " + \
+                    "directory by default). Sort entries " + \
+                    "alphabetically if none of -cftuvSUX nor --sort."
     p.usage = '%prog [OPTION]... [FILE]...'
     (opts, args) = p.parse_args()
 
@@ -265,6 +283,8 @@ def md5sum():
 def mktemp():
     # TODO: Templates, most of the options
     p = _optparse()
+    p.description = "Create a temporary file or directory, safely, and " + \
+                    "print its name."
     p.usage = '%prog [OPTION]... [TEMPLATE]'
     p.add_option("-d", "--directory", action="store_true", dest="directory",
             help="create a directory, not a file")
@@ -287,6 +307,7 @@ def mktemp():
 def mkdir():
     p = _optparse()
     p.usage = '%prog [OPTION]... DIRECTORY...'
+    p.description = "Create the DIRECTORY(ies), if they do not already exist."
     p.add_option("-p", "--parents", action="store_true", dest="parents",
             help="no error if existing, make parent directories as needed")
     p.add_option("-m", "--mode", action="store", dest="mode", default=0777,
@@ -331,6 +352,7 @@ def mkdir():
 @addcmd
 def mv():
     p = _optparse()
+    p.description = "Rename SOURCE to DEST, or move SOURCE(s) to DIRECTORY."
     p.usage = '%prog [OPTION]... [-T] SOURCE DEST\nor:    %prog [OPTION]... SOURCE... DIRECTORY\nor:    %prog [OPTION]... -t DIRECTORY SOURCE...'
     p.add_option("-v", "--verbose", action="store_true", dest="verbose",
             help="explain what is being done")
@@ -360,6 +382,7 @@ def mv():
 @addcmd
 def pwd():
     p = _optparse()
+    p.description = "print name of current/working directory"
     p.usage = '%prog [OPTION]...'
     p.add_option("-L", "--logical", action="store_true", dest="logical",
             help="use PWD from environment, even if it contains symlinks")
@@ -379,6 +402,7 @@ def pwd():
 def rmdir():
     # TODO: Implement -p
     p = _optparse()
+    p.description = "Remove the DIRECTORY(ies), if they are empty."
     p.usage = '%prog [OPTION]... DIRECTORY...'
     p.add_option("--ignore-fail-on-non-empty", action="store_true", dest="ignorefail",
             help="ignore each failure that is solely because a directory is non-empty")
@@ -416,6 +440,7 @@ def rmdir():
 @addcmd
 def seq():
     p = _optparse()
+    p.description = "Print numbers from FIRST to LAST, in steps of INCREMENT."
     p.usage = '%prog [OPTION]... LAST\nor:    %prog [OPTION]... FIRST LAST\nor:    %prog [OPTION]... FIRST INCREMENT LAST'
     p.add_option("-s", "--seperator", action="store", dest="seperator",
             help="use SEPERATOR to separate numbers (default: \\n)")
@@ -473,6 +498,9 @@ def sha512sum():
 def shred():
     # TODO: This program acts as 'shred -x', and doesn't round file sizes up to the next full block
     p = _optparse()
+    p.description = "Overwrite the specified FILE(s) repeatedly, in order " + \
+                    "to make it harder for even very expensive hardware " + \
+                    "probing to recover the data."
     p.usage = '%prog [OPTION]... FILE...'
     p.add_option("-n", "--iterations", action="store", dest="iterations", default=3,
             help="overwrite ITERATIONS times instead of the default (3)")
@@ -501,6 +529,8 @@ def shred():
 @addcmd
 def shuf():
     p = _optparse()
+    p.description = "Write a random permutation of the input lines to " + \
+                    "standard output."
     p.usage = '%prog [OPTION]... [FILE]\nor:    %prog -e [OPTION]... [ARG]...\nor:    %prog -i LO-HI [OPTION]...'
     p.add_option("-e", "--echo", action="store_true", dest="echo",
             help="treat each ARG as an input line")
@@ -565,6 +595,12 @@ def shuf():
 @addcmd
 def sleep():
     p = _optparse()
+    p.description = "Pause for NUMBER seconds. SUFFIX may be `s' for seconds" + \
+                    " (the default), `m' for minutes, `h' for hours or `d' " + \
+                    "for days. Unlike most implementations that require " + \
+                    "NUMBER be an integer, here NUMBER may be an arbitrary " + \
+                    "floating point number. Given two or more arguments, " + \
+                    "pause for the amount of time"
     p.usage = '%prog NUMBER[SUFFIX]...\nor:    %prog OPTION'
     (opts, args) = p.parse_args()
 
@@ -597,6 +633,10 @@ def sleep():
 def tail():
     # TODO: Everything!!!!!!!!
     p = _optparse()
+    p.description = "Print the last 10 lines of each FILE to standard " + \
+                    "output. With more than one FILE, precede each with a " + \
+                    "header giving the file name. With no FILE, or when " + \
+                    "FILE is -, read standard input."
     p.usage = '%prog [OPTION]... [FILE]...'
     p.add_option("-f", "--follow", action="store_true", dest="follow",
             help="output appended data as the file grows")
@@ -621,6 +661,10 @@ def tail():
 def touch():
     # TODO: Implement --date, --time and -t
     p = _optparse()
+    p.description = "Update the access and modification times of each FILE " + \
+                    "to the current time. A FILE argument that does not " + \
+                    "exist is created empty. A FILE argument string of - is" + \
+                    " handled specially and causes touch to"
     p.usage = '%prog [OPTION]... FILE...'
     p.add_option("-a", action="store_true", dest="accessonly",
             help="change only the access time")
@@ -664,6 +708,8 @@ def touch():
 @addcmd
 def uname():
     p = _optparse()
+    p.description = "Print certain system information.  With no OPTION, " + \
+                    "same as -s."
     p.usage = '%prog [OPTION]...'
     p.add_option("-a", "--all", action="store_true", dest="all",
             help="print all information, in the following order, except omit -p and -i if unknown")
@@ -719,7 +765,9 @@ def uname():
 @addcmd
 def yes():
     p = _optparse()
-    p.usage = '%prog [OPTION]...'
+    p.description = "Repeatedly output a line with all specified " + \
+                    "STRING(s), or `y'."
+    p.usage = '%prog [STRING]...\nor:    %prog OPTION'
     (opts, args) = p.parse_args()
 
     x = ''
@@ -767,8 +815,10 @@ def _hasher(algorithm):
         with fd as f:
             h.update(f.read())
         return h.hexdigest()
-
+ 
     p = _optparse()
+    p.description = "Print or check %s checksums.\n" % (algorithm.upper()) + \
+                    "With no FILE, or when FILE is -, read standard input."
     p.usage = '%prog [OPTION]... FILE...'
     (opts, args) = p.parse_args()
 
