@@ -280,30 +280,6 @@ def md5sum():
 
 
 @addcmd
-def mktemp():
-    # TODO: Templates, most of the options
-    p = _optparse()
-    p.description = "Create a temporary file or directory, safely, and " + \
-                    "print its name."
-    p.usage = '%prog [OPTION]... [TEMPLATE]'
-    p.add_option("-d", "--directory", action="store_true", dest="directory",
-            help="create a directory, not a file")
-    (opts, args) = p.parse_args()
-
-    if len(args) == 0:
-        if opts.directory:
-            print tempfile.mkdtemp()
-        else:
-            print tempfile.mkstemp()[1]
-    elif len(args) == 1:
-        raise NotImplementedError("Templates are not yet implemented")
-    else:
-        print u"mktemp: too many templates"
-        print u"Try `mktemp --help' for more information."
-        
-
-
-@addcmd
 def mkdir():
     p = _optparse()
     p.usage = '%prog [OPTION]... DIRECTORY...'
@@ -347,6 +323,30 @@ def mkdir():
                 _mkdir(path, int(opts.mode), opts.verbose)
         else:
             _mkdir(arg, int(opts.mode), opts.verbose)
+
+
+@addcmd
+def mktemp():
+    # TODO: Templates, most of the options
+    p = _optparse()
+    p.description = "Create a temporary file or directory, safely, and " + \
+                    "print its name."
+    p.usage = '%prog [OPTION]... [TEMPLATE]'
+    p.add_option("-d", "--directory", action="store_true", dest="directory",
+            help="create a directory, not a file")
+    (opts, args) = p.parse_args()
+
+    if len(args) == 0:
+        if opts.directory:
+            print tempfile.mkdtemp(prefix='tmp.')
+        else:
+            print tempfile.mkstemp(prefix='tmp.')[1]
+    elif len(args) == 1:
+        raise NotImplementedError("Templates are not yet implemented")
+    else:
+        print u"mktemp: too many templates"
+        print u"Try `mktemp --help' for more information."
+        
 
 
 @addcmd
@@ -693,7 +693,6 @@ def touch():
             else:
                 # Create empty file
                 open(arg, 'w').close()
-
 
         if opts.reference:
             atime = os.path.getatime(opts.reference)
