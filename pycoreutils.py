@@ -172,18 +172,17 @@ def env():
             #help="remove variable from the environment")
     (opts, args) = p.parse_args()
 
-    if opts.ignoreenvironment:
-        env = {}
-    else:
+    env = {}
+    if not opts.ignoreenvironment:
         env = os.environ
 
     for arg in args:
-	x = arg.split('=')
-	if len(x) < 2:
-	    print u"Invalid argument %s." % (arg)
-	    print u"Arguments should be in the form of 'foo=bar'"
-	    sys.exit(127)
-	print x[0] + '=' + x[1]
+        x = arg.split('=')
+        if len(x) < 2:
+            print u"Invalid argument %s." % (arg)
+            print u"Arguments should be in the form of 'foo=bar'"
+            sys.exit(127)
+    print x[0] + '=' + x[1]
 
     for k, v in env.iteritems():
         print k + '=' + v
@@ -494,7 +493,7 @@ def shred():
             fd.seek(0)
             for i in xrange(size):
                 # Get random byte
-                b = "".join(chr(random.randrange(0,256)))
+                b = "".join(chr(random.randrange(0, 256)))
                 fd.write(b)
             fd.close()
 
@@ -518,7 +517,7 @@ def shuf():
 
     # Write to file if -o is specified
     if opts.output:
-        outfd = pycoreutils.fopen(opts.output, 'w')
+        outfd = _fopen(opts.output, 'w')
 
     if opts.echo:
         if opts.inputrange:
@@ -552,7 +551,7 @@ def shuf():
         if len(args) == 0:
             fd = sys.stdin
         else:
-            fd = pycoreutils.fopen(args[0])
+            fd = _fopen(args[0])
 
         lines = fd.readlines()
         random.shuffle(lines)
@@ -588,9 +587,9 @@ def sleep():
             else:
                 a.append(float(arg))
     except ValueError:
-            print u"sleep: invalid time interval `%s'" % (arg)
-            print u"Try sleep --help' for more information."
-            sys.exit(1)
+        print u"sleep: invalid time interval `%s'" % (arg)
+        print u"Try sleep --help' for more information."
+        sys.exit(1)
 
     time.sleep(sum(a))
 
