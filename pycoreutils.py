@@ -11,7 +11,7 @@ import hashlib, logging, optparse, os, platform, random, shutil, subprocess, sys
 
 __version__ = '0.0.3'
 __license__ = '''
-Copyright (c) 2009 Hans van Leeuwen
+Copyright (c) 2009, 2010 Hans van Leeuwen
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
