@@ -6,7 +6,8 @@
 
 from __future__ import with_statement
 from gzip import GzipFile
-from pwd import getpwnam
+from grp import getgrnam, getgrgid
+from pwd import getpwuid
 import hashlib, logging, optparse, os, platform, random, shutil, subprocess, sys, tempfile, time
 
 __version__ = '0.0.3'
@@ -252,6 +253,63 @@ def gzip():
                 sys.exit(2)
         outfile = GzipFile(filename=gzippath, mode='wb', compresslevel=opts.compresslevel)
         shutil.copyfileobj(infile, outfile)
+
+
+@addcmd
+def id():
+    # TODO: List all groups a user belongs to
+    p = _optparse()
+    p.description = "Print user and group information for the specified " + \
+                   "USERNAME, or (when USERNAME omitted) for the current user."
+    p.usage = '%prog [OPTION]... [USERNAME]'
+    p.add_option("-a", action="store_true", dest="ignoreme",
+            help="ignore, for compatibility with other versions")
+    p.add_option("-g", "--group", action="store_true", dest="group",
+            help="print only the effective group ID")
+    p.add_option("-n", "--name", action="store_true", dest="name",
+            help="print a name instead of a number, for -ug")
+    p.add_option("-u", "--user", action="store_true", dest="user",
+            help="print only the effective group ID")
+
+    (opts, args) = p.parse_args()
+
+    if len(args) > 1:
+        print u"id: extra operand `%s'" % (args[1])
+        print u"Try id --help' for more information."
+        sys.exit(1)
+
+    if args == []:
+        u = getpwuid(os.getuid())
+    else:
+        u = getpwnam(args[0])
+
+    uid = u.pw_uid
+    gid = u.pw_gid
+    username = u.pw_name
+    g = getgrgid(gid)
+    groupname = g.gr_name
+
+    if opts.group and opts.name:
+        print groupname
+        return
+
+    if opts.group:
+        print gid
+        return
+
+    if opts.user and opts.name:
+        print username
+        return
+
+    if opts.user:
+        print uid
+        return
+
+    if opts.name:
+        print "id: cannot print only names or real IDs in default format"
+        sys.exit(1)
+
+    print "uid=%i(%s) gid=%i(%s)" % (uid, username, gid, username)
 
 
 @addcmd
@@ -759,6 +817,22 @@ def uname():
 
     if not x:
         print platform.system(),
+
+
+@addcmd
+def whoami():
+    p = _optparse()
+    p.description = "Print the user name associated with the current" + \
+                    "effective user ID.\nSame as id -un."
+    p.usage = '%prog [OPTION]...'
+    (opts, args) = p.parse_args()
+
+    if len(args) > 0:
+        print u"whoami: extra operand `%s'" % (args[0])
+        print u"Try whoami --help' for more information."
+        sys.exit(1)
+
+    print getpwuid(os.getuid())[0]
 
 
 @addcmd
