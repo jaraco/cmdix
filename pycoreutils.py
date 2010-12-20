@@ -313,6 +313,47 @@ def id():
 
 
 @addcmd
+def ln():
+    p = _optparse()
+    p.description = ""
+    p.usage = '\n%prog [OPTION]... [-T] TARGET LINK_NAME   (1st form)' + \
+              '\n%prog [OPTION]... TARGET                  (2nd form)'
+    p.add_option("-s", "--symbolic", action="store_true", dest="symbolic",
+            help="make symbolic links instead of hard links")
+    p.add_option("-v", "--verbose", action="store_true", dest="verbose",
+            help="print a message for each created directory")
+    (opts, args) = p.parse_args()
+
+    if len(args) == 0:
+        print u"ln: missing file operand"
+        print u"Try 'ln --help' for more information."
+        sys.exit(1)
+    elif len(args) == 1:
+        src = args[0]
+        dst = os.path.basename(src)
+    elif len(args) == 2:
+        src = args[0]
+        dst = args[1]
+
+    if opts.symbolic:
+        f = os.symlink
+        linktype = 'soft'
+    else:
+        f = os.link
+        linktype = 'hard'
+
+    for src in args:
+        if opts.verbose:
+            print u"`%s' -> `%s'" % (src, dst)
+        try:
+            f(src, dst)
+        except Exception, err:
+            print u"ln: creating %s link `%s' => `%s': %s" % (linktype, dst,
+                                                             src, err.strerror)
+            sys.exit(1)
+
+
+@addcmd
 def ls():
     # TODO: Everything :)
     p = _optparse()
