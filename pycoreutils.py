@@ -1013,8 +1013,9 @@ if __name__ == '__main__':
         sys.exit(1)
 
     # Check if the '_nowindows'-flag is set
-    if hasattr(cmd, '_nowindows'):
+    if hasattr(cmd, '_nowindows') and platform.system() == 'Windows':
         print u"Command %s does not work on Windows" % (sys.argv[0])
+        sys.exit(1)
 
     # Run the command
     cmd(sys.argv[1:])
