@@ -124,12 +124,12 @@ def cat(argstr):
 @addcmd
 def cd(argstr):
     p = _optparse()
-    p.description = "Change the current working directory to 'home' or PATH"
+    p.description = "Change the current working directory to HOME or PATH"
     p.usage = '%prog [PATH]'
     (opts, args) = p.parse_args(argstr.split())
 
     if len(args) == 0:
-        pth = os.environ['HOME']
+        pth = _getuserhome()
     elif len(args) == 1:
         pth = os.path.expanduser(args[0])
     else:
@@ -976,7 +976,24 @@ def _fopen(filename, mode='r', bufsize=-1):
         sys.exit(1)
     return f
 
+def _getuserhome():
+    '''
+    Returns the home-directory of the current user
+    '''
+    if os.environ.has_key('HOME'):
+        return os.environ['HOME'] # Unix
+    if os.environ.has_key('HOMEPATH'):
+        return os.environ['HOMEPATH'] # Windows
 
+def _getusername():
+    '''
+    Returns the username of the current user
+    '''
+    if os.environ.has_key('USER'):
+        return os.environ['USER'] # Unix
+    if os.environ.has_key('USERNAME'):
+        return os.environ['USERNAME'] # Windows
+        
 def _hasher(algorithm, argstr):
     def myhash(fd):
         h = hashlib.new(algorithm)

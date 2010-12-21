@@ -4,11 +4,11 @@
 import cmd
 import os
 import platform
-import pwd
 import readline
 import sys
 
 import pycoreutils
+
 
 __version__ = '0.0.1'
 __license__ = '''Copyright (c) 2010 Hans van Leeuwen
@@ -46,8 +46,9 @@ class PyCoreutilsShell(cmd.Cmd):
         '''
         Update the prompt
         '''
-        u = pwd.getpwuid(os.getuid())
-        self.prompt = '%s@%s:%s$ ' % (u.pw_name, platform.node(), os.getcwdu())
+        self.prompt = '%s@%s:%s$ ' % (pycoreutils._getuserhome(),
+                                      platform.node(),
+                                      os.getcwdu())
 
     def default(self, line):
         '''
