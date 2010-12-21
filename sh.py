@@ -4,7 +4,6 @@
 import cmd
 import os
 import platform
-import readline
 import sys
 
 import pycoreutils
