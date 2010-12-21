@@ -69,7 +69,7 @@ def arch(argstr):
     p = _optparse()
     p.description = "Print machine architecture."
     p.usage = '%prog [OPTION]'
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     if len(args) > 0:
         print u"dirname: extra operand `%s'" % (args[0])
@@ -85,7 +85,7 @@ def basename(argstr):
     p.description = "Print NAME with any leading directory components " + \
                     "removed. If specified, also remove a trailing SUFFIX."
     p.usage = '%prog NAME [SUFFIX]\nor:    %prog [OPTION]'
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
     
     if len(args) == 0:
         print u"basename: missing operand"
@@ -115,10 +115,33 @@ def cat(argstr):
     p = _optparse()
     p.description = "Concatenate FILE(s), or standard input, to standard output."
     p.usage = '%prog [OPTION]... [FILE]...'
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     for arg in args:
         print open(arg).read(),
+
+
+@addcmd
+def cd(argstr):
+    p = _optparse()
+    p.description = "Change the current working directory to 'home' or PATH"
+    p.usage = '%prog [PATH]'
+    (opts, args) = p.parse_args(argstr.split())
+
+    if len(args) == 0:
+        pth = os.environ['HOME']
+    elif len(args) == 1:
+        pth = os.path.expanduser(args[0])
+    else:
+        print u"cd: extra operand `%s'" % (pth)
+        print u"Try cd --help' for more information."
+        sys.exit(1)
+
+    try:
+        os.chdir(pth)
+    except Exception, err:
+        print u"ln: Error changing to directory `%s': %s" % (pth, err.strerror)
+        sys.exit(1)
 
 
 @addcmd
@@ -130,7 +153,7 @@ def chown(argstr):
                      "and/or GROUP. With --reference, change the owner and" + \
                      " group of each FILE to those of RFILE."
     p.usage = '%prog [OWNER] FILE'
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     if len(args) == 0:
         print u"chgrp: missing operand"
@@ -155,7 +178,7 @@ def chroot(argstr):
     p = _optparse()
     p.description = "Run COMMAND with root directory set to NEWROOT."
     p.usage = '%prog NEWROOT [COMMAND [ARG]...]\nor:    %prog [OPTION]'
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     if len(args) == 0:
         print u"chroot: missing operand"
@@ -182,7 +205,7 @@ def dirname(argstr):
                     "NAME contains no /'s, output `.' (meaning the current" + \
                     " directory)."
     p.usage = '%prog [NAME]\nor:    %prog [OPTION]'
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     if len(args) == 0:
         print u"dirname: missing operand"
@@ -212,7 +235,7 @@ def env(argstr):
             help="start with an empty environment")
     #p.add_option("-u", "--unset", action="store", dest="unset",
             #help="remove variable from the environment")
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     env = {}
     if not opts.ignoreenvironment:
@@ -260,7 +283,7 @@ def gzip(argstr):
             help="Use compression level 8")
     p.add_option("-9", "--best", action="store_const", dest="compresslevel", const=9,
             help="Use the best type of compression")
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     # Use stdin for input if no file is specified or file is '-'
     if len(args) == 0 or (len(args) == 1 and args[0] == '-'):
@@ -301,7 +324,7 @@ def id(argstr):
     p.add_option("-u", "--user", action="store_true", dest="user",
             help="print only the effective group ID")
 
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     if len(args) > 1:
         print u"id: extra operand `%s'" % (args[1])
@@ -352,7 +375,7 @@ def ln(argstr):
             help="make symbolic links instead of hard links")
     p.add_option("-v", "--verbose", action="store_true", dest="verbose",
             help="print a message for each created directory")
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     if len(args) == 0:
         print u"ln: missing file operand"
@@ -391,7 +414,7 @@ def ls(argstr):
                     "directory by default). Sort entries " + \
                     "alphabetically if none of -cftuvSUX nor --sort."
     p.usage = '%prog [OPTION]... [FILE]...'
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     if len(args) < 1:
         args = '.'
@@ -419,7 +442,7 @@ def mkdir(argstr):
             help="set file mode (as in chmod), not a=rwx - umask")
     p.add_option("-v", "--verbose", action="store_true", dest="verbose",
             help="print a message for each created directory")
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     def _mkdir(path, mode, verbose):
         try:
@@ -463,7 +486,7 @@ def mktemp(argstr):
     p.usage = '%prog [OPTION]... [TEMPLATE]'
     p.add_option("-d", "--directory", action="store_true", dest="directory",
             help="create a directory, not a file")
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     if len(args) == 0:
         if opts.directory:
@@ -485,7 +508,7 @@ def mv(argstr):
     p.usage = '%prog [OPTION]... [-T] SOURCE DEST\nor:    %prog [OPTION]... SOURCE... DIRECTORY\nor:    %prog [OPTION]... -t DIRECTORY SOURCE...'
     p.add_option("-v", "--verbose", action="store_true", dest="verbose",
             help="explain what is being done")
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     if len(args) == 0:
         print u"mv: missing file operand"
@@ -517,7 +540,7 @@ def pwd(argstr):
             help="use PWD from environment, even if it contains symlinks")
     p.add_option("-P", "--physical", action="store_true", dest="physical",
             help="avoid all symlinks")
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     if opts.logical:
         print os.getenv('PWD')
@@ -540,7 +563,7 @@ def rmdir(argstr):
             #"to `rmdir a/b/c a/b a'")
     p.add_option("-v", "--verbose", action="store_true", dest="verbose",
             help="output a diagnostic for every directory processed")
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     if len(args) == 0:
         print u"rmdir: missing operand"
@@ -573,7 +596,7 @@ def seq(argstr):
     p.usage = '%prog [OPTION]... LAST\nor:    %prog [OPTION]... FIRST LAST\nor:    %prog [OPTION]... FIRST INCREMENT LAST'
     p.add_option("-s", "--seperator", action="store", dest="seperator",
             help="use SEPERATOR to separate numbers (default: \\n)")
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     if len(args) == 0:
         print u"seq: missing operand"
@@ -635,7 +658,7 @@ def shred(argstr):
             help="overwrite ITERATIONS times instead of the default (3)")
     p.add_option("-v", "--verbose", action="store_true", dest="verbose",
             help="show progress")
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     if len(args) == 0:
         print u"mv: missing file operand"
@@ -669,7 +692,7 @@ def shuf(argstr):
             help="output at most HEADCOUNT lines")
     p.add_option("-o", "--output", action="store", dest="output",
             help="write result to OUTPUT instead of standard output")
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     lines = ''
     outfd = sys.stdout
@@ -731,7 +754,7 @@ def sleep(argstr):
                     "floating point number. Given two or more arguments, " + \
                     "pause for the amount of time"
     p.usage = '%prog NUMBER[SUFFIX]...\nor:    %prog OPTION'
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     if len(args) == 0:
         print u"sleep: missing operand"
@@ -771,7 +794,7 @@ def tail(argstr):
             help="output appended data as the file grows")
     p.add_option("-n", "--lines=N", action="store", dest="lines",
             help="output the last N lines, instead of the last 10")
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     interval = 1.0
     f = open('/var/log/messages')
@@ -805,7 +828,7 @@ def touch(argstr):
             help="change only the modification time")
     p.add_option("-r", "--reference", action="store", dest="reference",
             help="use this file's times instead of current time")
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     if len(args) == 0:
         print u"touch: missing operand"
@@ -857,7 +880,7 @@ def uname(argstr):
             help="print the hardware platform or \"unknown\"")
     p.add_option("-o", "--operating-system", action="store_true", dest="operatingsystem",
             help="print the operating system")
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     x = None
 
@@ -897,7 +920,7 @@ def whoami(argstr):
     p.description = "Print the user name associated with the current" + \
                     "effective user ID.\nSame as id -un."
     p.usage = '%prog [OPTION]...'
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr.split())
 
     if len(args) > 0:
         print u"whoami: extra operand `%s'" % (args[0])
@@ -913,7 +936,7 @@ def yes(argstr):
     p.description = "Repeatedly output a line with all specified " + \
                     "STRING(s), or `y'."
     p.usage = '%prog [STRING]...\nor:    %prog OPTION'
-    (opts, args) = p.parse_args(argstr)
+    (opts, args) = p.parse_args(argstr.split())
 
     x = ''
     for arg in args:
@@ -965,7 +988,7 @@ def _hasher(algorithm, argstr):
     p.description = "Print or check %s checksums.\n" % (algorithm.upper()) + \
                     "With no FILE, or when FILE is -, read standard input."
     p.usage = '%prog [OPTION]... FILE...'
-    (opts, args) = p.parse_args(argstr)
+    (opts, args) = p.parse_args(argstr.split())
 
     if len(args) == 0 or args == ['-']:
         print myhash(sys.stdin) + '  -'
@@ -1018,4 +1041,5 @@ if __name__ == '__main__':
         sys.exit(1)
 
     # Run the command
-    cmd(sys.argv[1:])
+    argstr = ' '.join(sys.argv[1:])
+    cmd(argstr)
