@@ -5,10 +5,21 @@
 # are implemented, and some behave different than one might expect!
 
 from __future__ import with_statement
-from gzip import GzipFile
-from grp import getgrnam, getgrgid
-from pwd import getpwuid
-import hashlib, logging, optparse, os, platform, random, shutil, subprocess, sys, tempfile, time
+
+import grp
+import gzip
+import hashlib
+import logging
+import optparse
+import os
+import platform
+import pwd as _pwd  # pwd is already used as a command
+import random
+import shutil
+import subprocess
+import sys
+import tempfile
+import time
 
 __version__ = '0.0.3'
 __license__ = '''
@@ -113,7 +124,7 @@ def chown():
     uid = args.pop(0)
     if not uid.isdigit():
         try:
-            user = getpwnam(uid)
+            user = _pwd.getpwnam(uid)
         except KeyError:
             print u"chown: invalid user: '%s'" % (uid)
         uid = user.pw_uid
@@ -241,7 +252,9 @@ def gzip():
 
     # Use stdout for output if no file is specified, or if -c is given
     if len(args) == 0 or opts.stdout:
-        outfile = GzipFile(fileobj=sys.stdout, mode='wb', compresslevel=opts.compresslevel)
+        outfile = gzip.GzipFile(fileobj=sys.stdout,
+                                mode='wb',
+                                compresslevel=opts.compresslevel)
 
     for arg in args:
         infile = _fopen(arg, 'r')
@@ -279,14 +292,14 @@ def id():
         sys.exit(1)
 
     if args == []:
-        u = getpwuid(os.getuid())
+        u = _pwd.getpwuid(os.getuid())
     else:
-        u = getpwnam(args[0])
+        u = _pwd.getpwnam(args[0])
 
     uid = u.pw_uid
     gid = u.pw_gid
     username = u.pw_name
-    g = getgrgid(gid)
+    g = grp.getgrgid(gid)
     groupname = g.gr_name
 
     if opts.group and opts.name:
@@ -873,7 +886,7 @@ def whoami():
         print u"Try whoami --help' for more information."
         sys.exit(1)
 
-    print getpwuid(os.getuid())[0]
+    print _pwd.getpwuid(os.getuid())[0]
 
 
 @addcmd
