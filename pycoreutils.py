@@ -6,20 +6,26 @@
 
 from __future__ import with_statement
 
-import grp
 import gzip
 import hashlib
 import logging
 import optparse
 import os
 import platform
-import pwd as _pwd  # pwd is already used as a command
 import random
 import shutil
 import subprocess
 import sys
 import tempfile
 import time
+
+try:
+    # 'grp' and 'pwd' are Unix only
+    import grp as _grp
+    import pwd as _pwd
+except ImportError:
+    pass
+
 
 __version__ = '0.0.3'
 __license__ = '''
@@ -45,9 +51,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 _cmds = []
 def addcmd(f):
-    """ Register a command with pycoreutils """
+    '''
+    Register a command with pycoreutils
+    '''
     _cmds.append(f)
+    return f
 
+def nowindows(f):
+    '''
+    Decorator that indicates that the command cannot be run on windows
+    '''
+    f._nowindows = True
+    return f
 
 @addcmd
 def arch(argstr):
@@ -107,6 +122,7 @@ def cat(argstr):
 
 
 @addcmd
+@nowindows
 def chown(argstr):
     # TODO: Support for groups and --reference
     p = _optparse()
@@ -269,6 +285,7 @@ def gzip(argstr):
 
 
 @addcmd
+@nowindows
 def id(argstr):
     # TODO: List all groups a user belongs to
     p = _optparse()
@@ -299,7 +316,7 @@ def id(argstr):
     uid = u.pw_uid
     gid = u.pw_gid
     username = u.pw_name
-    g = grp.getgrgid(gid)
+    g = _grp.getgrgid(gid)
     groupname = g.gr_name
 
     if opts.group and opts.name:
@@ -874,6 +891,7 @@ def uname(argstr):
 
 
 @addcmd
+@nowindows
 def whoami(argstr):
     p = _optparse()
     p.description = "Print the user name associated with the current" + \
@@ -993,5 +1011,10 @@ if __name__ == '__main__':
         print u"Command %s not supported." % (sys.argv[0])
         print u"Use pycoreutils.py --help for a list of valid commands."
         sys.exit(1)
+
+    # Check if the '_nowindows'-flag is set
+    if hasattr(cmd, '_nowindows'):
+        print u"Command %s does not work on Windows" % (sys.argv[0])
+
     # Run the command
     cmd(sys.argv[1:])
