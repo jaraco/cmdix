@@ -50,7 +50,7 @@ def addcmd(f):
 
 
 @addcmd
-def arch():
+def arch(argstr):
     p = _optparse()
     p.description = "Print machine architecture."
     p.usage = '%prog [OPTION]'
@@ -65,7 +65,7 @@ def arch():
 
 
 @addcmd
-def basename():
+def basename(argstr):
     p = _optparse()
     p.description = "Print NAME with any leading directory components " + \
                     "removed. If specified, also remove a trailing SUFFIX."
@@ -96,7 +96,7 @@ def basename():
 
 
 @addcmd
-def cat():
+def cat(argstr):
     p = _optparse()
     p.description = "Concatenate FILE(s), or standard input, to standard output."
     p.usage = '%prog [OPTION]... [FILE]...'
@@ -107,7 +107,7 @@ def cat():
 
 
 @addcmd
-def chown():
+def chown(argstr):
     # TODO: Support for groups and --reference
     p = _optparse()
     p.description = "Change the owner and/or group of each FILE to OWNER " + \
@@ -134,7 +134,7 @@ def chown():
 
 
 @addcmd
-def chroot():
+def chroot(argstr):
     # TODO: Testing!!!
     p = _optparse()
     p.description = "Run COMMAND with root directory set to NEWROOT."
@@ -160,7 +160,7 @@ def chroot():
 
 
 @addcmd
-def dirname():
+def dirname(argstr):
     p = _optparse()
     p.description = "Print NAME with its trailing /component removed; if " + \
                     "NAME contains no /'s, output `.' (meaning the current" + \
@@ -187,7 +187,7 @@ def dirname():
 
 
 @addcmd
-def env():
+def env(argstr):
     # TODO: --unset
     p = _optparse()
     p.description = "Set each NAME to VALUE in the environment and run COMMAND."
@@ -215,7 +215,7 @@ def env():
 
 
 @addcmd
-def gzip():
+def gzip(argstr):
     # TODO: Decompression
     p = _optparse()
     p.description = "Compress or uncompress FILEs (by default, compress FILES in-place)."
@@ -269,7 +269,7 @@ def gzip():
 
 
 @addcmd
-def id():
+def id(argstr):
     # TODO: List all groups a user belongs to
     p = _optparse()
     p.description = "Print user and group information for the specified " + \
@@ -326,7 +326,7 @@ def id():
 
 
 @addcmd
-def ln():
+def ln(argstr):
     p = _optparse()
     p.description = ""
     p.usage = '\n%prog [OPTION]... [-T] TARGET LINK_NAME   (1st form)' + \
@@ -367,7 +367,7 @@ def ln():
 
 
 @addcmd
-def ls():
+def ls(argstr):
     # TODO: Everything :)
     p = _optparse()
     p.description = "List information about the FILEs (the current " + \
@@ -387,12 +387,12 @@ def ls():
 
 
 @addcmd
-def md5sum():
-    _hasher('md5')
+def md5sum(argstr):
+    _hasher('md5', argstr)
 
 
 @addcmd
-def mkdir():
+def mkdir(argstr):
     p = _optparse()
     p.usage = '%prog [OPTION]... DIRECTORY...'
     p.description = "Create the DIRECTORY(ies), if they do not already exist."
@@ -438,7 +438,7 @@ def mkdir():
 
 
 @addcmd
-def mktemp():
+def mktemp(argstr):
     # TODO: Templates, most of the options
     p = _optparse()
     p.description = "Create a temporary file or directory, safely, and " + \
@@ -462,7 +462,7 @@ def mktemp():
 
 
 @addcmd
-def mv():
+def mv(argstr):
     p = _optparse()
     p.description = "Rename SOURCE to DEST, or move SOURCE(s) to DIRECTORY."
     p.usage = '%prog [OPTION]... [-T] SOURCE DEST\nor:    %prog [OPTION]... SOURCE... DIRECTORY\nor:    %prog [OPTION]... -t DIRECTORY SOURCE...'
@@ -492,7 +492,7 @@ def mv():
 
 
 @addcmd
-def pwd():
+def pwd(argstr):
     p = _optparse()
     p.description = "print name of current/working directory"
     p.usage = '%prog [OPTION]...'
@@ -511,7 +511,7 @@ def pwd():
 
 
 @addcmd
-def rmdir():
+def rmdir(argstr):
     # TODO: Implement -p
     p = _optparse()
     p.description = "Remove the DIRECTORY(ies), if they are empty."
@@ -550,7 +550,7 @@ def rmdir():
 
 
 @addcmd
-def seq():
+def seq(argstr):
     p = _optparse()
     p.description = "Print numbers from FIRST to LAST, in steps of INCREMENT."
     p.usage = '%prog [OPTION]... LAST\nor:    %prog [OPTION]... FIRST LAST\nor:    %prog [OPTION]... FIRST INCREMENT LAST'
@@ -582,32 +582,32 @@ def seq():
 
 
 @addcmd
-def sha1sum():
-    _hasher('sha1')
+def sha1sum(argstr):
+    _hasher('sha1', argstr)
 
 
 @addcmd
-def sha224sum():
-    _hasher('sha224')
+def sha224sum(argstr):
+    _hasher('sha224', argstr)
 
 
 @addcmd
-def sha256sum():
-    _hasher('sha256')
+def sha256sum(argstr):
+    _hasher('sha256', argstr)
 
 
 @addcmd
-def sha384sum():
-    _hasher('sha384')
+def sha384sum(argstr):
+    _hasher('sha384', argstr)
 
 
 @addcmd
-def sha512sum():
-    _hasher('sha512')
+def sha512sum(argstr):
+    _hasher('sha512', argstr)
 
 
 @addcmd
-def shred():
+def shred(argstr):
     # TODO: This program acts as 'shred -x', and doesn't round file sizes up to the next full block
     p = _optparse()
     p.description = "Overwrite the specified FILE(s) repeatedly, in order " + \
@@ -639,7 +639,7 @@ def shred():
 
 
 @addcmd
-def shuf():
+def shuf(argstr):
     p = _optparse()
     p.description = "Write a random permutation of the input lines to " + \
                     "standard output."
@@ -705,7 +705,7 @@ def shuf():
 
 
 @addcmd
-def sleep():
+def sleep(argstr):
     p = _optparse()
     p.description = "Pause for NUMBER seconds. SUFFIX may be `s' for seconds" + \
                     " (the default), `m' for minutes, `h' for hours or `d' " + \
@@ -742,7 +742,7 @@ def sleep():
     time.sleep(sum(a))
 
 
-def tail():
+def tail(argstr):
     # TODO: Everything!!!!!!!!
     p = _optparse()
     p.description = "Print the last 10 lines of each FILE to standard " + \
@@ -770,7 +770,7 @@ def tail():
 
 
 @addcmd
-def touch():
+def touch(argstr):
     # TODO: Implement --date, --time and -t
     p = _optparse()
     p.description = "Update the access and modification times of each FILE " + \
@@ -817,7 +817,7 @@ def touch():
 
 
 @addcmd
-def uname():
+def uname(argstr):
     p = _optparse()
     p.description = "Print certain system information.  With no OPTION, " + \
                     "same as -s."
@@ -874,7 +874,7 @@ def uname():
 
 
 @addcmd
-def whoami():
+def whoami(argstr):
     p = _optparse()
     p.description = "Print the user name associated with the current" + \
                     "effective user ID.\nSame as id -un."
@@ -890,12 +890,12 @@ def whoami():
 
 
 @addcmd
-def yes():
+def yes(argstr):
     p = _optparse()
     p.description = "Repeatedly output a line with all specified " + \
                     "STRING(s), or `y'."
     p.usage = '%prog [STRING]...\nor:    %prog OPTION'
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr)
 
     x = ''
     for arg in args:
@@ -936,7 +936,7 @@ def _fopen(filename, mode='r', bufsize=-1):
     return f
 
 
-def _hasher(algorithm):
+def _hasher(algorithm, argstr):
     def myhash(fd):
         h = hashlib.new(algorithm)
         with fd as f:
@@ -947,7 +947,7 @@ def _hasher(algorithm):
     p.description = "Print or check %s checksums.\n" % (algorithm.upper()) + \
                     "With no FILE, or when FILE is -, read standard input."
     p.usage = '%prog [OPTION]... FILE...'
-    (opts, args) = p.parse_args()
+    (opts, args) = p.parse_args(argstr)
 
     if len(args) == 0 or args == ['-']:
         print myhash(sys.stdin) + '  -'
@@ -994,4 +994,4 @@ if __name__ == '__main__':
         print u"Use pycoreutils.py --help for a list of valid commands."
         sys.exit(1)
     # Run the command
-    cmd()
+    cmd(sys.argv[1:])
