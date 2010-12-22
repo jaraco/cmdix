@@ -18,6 +18,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import urllib2
 
 try:
     # 'grp' and 'pwd' are Unix only
@@ -911,6 +912,47 @@ def uname(argstr):
 
     if not x:
         print platform.system(),
+
+
+@addcmd
+def wget(argstr):
+    # TODO: recursion, proxy, progress bar, you name it...
+    p = _optparse()
+    p.description = "Download of files from the Internet"
+    p.usage = '%prog [OPTION]... [URL]...'
+    p.add_option("-O", "--output-document", action="store", dest="outputdocument",
+            help="write documents to FILE.")
+    p.add_option("-u", "--user-agent", action="store", dest="useragent",
+            help="identify as AGENT instead of PyCoreutils/VERSION.")
+    (opts, args) = p.parse_args(argstr.split())
+
+    if opts.outputdocument:
+        fdout = _fopen(opts.outputdocument, 'w')
+    else:
+        fdout = sys.stdout
+
+    if opts.useragent:
+        useragent = opts.useragent
+    else:
+        useragent = 'PyCoreutils/%s' % __version__
+
+    opener = urllib2.build_opener()
+    opener.addheaders = [('User-agent', useragent)]
+
+    for url in args:
+        try:
+            fdin = opener.open(url)
+        except urllib2.HTTPError, e:
+            sys.stderr.write("Error opening %s: %s\n" % (url, e))
+            sys.exit(1)
+
+        length = int(fdin.headers['content-length'])
+        print "Getting %i bytes from %s" % (length, url)
+
+        for data in fdin.read(4096):
+            fdout.write(data)
+
+        print 'Done'
 
 
 @addcmd
