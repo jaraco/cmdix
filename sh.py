@@ -53,4 +53,4 @@ class PyCoreutilsShell(cmd.Cmd):
 
 
 if __name__ == '__main__':
-    PyCoreutilsShell().cmdloop('PyCoreutils Shell version %s' % pycoreutils.__version__)
+    PyCoreutilsShell().cmdloop(pycoreutils._banner())

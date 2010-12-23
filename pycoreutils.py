@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# WARNING: This is incomplete software, Not all the flags in the help-section
-# are implemented, and some behave different than one might expect!
+# Copyright (c) 2010 Hans van Leeuwen.
+# Release under the MIT license.
+# See LICENSE for details.
 
 from __future__ import with_statement
 
@@ -1056,6 +1057,17 @@ def yes(argstr):
 ############################## PRIVATE FUNCTIONS ##############################
 
 
+def _banner():
+    subtext = '-= PyCoreutils Shell version %s =-' % __version__
+    return '''\
+ ____  _  _  ___  _____  ____  ____  __  __  ____  ____  __    ___
+(  _ \( \/ )/ __)(  _  )(  _ \( ___)(  )(  )(_  _)(_  _)(  )  / __)
+ )___/ \  /( (__  )(_)(  )   / )__)  )(__)(   )(   _)(_  )(__ \__ \\
+(__)   (__) \___)(_____)(_)\_)(____)(______) (__) (____)(____)(___/
+
+''' + subtext.center(68) + "\n"
+
+
 def _checkcmd(command):
     ''' Check a command is available '''
     a = [cmd for cmd in _cmds if cmd.func_name == command]
@@ -1092,7 +1104,7 @@ def _getusername():
         return os.environ['USER'] # Unix
     if os.environ.has_key('USERNAME'):
         return os.environ['USERNAME'] # Windows
-        
+
 def _hasher(algorithm, argstr):
     def myhash(fd):
         h = hashlib.new(algorithm)
