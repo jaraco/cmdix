@@ -9,6 +9,7 @@ from __future__ import with_statement
 import gzip
 import hashlib
 import logging
+import logging.handlers
 import optparse
 import os
 import platform
@@ -405,6 +406,62 @@ def ln(argstr):
             print u"ln: creating %s link `%s' => `%s': %s" % (linktype, dst,
                                                              src, err.strerror)
             sys.exit(1)
+
+
+@addcmd
+def logger(argstr):
+    # TODO: -i, -f, t
+    p = _optparse()
+    p.description = "A shell command interface to the syslog system log module"
+    p.usage = '%prog [OPTION] [ MESSAGE ... ]'
+    p.add_option("--host", action="store", dest="host",
+            help="Address of the syslog daemon. The default is ``localhost'.'")
+    p.add_option("-p", action="store", dest="priority",
+            help="Enter the message with the specified priority. The " + \
+                 "priority may as a ``facility.level'' pair. For example, " + \
+                 "``-p local3.info'' logs the message(s) as informational " + \
+                 "level in the local3 facility. " + \
+                 "The default is ``user.notice.''")
+    p.add_option("--port", action="store", dest="port",
+            help="Port of the syslog daemon. The default is 514'.'")
+    p.add_option("-s", action="store_true", dest="stderr",
+            help="Log the message to standard error, as well as the " +\
+                 "system log.")
+    (opts, args) = p.parse_args(argstr.split())
+
+    if opts.priority:
+        facility, level = opts.priority.split('.', 2)
+    else:
+        facility = 'user'
+        level = 'notice'
+
+    if opts.host or opts.port:
+        host = opts.host or 'localhost'
+        port = opts.port or 514
+        address = (host, port)
+    else:
+        address = '/dev/log'
+
+
+    handler = logging.handlers.SysLogHandler(address, facility)
+    if not handler.facility_names.has_key(facility):
+        sys.stderr.write("Unknown facility %s.\n" % facility)
+        sys.stderr.write("Valid facilities are:\n")
+        facilitylist = handler.facility_names.keys()
+        facilitylist.sort()
+        for f in facilitylist:
+            sys.stderr.write(" %s\n" % f)
+        sys.exit(1)
+
+    msg = ' '.join(args)
+    levelint = 90 - 10 * handler.priority_names.get(level, 0)
+
+    logger = logging.getLogger('Logger')
+    logger.addHandler(handler)
+    logger.log(levelint, msg)
+
+    if opts.stderr:
+        sys.stderr.write("%s\n" % msg)
 
 
 @addcmd
