@@ -16,6 +16,7 @@ import os
 import platform
 import random
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -53,6 +54,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 '''
 
 _cmds = []
+
+
 def addcmd(f):
     '''
     Register a command with pycoreutils
@@ -60,12 +63,14 @@ def addcmd(f):
     _cmds.append(f)
     return f
 
+
 def nowindows(f):
     '''
     Decorator that indicates that the command cannot be run on windows
     '''
     f._nowindows = True
     return f
+
 
 @addcmd
 def arch(argstr):
@@ -473,6 +478,8 @@ def ls(argstr):
                     "directory by default). Sort entries " + \
                     "alphabetically if none of -cftuvSUX nor --sort."
     p.usage = '%prog [OPTION]... [FILE]...'
+    p.add_option("-l", action="store_true", dest="longlist",
+                 help="use a long listing format")
     (opts, args) = p.parse_args(argstr.split())
 
     if len(args) < 1:
@@ -482,7 +489,18 @@ def ls(argstr):
         dirlist = os.listdir(arg)
         dirlist.sort()
         for f in dirlist:
-            print(f)
+            if opts.longlist:
+                stat = os.stat(f)
+                uid = stat.st_uid
+                gid = stat.st_gid
+                size = stat.st_size
+                mtime = time.ctime(stat.st_mtime)
+                mode = _mode2string(stat.st_mode)
+                nlink = stat.st_nlink
+                print "{0} {1} {2:<5} {3:<5} {4:>9} {5:<24} {6}".format(
+                            mode, nlink, uid, gid, size, mtime, f)
+            else:
+                print(f)
 
 
 @addcmd
@@ -557,7 +575,6 @@ def mktemp(argstr):
     else:
         print u"mktemp: too many templates"
         print u"Try `mktemp --help' for more information."
-        
 
 
 @addcmd
@@ -1087,6 +1104,7 @@ def _fopen(filename, mode='r', bufsize=-1):
         sys.exit(1)
     return f
 
+
 def _getuserhome():
     '''
     Returns the home-directory of the current user
@@ -1096,6 +1114,7 @@ def _getuserhome():
     if os.environ.has_key('HOMEPATH'):
         return os.environ['HOMEPATH'] # Windows
 
+
 def _getusername():
     '''
     Returns the username of the current user
@@ -1104,6 +1123,7 @@ def _getusername():
         return os.environ['USER'] # Unix
     if os.environ.has_key('USERNAME'):
         return os.environ['USERNAME'] # Windows
+
 
 def _hasher(algorithm, argstr):
     def myhash(fd):
@@ -1133,6 +1153,83 @@ def _help():
     for cmd in _cmds:
         print '  ' + cmd.func_name
     sys.exit(1)
+
+
+def _mode2string(mode):
+    '''
+    Convert mode-integer to string
+    Example: 33261 becomes "-rwxr-xr-x"
+    '''
+    if bool(mode & stat.S_IFREG):
+        s = '-'
+    elif bool(mode & stat.S_IFDIR):
+        s = 'd'
+    elif bool(mode & stat.S_IFCHR):
+        s = 'c'
+    elif bool(mode & stat.S_IFBLK):
+        s = 'b'
+    elif bool(mode & stat.S_IFLNK):
+        s = 'l'
+    elif bool(mode & stat.S_IFIFO):
+        s = 'p'
+    else:
+        s = '-'
+
+    # User Read
+    if bool(mode & stat.S_IRUSR):
+        s += 'r'
+    else:
+        s += '-'
+
+    # User Write
+    if bool(mode & stat.S_IWUSR):
+        s += 'w'
+    else:
+        s += '-'
+
+    # User Execute
+    if bool(mode & stat.S_IXUSR):
+        s += 'x'
+    else:
+        s += '-'
+
+    # Group Read
+    if bool(mode & stat.S_IRGRP):
+        s += 'r'
+    else:
+        s += '-'
+
+    # Group Write
+    if bool(mode & stat.S_IWGRP):
+        s += 'w'
+    else:
+        s += '-'
+
+    # Group Execute
+    if bool(mode & stat.S_IXGRP):
+        s += 'x'
+    else:
+        s += '-'
+
+    # Other Read
+    if bool(mode & stat.S_IROTH):
+        s += 'r'
+    else:
+        s += '-'
+
+    # Other Write
+    if bool(mode & stat.S_IWOTH):
+        s += 'w'
+    else:
+        s += '-'
+
+    # Other Execute
+    if bool(mode & stat.S_IXOTH):
+        s += 'x'
+    else:
+        s += '-'
+
+    return s
 
 
 def _optparse():
