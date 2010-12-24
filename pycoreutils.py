@@ -5,7 +5,11 @@
 # Release under the MIT license.
 # See LICENSE for details.
 
-from __future__ import with_statement
+# Check if Python version >= 2.6
+import sys
+if sys.version_info[0] != 2 or sys.version_info[1] < 6:
+    raise Exception("Pycoreutils requires Python version 2.6 or greater")
+
 
 import gzip
 import hashlib
@@ -18,7 +22,6 @@ import random
 import shutil
 import stat
 import subprocess
-import sys
 import tempfile
 import time
 import urllib2

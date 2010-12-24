@@ -1,4 +1,3 @@
-
 ***********
 PyCoreutils
 ***********
@@ -12,6 +11,12 @@ Goals
 1. Have fun!
 2. Have a Linux-like shell environment in Windows.
 3. One day create a pure-Python Linux distribution.
+
+
+Requirements
+------------
+
+PyCoreutils requires Python 2.6 or greater.
 
 
 Development
