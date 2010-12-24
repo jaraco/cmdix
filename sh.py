@@ -38,6 +38,12 @@ class PyCoreutilsShell(cmd.Cmd):
         '''
         self.stdout.write('%s: command not found\n' % line.split()[0])
 
+    def do_help(self, arg):
+        self.stdout.write("\nUse 'COMMAND --help' for help\n")
+        self.stdout.write("Available commands:\n")
+        for cmd in pycoreutils._listcommands():
+            self.stdout.write("  " + cmd + "\n")
+
     def emptyline(self):
         '''
         Called when an empty line is entered in response to the prompt.

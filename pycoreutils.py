@@ -1145,14 +1145,14 @@ def _hasher(algorithm, argstr):
             print myhash(_fopen(arg, 'r')) + '  ' + arg
 
 
-def _help():
-    print u"Pycoreutils should be run with a command as first parameter."
-    print u"Use 'pycoreutils.py <command> --help' for detailed help"
-    print
-    print u"Valid commands:"
+def _listcommands():
+    '''
+    Returns a list of all public commands
+    '''
+    l = []
     for cmd in _cmds:
-        print '  ' + cmd.func_name
-    sys.exit(1)
+        l.append(cmd.func_name)
+    return l
 
 
 def _mode2string(mode):
@@ -1251,7 +1251,14 @@ if __name__ == '__main__':
     if requestcmd == 'pycoreutils.py':
         # Print help if pycoreutils.py is directly run without any arguments
         if len(sys.argv) == 1 or sys.argv[1] == "--help":
-            _help()
+            print _banner()
+            print "Usage: pycoreutils.py COMMAND [ OPTIONS ... ]\n"
+            print "Available commands:"
+            for cmd in _listcommands():
+                print '  ' + cmd
+            print "\nUse 'pycoreutils.py COMMAND --help' for help"
+            sys.exit(1)
+
         sys.argv.pop(0)
         requestcmd = sys.argv[0]
     cmd = _checkcmd(requestcmd)
