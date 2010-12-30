@@ -10,7 +10,7 @@ import sys
 if sys.version_info[0] != 2 or sys.version_info[1] < 6:
     raise Exception("Pycoreutils requires Python version 2.6 or greater")
 
-
+import fileinput
 import gzip
 import hashlib
 import logging
@@ -307,7 +307,7 @@ def gzip(argstr):
                                 compresslevel=opts.compresslevel)
 
     for arg in args:
-        infile = _fopen(arg, 'r')
+        infile = open(arg, 'r')
         gzippath = arg + '.gz'
         if os.path.exists(gzippath):
             q = raw_input("gzip: %s already exists; do you wish to overwrite (y or n)? " % (gzippath))
@@ -782,7 +782,7 @@ def shred(argstr):
     for arg in args:
         for i in xrange(opts.iterations):
             size = os.stat(arg).st_size
-            fd = _fopen(arg, mode='w')
+            fd = open(arg, mode='w')
             logging.debug('Size:', size)
             fd.seek(0)
             for i in xrange(size):
@@ -813,7 +813,7 @@ def shuf(argstr):
 
     # Write to file if -o is specified
     if opts.output:
-        outfd = _fopen(opts.output, 'w')
+        outfd = open(opts.output, 'w')
 
     if opts.echo:
         if opts.inputrange:
@@ -847,7 +847,7 @@ def shuf(argstr):
         if len(args) == 0:
             fd = sys.stdin
         else:
-            fd = _fopen(args[0])
+            fd = open(args[0])
 
         lines = fd.readlines()
         random.shuffle(lines)
@@ -1040,7 +1040,7 @@ def wget(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if opts.outputdocument:
-        fdout = _fopen(opts.outputdocument, 'w')
+        fdout = open(opts.outputdocument, 'w')
     else:
         fdout = sys.stdout
 
@@ -1134,15 +1134,6 @@ def _checkcmd(command):
     return a[0]
 
 
-def _fopen(filename, mode='r', bufsize=-1):
-    try:
-        f = open(filename, mode, bufsize)
-    except IOError:
-        print "Error opening %s" % (filename)
-        sys.exit(1)
-    return f
-
-
 def _getuserhome():
     '''
     Returns the home-directory of the current user
@@ -1180,7 +1171,7 @@ def _hasher(algorithm, argstr):
         print myhash(sys.stdin) + '  -'
     else:
         for arg in args:
-            print myhash(_fopen(arg, 'r')) + '  ' + arg
+            print myhash(open(arg, 'r')) + '  ' + arg
 
 
 def _listcommands():
@@ -1314,4 +1305,8 @@ if __name__ == '__main__':
 
     # Run the command
     argstr = ' '.join(sys.argv[1:])
-    cmd(argstr)
+    try:
+        cmd(argstr)
+    except IOError, err:
+        sys.stderr.write(u"{0}: {1}: {2}\n".format(sys.argv[0], err.filename, err.strerror))
+        sys.exit(err.errno)
