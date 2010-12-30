@@ -466,12 +466,12 @@ def logger(argstr):
 
     handler = logging.handlers.SysLogHandler(address, facility)
     if not handler.facility_names.has_key(facility):
-        sys.stderr.write("Unknown facility %s.\n" % facility)
-        sys.stderr.write("Valid facilities are:\n")
+        print("Unknown facility %s." % facility, file=sys.stderr)
+        print("Valid facilities are:", file=sys.stderr)
         facilitylist = handler.facility_names.keys()
         facilitylist.sort()
         for f in facilitylist:
-            sys.stderr.write(" %s\n" % f)
+            print(" %s\n" % f, file=sys.stderr)
         sys.exit(1)
 
     msg = ' '.join(args)
@@ -482,7 +482,7 @@ def logger(argstr):
     logger.log(levelint, msg)
 
     if opts.stderr:
-        sys.stderr.write("%s\n" % msg)
+        print("%s\n" % msg, file=sys.stderr)
 
 
 @addcmd
@@ -1070,7 +1070,7 @@ def wget(argstr):
         try:
             fdin = opener.open(url)
         except urllib2.HTTPError, e:
-            sys.stderr.write("Error opening %s: %s\n" % (url, e))
+            print("Error opening %s: %s\n" % (url, e), file=sys.stderr)
             sys.exit(1)
 
         length = int(fdin.headers['content-length'])
@@ -1197,7 +1197,7 @@ def zip(argstr):
                     addToZip(zf,
                              os.path.join(path, nm), os.path.join(zippath, nm))
             else:
-                sys.stderr.out("Can't store {0}".format(path))
+                print("Can't store {0}".format(path), file=sys.stderr)
 
         zf = zipfile.ZipFile(args[0], 'w', allowZip64=True)
         for src in args[1:]:
@@ -1416,8 +1416,10 @@ if __name__ == '__main__':
     try:
         cmd(argstr)
     except IOError, err:
-        sys.stderr.write(u"{0}: {1}: {2}\n".format(sys.argv[0], err.filename, err.strerror))
+        print(u"{0}: {1}: {2}".format(
+              sys.argv[0], err.filename, err.strerror), file=sys.stderr)
         sys.exit(err.errno)
     except OSError, err:
-        sys.stderr.write(u"{0}: {1}: {2}\n".format(sys.argv[0], err.filename, err.strerror))
+        print(u"{0}: {1}: {2}".format(
+              sys.argv[0], err.filename, err.strerror), file=sys.stderr)
         sys.exit(err.errno)
