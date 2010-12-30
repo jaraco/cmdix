@@ -27,6 +27,7 @@ import shutil
 import stat
 import subprocess
 import tempfile
+import textwrap
 import time
 import urllib2
 import zipfile
@@ -1386,8 +1387,11 @@ if __name__ == '__main__':
             print(_banner())
             print("Usage: pycoreutils.py COMMAND [ OPTIONS ... ]\n")
             print("Available commands:")
-            for cmd in _listcommands():
-                print('  ' + cmd)
+
+            cmdstring = ", ".join(_listcommands())
+            for line in textwrap.wrap(cmdstring, width=80):
+                print(line)
+
             print("\nUse 'pycoreutils.py COMMAND --help' for help")
             sys.exit(1)
 
