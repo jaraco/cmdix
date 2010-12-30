@@ -590,9 +590,13 @@ def mkdir(argstr):
 
             # Create all directories in pathlist
             for path in pathlist:
-                os.mkdir(path, int(opts.mode), opts.verbose)
+                os.mkdir(path, int(opts.mode))
+                if opts.verbose:
+                    print(u"mkdir: created directory '%s'" % (path))
         else:
-            os.mkdir(arg, int(opts.mode), opts.verbose)
+            os.mkdir(arg, int(opts.mode))
+            if opts.verbose:
+                print(u"mkdir: created directory '%s'" % (arg))
 
 
 @addcmd
@@ -1405,5 +1409,8 @@ if __name__ == '__main__':
     try:
         cmd(argstr)
     except IOError, err:
+        sys.stderr.write(u"{0}: {1}: {2}\n".format(sys.argv[0], err.filename, err.strerror))
+        sys.exit(err.errno)
+    except OSError, err:
         sys.stderr.write(u"{0}: {1}: {2}\n".format(sys.argv[0], err.filename, err.strerror))
         sys.exit(err.errno)
