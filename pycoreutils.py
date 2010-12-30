@@ -505,7 +505,7 @@ def ls(argstr):
                 uid = st.st_uid
                 gid = st.st_gid
                 size = st.st_size
-                mtime = time.ctime(st.st_mtime)
+                mtime = time.localtime(st.st_mtime)
                 if stat.S_ISLNK(st.st_mode):
                     f += " -> {0}".format(os.readlink(path))
                 l.append((mode, nlink, uid, gid, size, mtime, f))
@@ -521,17 +521,24 @@ def ls(argstr):
                     nlinklen = _nlinklen
 
         for mode, nlink, uid, gid, size, mtime, f in l:
-            print "{0} {1:>{nlink}} {2:<5} {3:<5} {4:>{size}} {5} {6}".format(
+            modtime = "{0}-{1}-{2} {3:0>2}:{4:0>2}".format(
+                mtime.tm_year,
+                mtime.tm_mon,
+                mtime.tm_yday,
+                mtime.tm_hour,
+                mtime.tm_min
+                )
+            print "{0} {1:>{nlink}} {2:<5} {3:<5} {4:>{size}} {5} {6} ".format(
                 mode,
                 nlink,
                 uid,
                 gid,
                 size,
-                mtime,
+                modtime,
                 f,
                 size=sizelen,
                 nlink=nlinklen,
-            )
+                )
 
 
 @addcmd
