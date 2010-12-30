@@ -1218,15 +1218,27 @@ def zip(argstr):
 ############################## PRIVATE FUNCTIONS ##############################
 
 
-def _banner():
-    subtext = '-= PyCoreutils Shell version %s =-' % __version__
-    return '''\
- ____  _  _  ___  _____  ____  ____  __  __  ____  ____  __    ___
-(  _ \( \/ )/ __)(  _  )(  _ \( ___)(  )(  )(_  _)(_  _)(  )  / __)
- )___/ \  /( (__  )(_)(  )   / )__)  )(__)(   )(   _)(_  )(__ \__ \\
-(__)   (__) \___)(_____)(_)\_)(____)(______) (__) (____)(____)(___/
+def _banner(width=None):
+    '''
+    Returns pycoreutils banner.
+    The banner is centered if width is defined.
+    '''
+    subtext = u"-= PyCoreutils Shell version {0} =-".format(__version__)
+    banner = [
+       u" ____  _  _  ___  _____  ____  ____  __  __  ____  ____  __    ___ ",
+       u"(  _ \( \/ )/ __)(  _  )(  _ \( ___)(  )(  )(_  _)(_  _)(  )  / __)",
+       u" )___/ \  /( (__  )(_)(  )   / )__)  )(__)(   )(   _)(_  )(__ \__ \\",
+       u"(__)   (__) \___)(_____)(_)\_)(____)(______) (__) (____)(____)(___/",
+    ]
 
-''' + subtext.center(68) + "\n"
+    if width:
+        ret = u""
+        for line in banner:
+            ret += line.center(width) + "\n"
+        ret += "\n" + subtext.center(width) + "\n"
+        return ret
+    else:
+        return "\n".join(banner) + "\n\n" + subtext.center(68) + "\n"
 
 
 def _checkcmd(command):
@@ -1383,6 +1395,8 @@ def _showlicense(option, opt, value, parser):
 
 
 if __name__ == '__main__':
+    width = 78 # Wrap at width
+
     # Get the requested command
     requestcmd = os.path.basename(sys.argv[0])
     if requestcmd == 'pycoreutils.py':
@@ -1391,12 +1405,12 @@ if __name__ == '__main__':
         or sys.argv[1] == "-h" \
         or sys.argv[1] == "-?" \
         or sys.argv[1] == "--help":
-            print(_banner())
+            print(_banner(width))
             print("Usage: pycoreutils.py COMMAND [ OPTIONS ... ]\n")
             print("Available commands:")
 
             cmdstring = ", ".join(_listcommands())
-            for line in textwrap.wrap(cmdstring, width=80):
+            for line in textwrap.wrap(cmdstring, width):
                 print(line)
 
             print("\nUse 'pycoreutils.py COMMAND --help' for help")
