@@ -475,7 +475,7 @@ def logger(argstr):
 
 @addcmd
 def ls(argstr):
-    # TODO: Everything :)
+    # TODO: Show user and group names in ls -l
     p = _optparse()
     p.description = "List information about the FILEs (the current " + \
                     "directory by default). Sort entries " + \
@@ -491,9 +491,14 @@ def ls(argstr):
     for arg in args:
         dirlist = os.listdir(arg)
         dirlist.sort()
+        l = []
+        sizelen = 0     # Length of the largest filesize integer
+        nlinklen = 0    # Length of the largest nlink integer
         for f in dirlist:
             path = os.path.join(arg, f)
-            if opts.longlist:
+            if not opts.longlist:
+                print(f)
+            else:
                 st = os.lstat(path)
                 mode = _mode2string(st.st_mode)
                 nlink = st.st_nlink
@@ -503,10 +508,30 @@ def ls(argstr):
                 mtime = time.ctime(st.st_mtime)
                 if stat.S_ISLNK(st.st_mode):
                     f += " -> {0}".format(os.readlink(path))
-                print "{0} {1} {2:<5} {3:<5} {4:>9} {5:<24} {6}".format(
-                            mode, nlink, uid, gid, size, mtime, f)
-            else:
-                print(path)
+                l.append((mode, nlink, uid, gid, size, mtime, f))
+
+                # Update sizelen
+                _sizelen = len(str(size))
+                if _sizelen > sizelen:
+                    sizelen = _sizelen
+
+                # Update nlinklen
+                _nlinklen = len(str(nlink))
+                if _nlinklen > nlinklen:
+                    nlinklen = _nlinklen
+
+        for mode, nlink, uid, gid, size, mtime, f in l:
+            print "{0} {1:>{nlink}} {2:<5} {3:<5} {4:>{size}} {5} {6}".format(
+                mode,
+                nlink,
+                uid,
+                gid,
+                size,
+                mtime,
+                f,
+                size=sizelen,
+                nlink=nlinklen,
+            )
 
 
 @addcmd
