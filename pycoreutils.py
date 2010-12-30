@@ -673,6 +673,60 @@ def pwd(argstr):
         print(os.getcwdu())
 
 
+
+@addcmd
+def rm(argstr):
+    p = _optparse()
+    p.description = "print name of current/working directory"
+    p.usage = '%prog [OPTION]... FILE...'
+    p.add_option("-f", "--force", action="store_true", dest="force",
+            help="ignore nonexistent files, never prompt")
+    p.add_option("-r", "-R", "--recursive", action="store_true",
+            dest="recursive",
+            help="remove directories and their contents recursively")
+    p.add_option("-v", "--verbose", action="store_true", dest="verbose",
+            help="explain what is being done")
+    (opts, args) = p.parse_args(argstr.split())
+    prog = p.get_prog_name()
+
+    if len(args) == 0:
+        print(u"{0}: missing operand".format(prog))
+        print(u"Try {0} --help' for more information.".format(prog))
+        sys.exit(1)
+
+    def _raise(err):
+        if opts.force:
+            if opts.verbose:
+                print(u"skipped `{0}'".format(arg))
+        else:
+            raise err
+
+    for arg in args:
+        if opts.recursive and os.path.isdir(arg):
+            # Remove directory recursively
+            for root, dirs, files in os.walk(arg, topdown=False,
+                                             onerror=_raise):
+                for name in files:
+                    path = os.path.join(root, name)
+                    os.remove(path)
+                    if opts.verbose:
+                        print(u"Removed file `{0}'".format(path))
+                for name in dirs:
+                    path = os.path.join(root, name)
+                    os.rmdir(path)
+                    if opts.verbose:
+                        print(u"Removed directory `{0}'".format(path))
+            os.rmdir(arg)
+        else:
+            # Remove single file
+            try:
+                os.remove(arg)
+                if opts.verbose:
+                    print(u"Removed `{0}'".format(arg))
+            except OSError, err:
+                _raise(err)
+
+
 @addcmd
 def rmdir(argstr):
     # TODO: Implement -p
