@@ -492,18 +492,21 @@ def ls(argstr):
         dirlist = os.listdir(arg)
         dirlist.sort()
         for f in dirlist:
+            path = os.path.join(arg, f)
             if opts.longlist:
-                stat = os.stat(f)
-                uid = stat.st_uid
-                gid = stat.st_gid
-                size = stat.st_size
-                mtime = time.ctime(stat.st_mtime)
-                mode = _mode2string(stat.st_mode)
-                nlink = stat.st_nlink
+                st = os.lstat(path)
+                mode = _mode2string(st.st_mode)
+                nlink = st.st_nlink
+                uid = st.st_uid
+                gid = st.st_gid
+                size = st.st_size
+                mtime = time.ctime(st.st_mtime)
+                if stat.S_ISLNK(st.st_mode):
+                    f += " -> {0}".format(os.readlink(path))
                 print "{0} {1} {2:<5} {3:<5} {4:>9} {5:<24} {6}".format(
                             mode, nlink, uid, gid, size, mtime, f)
             else:
-                print(f)
+                print(path)
 
 
 @addcmd
@@ -1163,18 +1166,20 @@ def _mode2string(mode):
     Convert mode-integer to string
     Example: 33261 becomes "-rwxr-xr-x"
     '''
-    if bool(mode & stat.S_IFREG):
+    if stat.S_ISREG(mode):
         s = '-'
-    elif bool(mode & stat.S_IFDIR):
+    elif stat.S_ISDIR(mode):
         s = 'd'
-    elif bool(mode & stat.S_IFCHR):
+    elif stat.S_ISCHR(mode):
         s = 'c'
-    elif bool(mode & stat.S_IFBLK):
+    elif stat.S_ISBLK(mode):
         s = 'b'
-    elif bool(mode & stat.S_IFLNK):
+    elif stat.S_ISLNK(mode):
         s = 'l'
-    elif bool(mode & stat.S_IFIFO):
+    elif stat.S_ISFIFO(mode):
         s = 'p'
+    elif stat.S_ISSOCK(mode):
+        s = 's'
     else:
         s = '-'
 
