@@ -125,12 +125,15 @@ def basename(argstr):
 @addcmd
 def cat(argstr):
     p = _optparse()
-    p.description = "Concatenate FILE(s), or standard input, to standard output."
+    p.description = "Concatenate FILE(s), or standard input, " + \
+                    "to standard output."
     p.usage = '%prog [OPTION]... [FILE]...'
+    p.epilog = "If the FILE ends with '.bz2' or '.gz', the file will be " + \
+               "decompressed automatically."
     (opts, args) = p.parse_args(argstr.split())
 
-    for arg in args:
-        print open(arg).read(),
+    for line in fileinput.input(args, openhook=fileinput.hook_compressed):
+        print line,
 
 
 @addcmd
