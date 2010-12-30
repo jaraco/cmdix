@@ -1383,7 +1383,10 @@ if __name__ == '__main__':
     requestcmd = os.path.basename(sys.argv[0])
     if requestcmd == 'pycoreutils.py':
         # Print help if pycoreutils.py is directly run without any arguments
-        if len(sys.argv) == 1 or sys.argv[1] == "--help":
+        if len(sys.argv) == 1 \
+        or sys.argv[1] == "-h" \
+        or sys.argv[1] == "-?" \
+        or sys.argv[1] == "--help":
             print(_banner())
             print("Usage: pycoreutils.py COMMAND [ OPTIONS ... ]\n")
             print("Available commands:")
