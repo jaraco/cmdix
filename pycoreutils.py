@@ -5,9 +5,7 @@
 # Release under the MIT license.
 # See LICENSE for details.
 
-
-# Use modern print-function
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 # Check if Python version >= 2.6
 import sys
@@ -97,8 +95,8 @@ def arch(argstr):
     prog = p.get_prog_name()
 
     if len(args) > 0:
-        print(u"{0}: extra operand `{1}'".format(prog, args[0]))
-        print(u"Try {0} --help' for more information.".format(prog))
+        print("{0}: extra operand `{1}'".format(prog, args[0]))
+        print("Try {0} --help' for more information.".format(prog))
         sys.exit(1)
 
     print(platform.machine(), end='')
@@ -114,13 +112,13 @@ def basename(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print(u"{0}: missing operand".format(prog))
-        print(u"Try {0} --help' for more information.".format(prog))
+        print("{0}: missing operand".format(prog))
+        print("Try {0} --help' for more information.".format(prog))
         sys.exit(1)
 
     if len(args) > 2:
-        print(u"{0}: extra operand `{1}'".format(prog, args[0]))
-        print(u"Try {0} --help' for more information.".format(prog))
+        print("{0}: extra operand `{1}'".format(prog, args[0]))
+        print("Try {0} --help' for more information.".format(prog))
         sys.exit(1)
 
     b = args[0]
@@ -162,8 +160,8 @@ def cd(argstr):
     elif len(args) == 1:
         pth = os.path.expanduser(args[0])
     else:
-        print(u"{0}: extra operand `{1}'".format(prog, args[0]))
-        print(u"Try {0} --help' for more information.".format(prog))
+        print("{0}: extra operand `{1}'".format(prog, args[0]))
+        print("Try {0} --help' for more information.".format(prog))
         sys.exit(1)
 
     os.chdir(pth)
@@ -182,8 +180,8 @@ def chown(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print(u"{0}: missing operand".format(prog))
-        print(u"Try {0} --help' for more information.".format(prog))
+        print("{0}: missing operand".format(prog))
+        print("Try {0} --help' for more information.".format(prog))
         sys.exit(1)
 
     uid = args.pop(0)
@@ -191,7 +189,7 @@ def chown(argstr):
         try:
             user = _pwd.getpwnam(uid)
         except KeyError:
-            print(u"chown: invalid user: '{0}'".format(uid))
+            print("chown: invalid user: '{0}'".format(uid))
         uid = user.pw_uid
 
     for arg in args:
@@ -208,8 +206,8 @@ def chroot(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print(u"{0}: missing operand".format(prog))
-        print(u"Try {0} --help' for more information.".format(prog))
+        print("{0}: missing operand".format(prog))
+        print("Try {0} --help' for more information.".format(prog))
         sys.exit(1)
 
     # If no command is given, run ''${SHELL} -i''
@@ -220,7 +218,7 @@ def chroot(argstr):
     try:
         os.chroot(args[0])
     except OSError, err:
-        print(u"chroot: cannot change root directory to {0}: {1}".format(
+        print("chroot: cannot change root directory to {0}: {1}".format(
                                                     args[0], err.strerror))
 
     subprocess.call(args)
@@ -237,13 +235,13 @@ def dirname(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print(u"{0}: missing operand".format(prog))
-        print(u"Try {0} --help' for more information.".format(prog))
+        print("{0}: missing operand".format(prog))
+        print("Try {0} --help' for more information.".format(prog))
         sys.exit(1)
 
     if len(args) > 1:
-        print(u"{0}: extra operand `{1}'".format(prog, args[0]))
-        print(u"Try {0} --help' for more information.".format(prog))
+        print("{0}: extra operand `{1}'".format(prog, args[0]))
+        print("Try {0} --help' for more information.".format(prog))
         sys.exit(1)
 
     d = os.path.dirname(args[0].rstrip('/'))
@@ -273,8 +271,8 @@ def env(argstr):
     for arg in args:
         x = arg.split('=')
         if len(x) < 2:
-            print(u"Invalid argument {0}.".format(arg))
-            print(u"Arguments should be in the form of 'foo=bar'")
+            print("Invalid argument {0}.".format(arg))
+            print("Arguments should be in the form of 'foo=bar'")
             sys.exit(127)
     print(x[0] + '=' + x[1])
 
@@ -330,7 +328,7 @@ def gzip(argstr):
         if os.path.exists(gzippath):
             q = raw_input("gzip: %s already exists; do you wish to overwrite (y or n)? " % (gzippath))
             if q.upper() != 'Y':
-                print(u"not overwritten", file=sys.stderr)
+                print("not overwritten", file=sys.stderr)
                 sys.exit(2)
         outfile = GzipFile(filename=gzippath, mode='wb', compresslevel=opts.compresslevel)
         shutil.copyfileobj(infile, outfile)
@@ -376,8 +374,8 @@ def id(argstr):
     prog = p.get_prog_name()
 
     if len(args) > 1:
-        print(u"{0}: extra operand `{1}'".format(prog, args[0]))
-        print(u"Try {0} --help' for more information.".format(prog))
+        print("{0}: extra operand `{1}'".format(prog, args[0]))
+        print("Try {0} --help' for more information.".format(prog))
         sys.exit(1)
 
     if args == []:
@@ -442,8 +440,8 @@ def kill(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print(u"{0}: missing PID".format(prog))
-        print(u"Try {0} --help' for more information.".format(prog))
+        print("{0}: missing PID".format(prog))
+        print("Try {0} --help' for more information.".format(prog))
         sys.exit(1)
 
     try:
@@ -488,8 +486,8 @@ def ln(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print(u"{0}: missing operand".format(prog))
-        print(u"Try {0} --help' for more information.".format(prog))
+        print("{0}: missing operand".format(prog))
+        print("Try {0} --help' for more information.".format(prog))
         sys.exit(1)
     elif len(args) == 1:
         src = args[0]
@@ -507,11 +505,11 @@ def ln(argstr):
 
     for src in args:
         if opts.verbose:
-            print(u"`%s' -> `%s'" % (src, dst))
+            print("`%s' -> `%s'" % (src, dst))
         try:
             f(src, dst)
         except Exception, err:
-            print(u"ln: creating %s link `%s' => `%s': %s" % (linktype, dst,
+            print("ln: creating %s link `%s' => `%s': %s" % (linktype, dst,
                                                             src, err.strerror))
             sys.exit(1)
 
@@ -660,8 +658,8 @@ def mkdir(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print(u"{0}: missing operand".format(prog))
-        print(u"Try {0} --help' for more information.".format(prog))
+        print("{0}: missing operand".format(prog))
+        print("Try {0} --help' for more information.".format(prog))
         sys.exit(1)
 
     for arg in args:
@@ -680,11 +678,11 @@ def mkdir(argstr):
             for path in pathlist:
                 os.mkdir(path, int(opts.mode))
                 if opts.verbose:
-                    print(u"mkdir: created directory '%s'" % (path))
+                    print("mkdir: created directory '%s'" % (path))
         else:
             os.mkdir(arg, int(opts.mode))
             if opts.verbose:
-                print(u"mkdir: created directory '%s'" % (arg))
+                print("mkdir: created directory '%s'" % (arg))
 
 
 @addcmd
@@ -706,8 +704,8 @@ def mktemp(argstr):
     elif len(args) == 1:
         raise NotImplementedError("Templates are not yet implemented")
     else:
-        print(u"mktemp: too many templates")
-        print(u"Try `mktemp --help' for more information.")
+        print("mktemp: too many templates")
+        print("Try `mktemp --help' for more information.")
 
 
 @addcmd
@@ -721,23 +719,23 @@ def mv(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print(u"{0}: missing operand".format(prog))
-        print(u"Try {0} --help' for more information.".format(prog))
+        print("{0}: missing operand".format(prog))
+        print("Try {0} --help' for more information.".format(prog))
         sys.exit(1)
     if len(args) == 1:
-        print(u"mv: missing destination file operand after '%s'" % (args[0]))
-        print(u"Try 'mv --help' for more information.")
+        print("mv: missing destination file operand after '%s'" % (args[0]))
+        print("Try 'mv --help' for more information.")
         sys.exit(1)
 
     dest = args.pop()
 
     for src in args:
         if opts.verbose:
-            print(u"'%s' -> '%s'" % (src, dest))
+            print("'%s' -> '%s'" % (src, dest))
         try:
             shutil.move(src, dest)
         except IOError, err:
-            print(u"mv: %s" % (err.strerror))
+            print("mv: %s" % (err.strerror))
             sys.exit(1)
 
 
@@ -777,14 +775,14 @@ def rm(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print(u"{0}: missing operand".format(prog))
-        print(u"Try {0} --help' for more information.".format(prog))
+        print("{0}: missing operand".format(prog))
+        print("Try {0} --help' for more information.".format(prog))
         sys.exit(1)
 
     def _raise(err):
         if opts.force:
             if opts.verbose:
-                print(u"skipped `{0}'".format(arg))
+                print("skipped `{0}'".format(arg))
         else:
             raise err
 
@@ -797,19 +795,19 @@ def rm(argstr):
                     path = os.path.join(root, name)
                     os.remove(path)
                     if opts.verbose:
-                        print(u"Removed file `{0}'".format(path))
+                        print("Removed file `{0}'".format(path))
                 for name in dirs:
                     path = os.path.join(root, name)
                     os.rmdir(path)
                     if opts.verbose:
-                        print(u"Removed directory `{0}'".format(path))
+                        print("Removed directory `{0}'".format(path))
             os.rmdir(arg)
         else:
             # Remove single file
             try:
                 os.remove(arg)
                 if opts.verbose:
-                    print(u"Removed `{0}'".format(arg))
+                    print("Removed `{0}'".format(arg))
             except OSError, err:
                 _raise(err)
 
@@ -826,8 +824,8 @@ def rmdir(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print(u"{0}: missing operand".format(prog))
-        print(u"Try {0} --help' for more information.".format(prog))
+        print("{0}: missing operand".format(prog))
+        print("Try {0} --help' for more information.".format(prog))
         sys.exit(1)
 
     for arg in args:
@@ -890,8 +888,8 @@ def seq(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print(u"{0}: missing operand".format(prog))
-        print(u"Try {0} --help' for more information.".format(prog))
+        print("{0}: missing operand".format(prog))
+        print("Try {0} --help' for more information.".format(prog))
         sys.exit(1)
 
     if len(args) == 1:
@@ -953,8 +951,8 @@ def shred(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print(u"{0}: missing operand".format(prog))
-        print(u"Try {0} --help' for more information.".format(prog))
+        print("{0}: missing operand".format(prog))
+        print("Try {0} --help' for more information.".format(prog))
         sys.exit(1)
 
     for arg in args:
@@ -995,7 +993,7 @@ def shuf(argstr):
 
     if opts.echo:
         if opts.inputrange:
-            print(u"shuf: cannot combine -e and -i options")
+            print("shuf: cannot combine -e and -i options")
             sys.exit(1)
         lines = args
         random.shuffle(lines)
@@ -1006,8 +1004,8 @@ def shuf(argstr):
             outfd.write("%s\n" % line)
 
     elif len(args) > 1:
-        print(u"{0}: extra operand `{1}'".format(prog, args[0]))
-        print(u"Try {0} --help' for more information.".format(prog))
+        print("{0}: extra operand `{1}'".format(prog, args[0]))
+        print("Try {0} --help' for more information.".format(prog))
         sys.exit(1)
 
     elif opts.inputrange:
@@ -1074,8 +1072,8 @@ def sleep(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print(u"{0}: missing operand".format(prog))
-        print(u"Try {0} --help' for more information.".format(prog))
+        print("{0}: missing operand".format(prog))
+        print("Try {0} --help' for more information.".format(prog))
         sys.exit(1)
 
     a = []
@@ -1092,8 +1090,8 @@ def sleep(argstr):
             else:
                 a.append(float(arg))
     except ValueError:
-        print(u"sleep: invalid time interval `%s'" % (arg))
-        print(u"Try sleep --help' for more information.")
+        print("sleep: invalid time interval `%s'" % (arg))
+        print("Try sleep --help' for more information.")
         sys.exit(1)
 
     time.sleep(sum(a))
@@ -1149,8 +1147,8 @@ def touch(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print(u"{0}: missing operand".format(prog))
-        print(u"Try {0} --help' for more information.".format(prog))
+        print("{0}: missing operand".format(prog))
+        print("Try {0} --help' for more information.".format(prog))
         sys.exit(1)
 
     atime = mtime = time.time()
@@ -1268,12 +1266,12 @@ def wget(argstr):
             sys.exit(1)
 
         length = int(fdin.headers['content-length'])
-        print(u"Getting %i bytes from %s" % (length, url))
+        print("Getting %i bytes from %s" % (length, url))
 
         for data in fdin.read(4096):
             fdout.write(data)
 
-        print(u'Done')
+        print("Done")
 
 
 @addcmd
@@ -1286,8 +1284,8 @@ def whoami(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if len(args) > 0:
-        print(u"{0}: extra operand `{1}'".format(prog, args[0]))
-        print(u"Try {0} --help' for more information.".format(prog))
+        print("{0}: extra operand `{1}'".format(prog, args[0]))
+        print("Try {0} --help' for more information.".format(prog))
         sys.exit(1)
 
     print(_pwd.getpwuid(os.getuid())[0])
@@ -1352,7 +1350,7 @@ def zip(argstr):
         zf = zipfile.ZipFile(args[0], 'r')
         badfile = zf.testzip()
         if badfile:
-            sys.stderr(u"Error on file {0}\n".format(badfile))
+            sys.stderr("Error on file {0}\n".format(badfile))
             sys.exit(1)
         else:
             print("{0} tested ok".format(args[0]))
@@ -1413,16 +1411,16 @@ def _banner(width=None):
     Returns pycoreutils banner.
     The banner is centered if width is defined.
     '''
-    subtext = u"-= PyCoreutils Shell version {0} =-".format(__version__)
+    subtext = "-= PyCoreutils Shell version {0} =-".format(__version__)
     banner = [
-       u" ____  _  _  ___  _____  ____  ____  __  __  ____  ____  __    ___ ",
-       u"(  _ \( \/ )/ __)(  _  )(  _ \( ___)(  )(  )(_  _)(_  _)(  )  / __)",
-       u" )___/ \  /( (__  )(_)(  )   / )__)  )(__)(   )(   _)(_  )(__ \__ \\",
-       u"(__)   (__) \___)(_____)(_)\_)(____)(______) (__) (____)(____)(___/",
+       " ____  _  _  ___  _____  ____  ____  __  __  ____  ____  __    ___ ",
+       "(  _ \( \/ )/ __)(  _  )(  _ \( ___)(  )(  )(_  _)(_  _)(  )  / __)",
+       " )___/ \  /( (__  )(_)(  )   / )__)  )(__)(   )(   _)(_  )(__ \__ \\",
+       "(__)   (__) \___)(_____)(_)\_)(____)(______) (__) (____)(____)(___/",
     ]
 
     if width:
-        ret = u""
+        ret = ""
         for line in banner:
             ret += line.center(width) + "\n"
         ret += "\n" + subtext.center(width) + "\n"
@@ -1626,13 +1624,13 @@ if __name__ == '__main__':
         requestcmd = sys.argv[0]
     cmd = _checkcmd(requestcmd)
     if cmd == False:
-        print(u"Command %s not supported." % (sys.argv[0]))
-        print(u"Use pycoreutils.py --help for a list of valid commands.")
+        print("Command %s not supported." % (sys.argv[0]))
+        print("Use pycoreutils.py --help for a list of valid commands.")
         sys.exit(1)
 
     # Check if the '_nowindows'-flag is set
     if hasattr(cmd, '_nowindows') and platform.system() == 'Windows':
-        print(u"Command %s does not work on Windows" % (sys.argv[0]))
+        print("Command %s does not work on Windows" % (sys.argv[0]))
         sys.exit(1)
 
     # Run the command
@@ -1640,10 +1638,10 @@ if __name__ == '__main__':
     try:
         cmd(argstr)
     except IOError, err:
-        print(u"{0}: {1}: {2}".format(
+        print("{0}: {1}: {2}".format(
               sys.argv[0], err.filename, err.strerror), file=sys.stderr)
         sys.exit(err.errno)
     except OSError, err:
-        print(u"{0}: {1}: {2}".format(
+        print("{0}: {1}: {2}".format(
               sys.argv[0], err.filename, err.strerror), file=sys.stderr)
         sys.exit(err.errno)
