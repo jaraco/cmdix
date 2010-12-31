@@ -448,6 +448,7 @@ def kill(argstr):
 
 
 @addcmd
+@nowindows
 def ln(argstr):
     p = _optparse()
     p.description = ""
