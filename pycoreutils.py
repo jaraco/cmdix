@@ -24,6 +24,7 @@ import os
 import platform
 import random
 import shutil
+import signal
 import stat
 import subprocess
 import tempfile
@@ -385,6 +386,65 @@ def id(argstr):
         sys.exit(1)
 
     print("uid=%i(%s) gid=%i(%s)" % (uid, username, gid, username))
+
+
+@addcmd
+def kill(argstr):
+    signals = _getsignals()
+
+    p = _optparse()
+    p.description = ""
+    p.usage = '%prog kill [ -SIGNAL | -s SIGNAL ] PID ...'
+    p.add_option("-s", "--signal",  action="store", dest="signal",
+            default=signal.SIGTERM,
+            help="send signal")
+
+    # Add a string option for each signal
+    for name, sigint in signals.items():
+        signame = 'SIG' + name.upper()
+        p.add_option("--%s" % signame, action="store_const", dest="signal",
+            const=sigint,
+            help="send signal {0}".format(signame))
+
+    # Add an integer option for each signal
+    for sigint in set(signals.values()):
+        if sigint < 10:
+            p.add_option("-%i" % sigint, action="store_const", dest="signal",
+                const=sigint, help="send signal {0}".format(sigint))
+
+    (opts, args) = p.parse_args(argstr.split())
+    prog = p.get_prog_name()
+
+    if len(args) == 0:
+        print(u"{0}: missing PID".format(prog))
+        print(u"Try {0} --help' for more information.".format(prog))
+        sys.exit(1)
+
+    try:
+        sig = int(opts.signal)
+    except ValueError:
+        sig = opts.signal.upper()
+    
+    if signals.values().count(sig):
+        sigint = sig
+    elif signals.has_key(sig):
+        sigint = signals[sig]
+    elif signals.has_key(sig.lstrip('SIG')):
+        sigint = signals[sig.lstrip('SIG')]
+    else:
+        print("kill: {0}: invalid signal specification".format(
+                sig), file=sys.stderr)
+        sys.exit(1)
+
+    for pid in args:
+        try:
+            pid = int(pid)
+        except ValueError:
+            print("kill: {0}: arguments must be process or job IDs".format(
+                   pid), file=sys.stderr)
+            sys.exit(1)
+
+        os.kill(pid, sigint)
 
 
 @addcmd
@@ -1304,6 +1364,22 @@ def _checkcmd(command):
     if l > 1:
         raise "Command '%s' has multiple functions associated with it!" % (command)
     return a[0]
+
+
+def _getsignals():
+    ''' Return a dict of all available signals '''
+    signallist = [
+        'ABRT', 'CONT', 'IO', 'PROF', 'SEGV', 'TSTP', 'USR2', '_DFL', 'ALRM',
+        'FPE', 'IOT', 'PWR', 'STOP', 'TTIN', 'VTALRM', '_IGN', 'BUS', 'HUP',
+        'KILL', 'QUIT', 'SYS', 'TTOU', 'WINCH', 'CHLD', 'ILL', 'PIPE', 'RTMAX',
+        'TERM', 'URG', 'XCPU', 'CLD', 'INT', 'POLL', 'RTMIN', 'TRAP', 'USR1',
+        'XFSZ'
+    ]
+    signals = {}
+    for signame in signallist:
+        if hasattr(signal, 'SIG' + signame):
+            signals[signame] = getattr(signal, 'SIG' + signame)
+    return signals
 
 
 def _getuserhome():
