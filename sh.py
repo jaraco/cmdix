@@ -30,7 +30,7 @@ class PyCoreutilsShell(cmd.Cmd):
         '''
         Update the prompt
         '''
-        self.prompt = '%s@%s:%s$ ' % (pycoreutils._getuserhome(),
+        self.prompt = '%s@%s:%s$ ' % (pycoreutils._getusername(),
                                       platform.node(),
                                       os.getcwd())
 
