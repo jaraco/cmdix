@@ -30,7 +30,7 @@ class PyCoreutilsShell(cmd.Cmd):
         '''
         Update the prompt
         '''
-        self.prompt = '%s@%s:%s$ ' % (pycoreutils._getusername(),
+        self.prompt = '%s@%s:%s$ ' % (pycoreutils.getcurrentusername(),
                                       platform.node(),
                                       os.getcwd())
 
@@ -43,7 +43,7 @@ class PyCoreutilsShell(cmd.Cmd):
     def do_help(self, arg):
         self.stdout.write("\nUse 'COMMAND --help' for help\n")
         self.stdout.write("Available commands:\n")
-        for cmd in pycoreutils._listcommands():
+        for cmd in pycoreutils.listcommands():
             self.stdout.write("  " + cmd + "\n")
 
     def emptyline(self):
@@ -61,4 +61,4 @@ class PyCoreutilsShell(cmd.Cmd):
 
 
 if __name__ == '__main__':
-    PyCoreutilsShell().cmdloop(pycoreutils._banner(width=78))
+    PyCoreutilsShell().cmdloop(pycoreutils.showbanner(width=78))

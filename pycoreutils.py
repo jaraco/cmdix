@@ -77,10 +77,13 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 '''
 
-_cmds = []
+_cmds = []  # Commands will be added to this list
 
 
-def addcmd(f):
+### DECORATORS ##############################################################
+
+
+def addcommand(f):
     '''
     Register a command with pycoreutils
     '''
@@ -88,17 +91,21 @@ def addcmd(f):
     return f
 
 
-def nowindows(f):
+def onlyunix(f):
     '''
     Decorator that indicates that the command cannot be run on windows
     '''
-    f._nowindows = True
+    f._onlyunix = True
     return f
 
 
-@addcmd
+
+### COMMANDS ################################################################
+
+
+@addcommand
 def arch(argstr):
-    p = _optparse()
+    p = parseoptions()
     p.description = "Print machine architecture."
     p.usage = '%prog [OPTION]'
     (opts, args) = p.parse_args(argstr.split())
@@ -112,9 +119,9 @@ def arch(argstr):
     print(platform.machine(), end='')
 
 
-@addcmd
+@addcommand
 def basename(argstr):
-    p = _optparse()
+    p = parseoptions()
     p.description = "Print NAME with any leading directory components " + \
                     "removed. If specified, also remove a trailing SUFFIX."
     p.usage = '%prog NAME [SUFFIX]\nor:    %prog [OPTION]'
@@ -144,9 +151,9 @@ def basename(argstr):
     print(b)
 
 
-@addcmd
+@addcommand
 def cat(argstr):
-    p = _optparse()
+    p = parseoptions()
     p.description = "Concatenate FILE(s), or standard input, " + \
                     "to standard output."
     p.usage = '%prog [OPTION]... [FILE]...'
@@ -158,15 +165,15 @@ def cat(argstr):
         print(line, end='')
 
 
-@addcmd
+@addcommand
 def cd(argstr):
-    p = _optparse()
+    p = parseoptions()
     p.description = "Change the current working directory to HOME or PATH"
     p.usage = '%prog [PATH]'
     (opts, args) = p.parse_args(argstr.split())
 
     if len(args) == 0:
-        pth = _getuserhome()
+        pth = getuserhome()
     elif len(args) == 1:
         pth = os.path.expanduser(args[0])
     else:
@@ -177,11 +184,11 @@ def cd(argstr):
     os.chdir(pth)
 
 
-@addcmd
-@nowindows
+@addcommand
+@onlyunix
 def chown(argstr):
     # TODO: Support for groups and --reference
-    p = _optparse()
+    p = parseoptions()
     p.description = "Change the owner and/or group of each FILE to OWNER " + \
                      "and/or GROUP. With --reference, change the owner and" + \
                      " group of each FILE to those of RFILE."
@@ -206,10 +213,10 @@ def chown(argstr):
         os.chown(arg, int(uid), -1)
 
 
-@addcmd
+@addcommand
 def chroot(argstr):
     # TODO: Testing!!!
-    p = _optparse()
+    p = parseoptions()
     p.description = "Run COMMAND with root directory set to NEWROOT."
     p.usage = '%prog NEWROOT [COMMAND [ARG]...]\nor:    %prog [OPTION]'
     (opts, args) = p.parse_args(argstr.split())
@@ -234,9 +241,9 @@ def chroot(argstr):
     subprocess.call(args)
 
 
-@addcmd
+@addcommand
 def dirname(argstr):
-    p = _optparse()
+    p = parseoptions()
     p.description = "Print NAME with its trailing /component removed; if " + \
                     "NAME contains no /'s, output `.' (meaning the current" + \
                     " directory)."
@@ -262,10 +269,10 @@ def dirname(argstr):
     print(d)
 
 
-@addcmd
+@addcommand
 def env(argstr):
     # TODO: --unset
-    p = _optparse()
+    p = parseoptions()
     p.description = "Set each NAME to VALUE in the environment and run COMMAND."
     p.usage = '%prog [OPTION]... [-] [NAME=VALUE]... [COMMAND [ARG]...]'
     p.add_option("-i", "--ignore-environment", action="store_true", dest="ignoreenvironment",
@@ -290,10 +297,10 @@ def env(argstr):
         print(k + '=' + v)
 
 
-@addcmd
+@addcommand
 def gzip(argstr):
     # TODO: Decompression
-    p = _optparse()
+    p = parseoptions()
     p.description = "Compress or uncompress FILEs (by default, compress FILES in-place)."
     p.usage = '%prog [OPTION]... [FILE]...'
     p.add_option("-c", "--stdout", "--as-stdout", action="store_true", dest="stdout",
@@ -344,9 +351,9 @@ def gzip(argstr):
         shutil.copyfileobj(infile, outfile)
 
 
-@addcmd
+@addcommand
 def httpd(argstr):
-    p = _optparse()
+    p = parseoptions()
     p.description = "Start a web server that serves the current directory"
     p.usage = '%prog [OPTION]...'
     p.add_option("-a", "--address", default="", dest="address",
@@ -364,11 +371,11 @@ def httpd(argstr):
         pass
 
 
-@addcmd
-@nowindows
+@addcommand
+@onlyunix
 def id(argstr):
     # TODO: List all groups a user belongs to
-    p = _optparse()
+    p = parseoptions()
     p.description = "Print user and group information for the specified " + \
                    "USERNAME, or (when USERNAME omitted) for the current user."
     p.usage = '%prog [OPTION]... [USERNAME]'
@@ -422,11 +429,11 @@ def id(argstr):
     print("uid=%i(%s) gid=%i(%s)" % (uid, username, gid, username))
 
 
-@addcmd
+@addcommand
 def kill(argstr):
-    signals = _getsignals()
+    signals = getsignals()
 
-    p = _optparse()
+    p = parseoptions()
     p.description = ""
     p.usage = '%prog kill [ -SIGNAL | -s SIGNAL ] PID ...'
     p.add_option("-s", "--signal",  action="store", dest="signal",
@@ -481,10 +488,10 @@ def kill(argstr):
         os.kill(pid, sigint)
 
 
-@addcmd
-@nowindows
+@addcommand
+@onlyunix
 def ln(argstr):
-    p = _optparse()
+    p = parseoptions()
     p.description = ""
     p.usage = '\n%prog [OPTION]... [-T] TARGET LINK_NAME   (1st form)' + \
               '\n%prog [OPTION]... TARGET                  (2nd form)'
@@ -524,10 +531,10 @@ def ln(argstr):
             sys.exit(1)
 
 
-@addcmd
+@addcommand
 def logger(argstr):
     # TODO: -i, -f, t
-    p = _optparse()
+    p = parseoptions()
     p.description = "A shell command interface to the syslog system log module"
     p.usage = '%prog [OPTION] [ MESSAGE ... ]'
     p.add_option("--host", action="store", dest="host",
@@ -580,10 +587,10 @@ def logger(argstr):
         print("%s\n" % msg, file=sys.stderr)
 
 
-@addcmd
+@addcommand
 def ls(argstr):
     # TODO: Show user and group names in ls -l
-    p = _optparse()
+    p = parseoptions()
     p.description = "List information about the FILEs (the current " + \
                     "directory by default). Sort entries " + \
                     "alphabetically if none of -cftuvSUX nor --sort."
@@ -607,7 +614,7 @@ def ls(argstr):
                 print(f)
             else:
                 st = os.lstat(path)
-                mode = _mode2string(st.st_mode)
+                mode = mode2string(st.st_mode)
                 nlink = st.st_nlink
                 uid = st.st_uid
                 gid = st.st_gid
@@ -648,14 +655,14 @@ def ls(argstr):
                 ))
 
 
-@addcmd
+@addcommand
 def md5sum(argstr):
-    _hasher('md5', argstr)
+    hasher('md5', argstr)
 
 
-@addcmd
+@addcommand
 def mkdir(argstr):
-    p = _optparse()
+    p = parseoptions()
     p.usage = '%prog [OPTION]... DIRECTORY...'
     p.description = "Create the DIRECTORY(ies), if they do not already exist."
     p.add_option("-p", "--parents", action="store_true", dest="parents",
@@ -695,10 +702,10 @@ def mkdir(argstr):
                 print("mkdir: created directory '%s'" % (arg))
 
 
-@addcmd
+@addcommand
 def mktemp(argstr):
     # TODO: Templates, most of the options
-    p = _optparse()
+    p = parseoptions()
     p.description = "Create a temporary file or directory, safely, and " + \
                     "print its name."
     p.usage = '%prog [OPTION]... [TEMPLATE]'
@@ -718,9 +725,9 @@ def mktemp(argstr):
         print("Try `mktemp --help' for more information.")
 
 
-@addcmd
+@addcommand
 def mv(argstr):
-    p = _optparse()
+    p = parseoptions()
     p.description = "Rename SOURCE to DEST, or move SOURCE(s) to DIRECTORY."
     p.usage = '%prog [OPTION]... [-T] SOURCE DEST\nor:    %prog [OPTION]... SOURCE... DIRECTORY\nor:    %prog [OPTION]... -t DIRECTORY SOURCE...'
     p.add_option("-v", "--verbose", action="store_true", dest="verbose",
@@ -749,9 +756,9 @@ def mv(argstr):
             sys.exit(1)
 
 
-@addcmd
+@addcommand
 def pwd(argstr):
-    p = _optparse()
+    p = parseoptions()
     p.description = "print name of current/working directory"
     p.usage = '%prog [OPTION]...'
     p.add_option("-L", "--logical", action="store_true", dest="logical",
@@ -769,9 +776,9 @@ def pwd(argstr):
 
 
 
-@addcmd
+@addcommand
 def rm(argstr):
-    p = _optparse()
+    p = parseoptions()
     p.description = "print name of current/working directory"
     p.usage = '%prog [OPTION]... FILE...'
     p.add_option("-f", "--force", action="store_true", dest="force",
@@ -822,9 +829,9 @@ def rm(argstr):
                 _raise(err)
 
 
-@addcmd
+@addcommand
 def rmdir(argstr):
-    p = _optparse()
+    p = parseoptions()
     p.description = "Remove the DIRECTORY(ies), if they are empty."
     p.usage = '%prog [OPTION]... DIRECTORY...'
     p.add_option("-p", "--parent", action="store_true", dest="parent",
@@ -845,10 +852,10 @@ def rmdir(argstr):
             os.rmdir(arg)
 
 
-@addcmd
+@addcommand
 def sendmail(argstr):
     # TODO: Authentication
-    p = _optparse()
+    p = parseoptions()
     p.description = "A simple sendmail implementation"
     p.usage = '%prog [OPTION]... [RECIPIENT]...'
     p.add_option("-a", "--address", default="localhost", dest="address",
@@ -856,7 +863,7 @@ def sendmail(argstr):
     p.add_option("-c", "--certfile", dest="certfile",
             help="certificate file to use. implies '-s'")
     p.add_option("-f", "-r", "--sender", dest="sender",
-            default=_getusername() + "@" + platform.node(),
+            default=getcurrentusername() + "@" + platform.node(),
             help="set the envelope sender address")
     p.add_option("-k", "--keyfile", dest="keyfile",
             help="key file to use. implies '-s'")
@@ -887,9 +894,9 @@ def sendmail(argstr):
     smtp.quit()
 
 
-@addcmd
+@addcommand
 def seq(argstr):
-    p = _optparse()
+    p = parseoptions()
     p.description = "Print numbers from FIRST to LAST, in steps of INCREMENT."
     p.usage = '%prog [OPTION]... LAST\nor:    %prog [OPTION]... FIRST LAST\nor:    %prog [OPTION]... FIRST INCREMENT LAST'
     p.add_option("-s", "--seperator", action="store", dest="seperator",
@@ -920,35 +927,35 @@ def seq(argstr):
         print()
 
 
-@addcmd
+@addcommand
 def sha1sum(argstr):
-    _hasher('sha1', argstr)
+    hasher('sha1', argstr)
 
 
-@addcmd
+@addcommand
 def sha224sum(argstr):
-    _hasher('sha224', argstr)
+    hasher('sha224', argstr)
 
 
-@addcmd
+@addcommand
 def sha256sum(argstr):
-    _hasher('sha256', argstr)
+    hasher('sha256', argstr)
 
 
-@addcmd
+@addcommand
 def sha384sum(argstr):
-    _hasher('sha384', argstr)
+    hasher('sha384', argstr)
 
 
-@addcmd
+@addcommand
 def sha512sum(argstr):
-    _hasher('sha512', argstr)
+    hasher('sha512', argstr)
 
 
-@addcmd
+@addcommand
 def shred(argstr):
     # TODO: This program acts as 'shred -x', and doesn't round file sizes up to the next full block
-    p = _optparse()
+    p = parseoptions()
     p.description = "Overwrite the specified FILE(s) repeatedly, in order " + \
                     "to make it harder for even very expensive hardware " + \
                     "probing to recover the data."
@@ -978,9 +985,9 @@ def shred(argstr):
             fd.close()
 
 
-@addcmd
+@addcommand
 def shuf(argstr):
-    p = _optparse()
+    p = parseoptions()
     p.description = "Write a random permutation of the input lines to " + \
                     "standard output."
     p.usage = '%prog [OPTION]... [FILE]\nor:    %prog -e [OPTION]... [ARG]...\nor:    %prog -i LO-HI [OPTION]...'
@@ -1044,9 +1051,9 @@ def shuf(argstr):
             outfd.write(line)
 
 
-@addcmd
+@addcommand
 def smtpd(argstr):
-    p = _optparse()
+    p = parseoptions()
     p.description = "An RFC 2821 smtp proxy."
     p.usage = '%prog [OPTION]...'
     p.add_option("-a", "--remoteaddress", default="", dest="remoteaddress",
@@ -1068,9 +1075,9 @@ def smtpd(argstr):
         pass
 
 
-@addcmd
+@addcommand
 def sleep(argstr):
-    p = _optparse()
+    p = parseoptions()
     p.description = "Pause for NUMBER seconds. SUFFIX may be `s' for seconds" + \
                     " (the default), `m' for minutes, `h' for hours or `d' " + \
                     "for days. Unlike most implementations that require " + \
@@ -1109,7 +1116,7 @@ def sleep(argstr):
 
 def tail(argstr):
     # TODO: Everything!!!!!!!!
-    p = _optparse()
+    p = parseoptions()
     p.description = "Print the last 10 lines of each FILE to standard " + \
                     "output. With more than one FILE, precede each with a " + \
                     "header giving the file name. With no FILE, or when " + \
@@ -1134,10 +1141,10 @@ def tail(argstr):
             print(line, end='')
 
 
-@addcmd
+@addcommand
 def touch(argstr):
     # TODO: Implement --date, --time and -t
-    p = _optparse()
+    p = parseoptions()
     p.description = "Update the access and modification times of each FILE " + \
                     "to the current time. A FILE argument that does not " + \
                     "exist is created empty. A FILE argument string of - is" + \
@@ -1182,9 +1189,9 @@ def touch(argstr):
         os.utime(arg, (atime, mtime))
 
 
-@addcmd
+@addcommand
 def uname(argstr):
-    p = _optparse()
+    p = parseoptions()
     p.description = "Print certain system information.  With no OPTION, " + \
                     "same as -s."
     p.usage = '%prog [OPTION]...'
@@ -1243,10 +1250,10 @@ def uname(argstr):
     print(" ".join(output))
 
 
-@addcmd
+@addcommand
 def wget(argstr):
     # TODO: Fix for Python3, recursion, proxy, progress bar, you name it...
-    p = _optparse()
+    p = parseoptions()
     p.description = "Download of files from the Internet"
     p.usage = '%prog [OPTION]... [URL]...'
     p.add_option("-O", "--output-document", action="store", dest="outputdocument",
@@ -1282,10 +1289,10 @@ def wget(argstr):
         print("Done")
 
 
-@addcmd
-@nowindows
+@addcommand
+@onlyunix
 def whoami(argstr):
-    p = _optparse()
+    p = parseoptions()
     p.description = "Print the user name associated with the current" + \
                     "effective user ID.\nSame as id -un."
     p.usage = '%prog [OPTION]...'
@@ -1299,9 +1306,9 @@ def whoami(argstr):
     print(_pwd.getpwuid(os.getuid())[0])
 
 
-@addcmd
+@addcommand
 def yes(argstr):
-    p = _optparse()
+    p = parseoptions()
     p.description = "Repeatedly output a line with all specified " + \
                     "STRING(s), or `y'."
     p.usage = '%prog [STRING]...\nor:    %prog OPTION'
@@ -1322,12 +1329,12 @@ def yes(argstr):
         sys.exit()
 
 
-@addcmd
+@addcommand
 def zip(argstr):
     '''
     Overriding a built-in command. Yes, I known :(
     '''
-    p = _optparse()
+    p = parseoptions()
     p.description = "package and compress (archive) files"
     p.usage = '%prog -l [OPTION]... ZIPFILE...\n' + \
        '       %prog -t [OPTION]... ZIPFILE...\n' + \
@@ -1411,33 +1418,11 @@ def zip(argstr):
 
 
 
-############################## PRIVATE FUNCTIONS ##############################
+
+### HELPER FUNCTIONS ########################################################
 
 
-def _banner(width=None):
-    '''
-    Returns pycoreutils banner.
-    The banner is centered if width is defined.
-    '''
-    subtext = "-= PyCoreutils version {0} =-".format(__version__)
-    banner = [
-       " ____  _  _  ___  _____  ____  ____  __  __  ____  ____  __    ___ ",
-       "(  _ \( \/ )/ __)(  _  )(  _ \( ___)(  )(  )(_  _)(_  _)(  )  / __)",
-       " )___/ \  /( (__  )(_)(  )   / )__)  )(__)(   )(   _)(_  )(__ \__ \\",
-       "(__)   (__) \___)(_____)(_)\_)(____)(______) (__) (____)(____)(___/",
-    ]
-
-    if width:
-        ret = ""
-        for line in banner:
-            ret += line.center(width) + "\n"
-        ret += "\n" + subtext.center(width) + "\n"
-        return ret
-    else:
-        return "\n".join(banner) + "\n\n" + subtext.center(68) + "\n"
-
-
-def _checkcmd(command):
+def checkcommand(command):
     ''' Check a command is available '''
     a = [cmd for cmd in _cmds if cmd.__name__ == command]
     l = len(a)
@@ -1448,7 +1433,17 @@ def _checkcmd(command):
     return a[0]
 
 
-def _getsignals():
+def getcurrentusername():
+    '''
+    Returns the username of the current user
+    '''
+    if 'USER' in os.environ:
+        return os.environ['USER'] # Unix
+    if 'USERNAME' in os.environ:
+        return os.environ['USERNAME'] # Windows
+
+
+def getsignals():
     ''' Return a dict of all available signals '''
     signallist = [
         'ABRT', 'CONT', 'IO', 'PROF', 'SEGV', 'TSTP', 'USR2', '_DFL', 'ALRM',
@@ -1464,7 +1459,7 @@ def _getsignals():
     return signals
 
 
-def _getuserhome():
+def getuserhome():
     '''
     Returns the home-directory of the current user
     '''
@@ -1474,24 +1469,14 @@ def _getuserhome():
         return os.environ['HOMEPATH'] # Windows
 
 
-def _getusername():
-    '''
-    Returns the username of the current user
-    '''
-    if 'USER' in os.environ:
-        return os.environ['USER'] # Unix
-    if 'USERNAME' in os.environ:
-        return os.environ['USERNAME'] # Windows
-
-
-def _hasher(algorithm, argstr):
+def hasher(algorithm, argstr):
     def myhash(fd):
         h = hashlib.new(algorithm)
         with fd as f:
             h.update(f.read())
         return h.hexdigest()
  
-    p = _optparse()
+    p = parseoptions()
     p.description = "Print or check %s checksums.\n" % (algorithm.upper()) + \
                     "With no FILE, or when FILE is -, read standard input."
     p.usage = '%prog [OPTION]... FILE...'
@@ -1504,7 +1489,7 @@ def _hasher(algorithm, argstr):
             print(myhash(open(arg, 'r')) + '  ' + arg)
 
 
-def _listcommands():
+def listcommands():
     '''
     Returns a list of all public commands
     '''
@@ -1514,7 +1499,7 @@ def _listcommands():
     return l
 
 
-def _mode2string(mode):
+def mode2string(mode):
     '''
     Convert mode-integer to string
     Example: 33261 becomes "-rwxr-xr-x"
@@ -1593,14 +1578,17 @@ def _mode2string(mode):
     return s
 
 
-def _optparse():
+def parseoptions():
     optparser = optparse.OptionParser(version=__version__)
-    optparser.add_option("--license", action="callback", callback=_showlicense,
+    optparser.add_option("--license", action="callback", callback=printlicense,
         help="show program's license and exit")
     return optparser
 
 
-def _showlicense(option, opt, value, parser):
+def printlicense(option, opt, value, parser):
+    '''
+    Print the license and exit
+    '''
     print(__license__)
     sys.exit(0)
 
@@ -1621,11 +1609,11 @@ def run(argv=sys.argv, width=78):
         or argv[1] == "-h" \
         or argv[1] == "-?" \
         or argv[1] == "--help":
-            print(_banner(width))
+            print(showbanner(width))
             print("Usage: {0} COMMAND [ OPTIONS ... ]\n".format(requestcmd))
             print("Available commands:")
 
-            cmdstring = ", ".join(_listcommands())
+            cmdstring = ", ".join(listcommands())
             for line in textwrap.wrap(cmdstring, width):
                 print(line)
 
@@ -1634,14 +1622,14 @@ def run(argv=sys.argv, width=78):
 
         argv.pop(0)
         requestcmd = argv[0]
-    cmd = _checkcmd(requestcmd)
+    cmd = checkcommand(requestcmd)
     if cmd == False:
         print("Command %s not supported." % (argv[0]))
         print("Use pycoreutils.py --help for a list of valid commands.")
         sys.exit(1)
 
-    # Check if the '_nowindows'-flag is set
-    if hasattr(cmd, '_nowindows') and platform.system() == 'Windows':
+    # Check if the '_onlyunix'-flag is set
+    if hasattr(cmd, '_onlyunix') and platform.system() == 'Windows':
         print("Command %s does not work on Windows" % (argv[0]))
         sys.exit(1)
 
@@ -1657,6 +1645,29 @@ def run(argv=sys.argv, width=78):
         print("{0}: {1}: {2}".format(
               argv[0], err.filename, err.strerror), file=sys.stderr)
         sys.exit(err.errno)
+
+
+def showbanner(width=None):
+    '''
+    Returns pycoreutils banner.
+    The banner is centered if width is defined.
+    '''
+    subtext = "-= PyCoreutils version {0} =-".format(__version__)
+    banner = [
+       " ____  _  _  ___  _____  ____  ____  __  __  ____  ____  __    ___ ",
+       "(  _ \( \/ )/ __)(  _  )(  _ \( ___)(  )(  )(_  _)(_  _)(  )  / __)",
+       " )___/ \  /( (__  )(_)(  )   / )__)  )(__)(   )(   _)(_  )(__ \__ \\",
+       "(__)   (__) \___)(_____)(_)\_)(____)(______) (__) (____)(____)(___/",
+    ]
+
+    if width:
+        ret = ""
+        for line in banner:
+            ret += line.center(width) + "\n"
+        ret += "\n" + subtext.center(width) + "\n"
+        return ret
+    else:
+        return "\n".join(banner) + "\n\n" + subtext.center(68) + "\n"
 
 
 if __name__ == '__main__':
