@@ -61,4 +61,4 @@ class PyCoreutilsShell(cmd.Cmd):
 
 
 if __name__ == '__main__':
-    PyCoreutilsShell().cmdloop(pycoreutils._banner())
+    PyCoreutilsShell().cmdloop(pycoreutils._banner(width=78))
