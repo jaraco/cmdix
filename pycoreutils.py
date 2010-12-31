@@ -1605,51 +1605,59 @@ def _showlicense(option, opt, value, parser):
     sys.exit(0)
 
 
+def run(argv=sys.argv, width=78):
+    '''
+    Parse arguments and run command.
+    This is where the magic happens :-)
 
-if __name__ == '__main__':
-    width = 78 # Wrap at width
-
+    :argv:  List of arguments
+    :width: Wrap lines a 'width' characters
+    '''
     # Get the requested command
-    requestcmd = os.path.basename(sys.argv[0])
-    if requestcmd == 'pycoreutils.py':
+    requestcmd = os.path.basename(argv[0])
+    if requestcmd == 'coreutils.py' or requestcmd == 'pycoreutils.py':
         # Print help if pycoreutils.py is directly run without any arguments
-        if len(sys.argv) == 1 \
-        or sys.argv[1] == "-h" \
-        or sys.argv[1] == "-?" \
-        or sys.argv[1] == "--help":
+        if len(argv) == 1 \
+        or argv[1] == "-h" \
+        or argv[1] == "-?" \
+        or argv[1] == "--help":
             print(_banner(width))
-            print("Usage: pycoreutils.py COMMAND [ OPTIONS ... ]\n")
+            print("Usage: {0} COMMAND [ OPTIONS ... ]\n".format(requestcmd))
             print("Available commands:")
 
             cmdstring = ", ".join(_listcommands())
             for line in textwrap.wrap(cmdstring, width):
                 print(line)
 
-            print("\nUse 'pycoreutils.py COMMAND --help' for help")
+            print("\nUse `{0} COMMAND --help' for help".format(requestcmd))
             sys.exit(1)
 
-        sys.argv.pop(0)
-        requestcmd = sys.argv[0]
+        argv.pop(0)
+        requestcmd = argv[0]
     cmd = _checkcmd(requestcmd)
     if cmd == False:
-        print("Command %s not supported." % (sys.argv[0]))
+        print("Command %s not supported." % (argv[0]))
         print("Use pycoreutils.py --help for a list of valid commands.")
         sys.exit(1)
 
     # Check if the '_nowindows'-flag is set
     if hasattr(cmd, '_nowindows') and platform.system() == 'Windows':
-        print("Command %s does not work on Windows" % (sys.argv[0]))
+        print("Command %s does not work on Windows" % (argv[0]))
         sys.exit(1)
 
     # Run the command
-    argstr = ' '.join(sys.argv[1:])
+    argstr = ' '.join(argv[1:])
     try:
         cmd(argstr)
     except IOError as err:
         print("{0}: {1}: {2}".format(
-              sys.argv[0], err.filename, err.strerror), file=sys.stderr)
+              argv[0], err.filename, err.strerror), file=sys.stderr)
         sys.exit(err.errno)
     except OSError as err:
         print("{0}: {1}: {2}".format(
-              sys.argv[0], err.filename, err.strerror), file=sys.stderr)
+              argv[0], err.filename, err.strerror), file=sys.stderr)
         sys.exit(err.errno)
+
+
+if __name__ == '__main__':
+    run()

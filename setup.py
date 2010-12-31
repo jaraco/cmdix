@@ -16,6 +16,6 @@ setup(
     author = "Hans van Leeuwen",
     author_email = "hanz@hanz.nl",
     py_modules = ["pycoreutils"],
-    scripts = ['sh.py'],
+    scripts = ['coreutils.py', 'sh.py'],
 )
 
