@@ -14,6 +14,7 @@ import sys
 if sys.version_info[0] != 2 or sys.version_info[1] < 6:
     raise Exception("Pycoreutils requires Python version 2.6 or greater")
 
+import asyncore
 import BaseHTTPServer
 import fileinput
 import gzip
@@ -27,6 +28,7 @@ import random
 import shutil
 import signal
 import SimpleHTTPServer
+import smtpd as _smtpd
 import stat
 import subprocess
 import tempfile
@@ -988,6 +990,30 @@ def shuf(argstr):
             lines = lines[0:int(opts.headcount)]
         for line in lines:
             outfd.write(line)
+
+
+@addcmd
+def smtpd(argstr):
+    p = _optparse()
+    p.description = "An RFC 2821 smtp proxy."
+    p.usage = '%prog [OPTION]...'
+    p.add_option("-a", "--remoteaddress", default="", dest="remoteaddress",
+            help="remote address to connect to")
+    p.add_option("-p", "--remoteport", default=8025, dest="remoteport",
+            type="int", help="remote port to connect to")
+    p.add_option("-A", "--localaddress", default="", dest="localaddress",
+            help="local address to bind to")
+    p.add_option("-P", "--localport", default=8025, dest="localport",
+            type="int", help="local port to listen to")
+    (opts, args) = p.parse_args(argstr.split())
+
+    _smtpd.SMTPServer((opts.localaddress, opts.localport),
+                      (opts.remoteaddress, opts.remoteport))
+
+    try:
+        asyncore.loop()
+    except KeyboardInterrupt:
+        pass
 
 
 @addcmd
