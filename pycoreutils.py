@@ -790,17 +790,12 @@ def rm(argstr):
 
 @addcmd
 def rmdir(argstr):
-    # TODO: Implement -p
     p = _optparse()
     p.description = "Remove the DIRECTORY(ies), if they are empty."
     p.usage = '%prog [OPTION]... DIRECTORY...'
-    p.add_option("--ignore-fail-on-non-empty", action="store_true", dest="ignorefail",
-            help="ignore each failure that is solely because a directory is non-empty")
-    #p.add_option("-p", "--parent", action="store_true", dest="seperator",
-            #help="remove DIRECTORY and its ancestors; e.g., `rmdir -p a/b/c' is similar " +
-            #"to `rmdir a/b/c a/b a'")
-    p.add_option("-v", "--verbose", action="store_true", dest="verbose",
-            help="output a diagnostic for every directory processed")
+    p.add_option("-p", "--parent", action="store_true", dest="parent",
+            help="remove DIRECTORY and its ancestors; e.g., `rmdir -p a/b/c'" +
+                 " is similar to `rmdir a/b/c a/b a'")
     (opts, args) = p.parse_args(argstr.split())
     prog = p.get_prog_name()
 
@@ -810,22 +805,10 @@ def rmdir(argstr):
         sys.exit(1)
 
     for arg in args:
-        if opts.verbose:
-            print(u"rmdir: removing directory, `%s'" % (arg))
-        try:
+        if opts.parent:
+            os.removedirs(arg)
+        else:
             os.rmdir(arg)
-        except OSError, err:
-            if err.errno == 39:
-                if opts.ignorefail:
-                    break
-                print(u"rmdir: failed to remove `%s': Directory not empty" % (arg))
-            elif err.errno == 1:
-                print(u"rmdir: failed to remove `%s': Operation not permitted" % (arg))
-            elif err.errno == 2:
-                print(u"rmdir: failed to remove `%s': No such file or directory" % (arg))
-            else:
-                print(u"Unknown error: %s" % (err))
-            sys.exit(1)
 
 
 @addcmd
