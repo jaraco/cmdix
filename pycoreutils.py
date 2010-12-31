@@ -3,17 +3,36 @@
 
 # Copyright (c) 2010 Hans van Leeuwen.
 # Release under the MIT license.
-# See LICENSE for details.
+# See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
 
-# Check if Python version >= 2.6
-import sys
-if sys.version_info[0] != 2 or sys.version_info[1] < 6:
-    raise Exception("Pycoreutils requires Python version 2.6 or greater")
 
+# First import version-specific modules
+import sys
+if sys.version_info[0] == 2:
+    if sys.version_info[1] < 6:
+        raise Exception("Pycoreutils requires Python version 2.6 or greater")
+
+    from BaseHTTPServer import HTTPServer
+    from SimpleHTTPServer import SimpleHTTPRequestHandler
+    from urllib2 import build_opener, HTTPError
+else:
+    from http.server import HTTPServer, SimpleHTTPRequestHandler
+    from urllib.error import HTTPError
+    from urllib.request import build_opener
+
+
+# 'grp' and 'pwd' are Unix only
+try:
+    import grp as _grp
+    import pwd as _pwd
+except ImportError:
+    pass
+
+
+# Import rest
 import asyncore
-import BaseHTTPServer
 import fileinput
 import gzip
 import hashlib
@@ -25,7 +44,6 @@ import platform
 import random
 import shutil
 import signal
-import SimpleHTTPServer
 import smtpd as _smtpd
 import smtplib
 import socket
@@ -34,18 +52,10 @@ import subprocess
 import tempfile
 import textwrap
 import time
-import urllib2
 import zipfile
 
-try:
-    # 'grp' and 'pwd' are Unix only
-    import grp as _grp
-    import pwd as _pwd
-except ImportError:
-    pass
 
-
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 __license__ = '''
 Copyright (c) 2009, 2010 Hans van Leeuwen
 
@@ -217,7 +227,7 @@ def chroot(argstr):
 
     try:
         os.chroot(args[0])
-    except OSError, err:
+    except OSError as err:
         print("chroot: cannot change root directory to {0}: {1}".format(
                                                     args[0], err.strerror))
 
@@ -276,7 +286,7 @@ def env(argstr):
             sys.exit(127)
     print(x[0] + '=' + x[1])
 
-    for k, v in env.iteritems():
+    for k, v in env.items():
         print(k + '=' + v)
 
 
@@ -326,7 +336,7 @@ def gzip(argstr):
         infile = open(arg, 'r')
         gzippath = arg + '.gz'
         if os.path.exists(gzippath):
-            q = raw_input("gzip: %s already exists; do you wish to overwrite (y or n)? " % (gzippath))
+            q = input("gzip: %s already exists; do you wish to overwrite (y or n)? " % (gzippath))
             if q.upper() != 'Y':
                 print("not overwritten", file=sys.stderr)
                 sys.exit(2)
@@ -345,8 +355,8 @@ def httpd(argstr):
             help="port to listen to")
     (opts, args) = p.parse_args(argstr.split())
 
-    handler = SimpleHTTPServer.SimpleHTTPRequestHandler
-    server = BaseHTTPServer.HTTPServer((opts.address, opts.port), handler)
+    handler = SimpleHTTPRequestHandler
+    server = HTTPServer((opts.address, opts.port), handler)
 
     try:
         server.serve_forever()
@@ -424,7 +434,7 @@ def kill(argstr):
             help="send signal")
 
     # Add a string option for each signal
-    for name, sigint in signals.items():
+    for name, sigint in list(signals.items()):
         signame = 'SIG' + name.upper()
         p.add_option("--%s" % signame, action="store_const", dest="signal",
             const=sigint,
@@ -449,11 +459,11 @@ def kill(argstr):
     except ValueError:
         sig = opts.signal.upper()
     
-    if signals.values().count(sig):
+    if list(signals.values()).count(sig):
         sigint = sig
-    elif signals.has_key(sig):
+    elif sig in signals:
         sigint = signals[sig]
-    elif signals.has_key(sig.lstrip('SIG')):
+    elif sig.lstrip('SIG') in signals:
         sigint = signals[sig.lstrip('SIG')]
     else:
         print("kill: {0}: invalid signal specification".format(
@@ -508,7 +518,7 @@ def ln(argstr):
             print("`%s' -> `%s'" % (src, dst))
         try:
             f(src, dst)
-        except Exception, err:
+        except Exception as err:
             print("ln: creating %s link `%s' => `%s': %s" % (linktype, dst,
                                                             src, err.strerror))
             sys.exit(1)
@@ -550,10 +560,10 @@ def logger(argstr):
 
 
     handler = logging.handlers.SysLogHandler(address, facility)
-    if not handler.facility_names.has_key(facility):
+    if facility not in handler.facility_names:
         print("Unknown facility %s." % facility, file=sys.stderr)
         print("Valid facilities are:", file=sys.stderr)
-        facilitylist = handler.facility_names.keys()
+        facilitylist = list(handler.facility_names.keys())
         facilitylist.sort()
         for f in facilitylist:
             print(" %s\n" % f, file=sys.stderr)
@@ -650,7 +660,7 @@ def mkdir(argstr):
     p.description = "Create the DIRECTORY(ies), if they do not already exist."
     p.add_option("-p", "--parents", action="store_true", dest="parents",
             help="no error if existing, make parent directories as needed")
-    p.add_option("-m", "--mode", action="store", dest="mode", default=0777,
+    p.add_option("-m", "--mode", action="store", dest="mode", default=0o777,
             help="set file mode (as in chmod), not a=rwx - umask")
     p.add_option("-v", "--verbose", action="store_true", dest="verbose",
             help="print a message for each created directory")
@@ -734,7 +744,7 @@ def mv(argstr):
             print("'%s' -> '%s'" % (src, dest))
         try:
             shutil.move(src, dest)
-        except IOError, err:
+        except IOError as err:
             print("mv: %s" % (err.strerror))
             sys.exit(1)
 
@@ -753,9 +763,9 @@ def pwd(argstr):
     if opts.logical:
         print(os.getenv('PWD'))
     elif opts.physical:
-        print(os.path.realpath(os.getcwdu()))
+        print(os.path.realpath(os.getcwd()))
     else:
-        print(os.getcwdu())
+        print(os.getcwd())
 
 
 
@@ -808,7 +818,7 @@ def rm(argstr):
                 os.remove(arg)
                 if opts.verbose:
                     print("Removed `{0}'".format(arg))
-            except OSError, err:
+            except OSError as err:
                 _raise(err)
 
 
@@ -893,17 +903,17 @@ def seq(argstr):
         sys.exit(1)
 
     if len(args) == 1:
-        a = range(1, int(args[0])+1)
+        a = list(range(1, int(args[0])+1))
     elif len(args) == 2:
-        a = range(int(args[0]), int(args[1])+1)
+        a = list(range(int(args[0]), int(args[1])+1))
     elif len(args) == 3:
-        a = range(int(args[0]), int(args[2])+1, int(args[1]))
+        a = list(range(int(args[0]), int(args[2])+1, int(args[1])))
 
     if opts.seperator == None:
         for x in a:
             print(x)
     else:
-        for x in xrange(len(a)-1, 0, -1):
+        for x in range(len(a)-1, 0, -1):
             a.insert(x, opts.seperator)
         for x in a:
             sys.stdout.write(str(x))
@@ -956,12 +966,12 @@ def shred(argstr):
         sys.exit(1)
 
     for arg in args:
-        for i in xrange(opts.iterations):
+        for i in range(opts.iterations):
             size = os.stat(arg).st_size
             fd = open(arg, mode='w')
             logging.debug('Size:', size)
             fd.seek(0)
-            for i in xrange(size):
+            for i in range(size):
                 # Get random byte
                 b = "".join(chr(random.randrange(0, 256)))
                 fd.write(b)
@@ -1010,7 +1020,7 @@ def shuf(argstr):
 
     elif opts.inputrange:
         (lo, hi) = opts.inputrange.split('-')
-        lines = range(int(lo), int(hi)+1)
+        lines = list(range(int(lo), int(hi)+1))
         random.shuffle(lines)
 
         if opts.headcount:
@@ -1235,7 +1245,7 @@ def uname(argstr):
 
 @addcmd
 def wget(argstr):
-    # TODO: recursion, proxy, progress bar, you name it...
+    # TODO: Fix for Python3, recursion, proxy, progress bar, you name it...
     p = _optparse()
     p.description = "Download of files from the Internet"
     p.usage = '%prog [OPTION]... [URL]...'
@@ -1255,22 +1265,20 @@ def wget(argstr):
     else:
         useragent = 'PyCoreutils/%s' % __version__
 
-    opener = urllib2.build_opener()
+    opener = build_opener()
     opener.addheaders = [('User-agent', useragent)]
 
     for url in args:
         try:
             fdin = opener.open(url)
-        except urllib2.HTTPError, e:
+        except HTTPError as e:
             print("Error opening %s: %s\n" % (url, e), file=sys.stderr)
             sys.exit(1)
 
         length = int(fdin.headers['content-length'])
         print("Getting %i bytes from %s" % (length, url))
 
-        for data in fdin.read(4096):
-            fdout.write(data)
-
+        shutil.copyfileobj(fdin, fdout)
         print("Done")
 
 
@@ -1411,7 +1419,7 @@ def _banner(width=None):
     Returns pycoreutils banner.
     The banner is centered if width is defined.
     '''
-    subtext = "-= PyCoreutils Shell version {0} =-".format(__version__)
+    subtext = "-= PyCoreutils version {0} =-".format(__version__)
     banner = [
        " ____  _  _  ___  _____  ____  ____  __  __  ____  ____  __    ___ ",
        "(  _ \( \/ )/ __)(  _  )(  _ \( ___)(  )(  )(_  _)(_  _)(  )  / __)",
@@ -1431,7 +1439,7 @@ def _banner(width=None):
 
 def _checkcmd(command):
     ''' Check a command is available '''
-    a = [cmd for cmd in _cmds if cmd.func_name == command]
+    a = [cmd for cmd in _cmds if cmd.__name__ == command]
     l = len(a)
     if l == 0:
         return False
@@ -1460,9 +1468,9 @@ def _getuserhome():
     '''
     Returns the home-directory of the current user
     '''
-    if os.environ.has_key('HOME'):
+    if 'HOME' in os.environ:
         return os.environ['HOME'] # Unix
-    if os.environ.has_key('HOMEPATH'):
+    if 'HOMEPATH' in os.environ:
         return os.environ['HOMEPATH'] # Windows
 
 
@@ -1470,9 +1478,9 @@ def _getusername():
     '''
     Returns the username of the current user
     '''
-    if os.environ.has_key('USER'):
+    if 'USER' in os.environ:
         return os.environ['USER'] # Unix
-    if os.environ.has_key('USERNAME'):
+    if 'USERNAME' in os.environ:
         return os.environ['USERNAME'] # Windows
 
 
@@ -1502,7 +1510,7 @@ def _listcommands():
     '''
     l = []
     for cmd in _cmds:
-        l.append(cmd.func_name)
+        l.append(cmd.__name__)
     return l
 
 
@@ -1637,11 +1645,11 @@ if __name__ == '__main__':
     argstr = ' '.join(sys.argv[1:])
     try:
         cmd(argstr)
-    except IOError, err:
+    except IOError as err:
         print("{0}: {1}: {2}".format(
               sys.argv[0], err.filename, err.strerror), file=sys.stderr)
         sys.exit(err.errno)
-    except OSError, err:
+    except OSError as err:
         print("{0}: {1}: {2}".format(
               sys.argv[0], err.filename, err.strerror), file=sys.stderr)
         sys.exit(err.errno)

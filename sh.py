@@ -3,7 +3,9 @@
 
 # Copyright (c) 2010 Hans van Leeuwen.
 # Release under the MIT license.
-# See LICENSE for details.
+# See LICENSE.txt for details.
+
+from __future__ import print_function, unicode_literals
 
 import cmd
 import os
@@ -21,7 +23,7 @@ class PyCoreutilsShell(cmd.Cmd):
         framework
         '''
         for cmd in pycoreutils._cmds:
-            x = 'self.do_%s = cmd' % cmd.func_name
+            x = 'self.do_%s = cmd' % cmd.__name__
             exec(x)
 
     def _setprompt(self):
@@ -30,7 +32,7 @@ class PyCoreutilsShell(cmd.Cmd):
         '''
         self.prompt = '%s@%s:%s$ ' % (pycoreutils._getuserhome(),
                                       platform.node(),
-                                      os.getcwdu())
+                                      os.getcwd())
 
     def default(self, line):
         '''

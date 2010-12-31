@@ -16,13 +16,14 @@ Goals
 Requirements
 ------------
 
-PyCoreutils requires Python 2.6 or greater.
+PyCoreutils requires Python 2.6 or greater. It also works on Python 3.
 
 
-Development
------------
+Website
+-------
 
-You can get the latest version at https://launchpad.net/pycoreutils.
+PyCoreutils is located at https://launchpad.net/pycoreutils. Here you can find
+releases, report bugs and download the source.
 
 
 Haven't I seen this before?
@@ -45,5 +46,5 @@ License
 
 Copyright (c) 2010 Hans van Leeuwen.
 Release under the MIT license.
-See LICENSE for details.
+See LICENSE.txt for details.
 
