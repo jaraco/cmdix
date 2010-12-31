@@ -155,7 +155,7 @@ def cat(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     for line in fileinput.input(args, openhook=fileinput.hook_compressed):
-        print(line)
+        print(line, end='')
 
 
 @addcmd
