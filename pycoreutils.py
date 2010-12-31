@@ -14,6 +14,7 @@ import sys
 if sys.version_info[0] != 2 or sys.version_info[1] < 6:
     raise Exception("Pycoreutils requires Python version 2.6 or greater")
 
+import BaseHTTPServer
 import fileinput
 import gzip
 import hashlib
@@ -25,6 +26,7 @@ import platform
 import random
 import shutil
 import signal
+import SimpleHTTPServer
 import stat
 import subprocess
 import tempfile
@@ -328,6 +330,26 @@ def gzip(argstr):
                 sys.exit(2)
         outfile = GzipFile(filename=gzippath, mode='wb', compresslevel=opts.compresslevel)
         shutil.copyfileobj(infile, outfile)
+
+
+@addcmd
+def httpd(argstr):
+    p = _optparse()
+    p.description = "Start a web server that serves the current directory"
+    p.usage = '%prog [OPTION]...'
+    p.add_option("-a", "--address", default="", dest="address",
+            help="address to bind to")
+    p.add_option("-p", "--port", default=8000, dest="port", type="int",
+            help="port to listen to")
+    (opts, args) = p.parse_args(argstr.split())
+
+    handler = SimpleHTTPServer.SimpleHTTPRequestHandler
+    server = BaseHTTPServer.HTTPServer((opts.address, opts.port), handler)
+
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
 
 
 @addcmd
