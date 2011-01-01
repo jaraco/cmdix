@@ -273,11 +273,12 @@ def dirname(argstr):
 def env(argstr):
     # TODO: --unset
     p = parseoptions()
-    p.description = "Set each NAME to VALUE in the environment and run COMMAND."
+    p.description = "Set each NAME to VALUE in the environment and run " + \
+                    "COMMAND."
     p.usage = '%prog [OPTION]... [-] [NAME=VALUE]... [COMMAND [ARG]...]'
-    p.add_option("-i", "--ignore-environment", action="store_true", dest="ignoreenvironment",
-            help="start with an empty environment")
-    #p.add_option("-u", "--unset", action="store", dest="unset",
+    p.add_option("-i", "--ignore-environment", action="store_true",
+            dest="ignoreenvironment", help="start with an empty environment")
+    #p.add_option("-u", "--unset", dest="unset",
             #help="remove variable from the environment")
     (opts, args) = p.parse_args(argstr.split())
 
@@ -301,16 +302,16 @@ def env(argstr):
 def gzip(argstr):
     # TODO: Decompression
     p = parseoptions()
-    p.description = "Compress or uncompress FILEs (by default, compress FILES in-place)."
+    p.description = "Compress or uncompress FILEs (by default, compress " + \
+                    "FILES in-place)."
     p.usage = '%prog [OPTION]... [FILE]...'
-    p.add_option("-c", "--stdout", "--as-stdout", action="store_true", dest="stdout",
+    p.add_option("-c", "--stdout", "--as-stdout", action="store_true",
+            dest="stdout",
             help="write on standard output, keep original files unchanged")
-    p.add_option("-C", "--compresslevel", action="store", dest="compresslevel", type="int", default=6,
-            help="set file mode (as in chmod), not a=rwx - umask")
-    #p.add_option("-d", "--decompress", action="store_true", dest="decompress",
-            #help="force decompression")
-    p.add_option("-1", "--fast", action="store_const", dest="compresslevel", const=1,
-            help="Use the fastest type of compression")
+    p.add_option("-C", "--compresslevel", dest="compresslevel", type="int",
+            default=6, help="set file mode (as in chmod), not a=rwx - umask")
+    p.add_option("-1", "--fast", action="store_const", dest="compresslevel",
+            const=1, help="Use the fastest type of compression")
     p.add_option("-2", action="store_const", dest="compresslevel", const=2,
             help="Use compression level 2")
     p.add_option("-3", action="store_const", dest="compresslevel", const=3,
@@ -325,8 +326,8 @@ def gzip(argstr):
             help="Use compression level 7")
     p.add_option("-8", action="store_const", dest="compresslevel", const=8,
             help="Use compression level 8")
-    p.add_option("-9", "--best", action="store_const", dest="compresslevel", const=9,
-            help="Use the best type of compression")
+    p.add_option("-9", "--best", action="store_const", dest="compresslevel",
+            const=9, help="Use the best type of compression")
     (opts, args) = p.parse_args(argstr.split())
 
     # Use stdin for input if no file is specified or file is '-'
@@ -343,11 +344,13 @@ def gzip(argstr):
         infile = open(arg, 'r')
         gzippath = arg + '.gz'
         if os.path.exists(gzippath):
-            q = input("gzip: %s already exists; do you wish to overwrite (y or n)? " % (gzippath))
+            q = input("gzip: {0} already exists; do you wish to overwrite " + \
+                      "(y or n)? ".format(gzippath))
             if q.upper() != 'Y':
                 print("not overwritten", file=sys.stderr)
                 sys.exit(2)
-        outfile = GzipFile(filename=gzippath, mode='wb', compresslevel=opts.compresslevel)
+        outfile = GzipFile(filename=gzippath, mode='wb',
+                           compresslevel=opts.compresslevel)
         shutil.copyfileobj(infile, outfile)
 
 
@@ -377,7 +380,8 @@ def id(argstr):
     # TODO: List all groups a user belongs to
     p = parseoptions()
     p.description = "Print user and group information for the specified " + \
-                   "USERNAME, or (when USERNAME omitted) for the current user."
+                    "USERNAME, or (when USERNAME omitted) for the current " + \
+                    "user."
     p.usage = '%prog [OPTION]... [USERNAME]'
     p.add_option("-a", action="store_true", dest="ignoreme",
             help="ignore, for compatibility with other versions")
@@ -526,8 +530,8 @@ def ln(argstr):
         try:
             f(src, dst)
         except Exception as err:
-            print("ln: creating %s link `%s' => `%s': %s" % (linktype, dst,
-                                                            src, err.strerror))
+            print("ln: creating {0} link `{1}' => `{2}': {3}".format(
+                   linktype, dst, src, err.strerror))
             sys.exit(1)
 
 
@@ -535,20 +539,21 @@ def ln(argstr):
 def logger(argstr):
     # TODO: -i, -f, t
     p = parseoptions()
-    p.description = "A shell command interface to the syslog system log module"
+    p.description = "A shell command interface to the syslog system log " + \
+                    "module"
     p.usage = '%prog [OPTION] [ MESSAGE ... ]'
-    p.add_option("--host", action="store", dest="host",
-            help="Address of the syslog daemon. The default is ``localhost'.'")
-    p.add_option("-p", action="store", dest="priority",
+    p.add_option("--host", dest="host",
+            help="Address of the syslog daemon. The default is `localhost'")
+    p.add_option("-p", dest="priority",
             help="Enter the message with the specified priority. The " + \
                  "priority may as a ``facility.level'' pair. For example, " + \
                  "``-p local3.info'' logs the message(s) as informational " + \
                  "level in the local3 facility. " + \
                  "The default is ``user.notice.''")
-    p.add_option("--port", action="store", dest="port",
+    p.add_option("--port", dest="port",
             help="Port of the syslog daemon. The default is 514'.'")
     p.add_option("-s", action="store_true", dest="stderr",
-            help="Log the message to standard error, as well as the " +\
+            help="Log the message to standard error, as well as the "  + \
                  "system log.")
     (opts, args) = p.parse_args(argstr.split())
 
@@ -564,7 +569,6 @@ def logger(argstr):
         address = (host, port)
     else:
         address = '/dev/log'
-
 
     handler = logging.handlers.SysLogHandler(address, facility)
     if facility not in handler.facility_names:
@@ -636,23 +640,24 @@ def ls(argstr):
 
         for mode, nlink, uid, gid, size, mtime, f in l:
             modtime = "{0}-{1}-{2} {3:0>2}:{4:0>2}".format(
-                mtime.tm_year,
-                mtime.tm_mon,
-                mtime.tm_yday,
-                mtime.tm_hour,
-                mtime.tm_min
-                )
-            print("{0} {1:>{nlink}} {2:<5} {3:<5} {4:>{size}} {5} {6} ".format(
-                mode,
-                nlink,
-                uid,
-                gid,
-                size,
-                modtime,
-                f,
-                size=sizelen,
-                nlink=nlinklen,
-                ))
+                                                            mtime.tm_year,
+                                                            mtime.tm_mon,
+                                                            mtime.tm_yday,
+                                                            mtime.tm_hour,
+                                                            mtime.tm_min
+                                                            )
+            print("{0} {1:>{nlink}} {2:<5} {3:<5} {4:>{size}} {5} " + \
+                  "{6}".format(
+                                mode,
+                                nlink,
+                                uid,
+                                gid,
+                                size,
+                                modtime,
+                                f,
+                                size=sizelen,
+                                nlink=nlinklen,
+                                ))
 
 
 @addcommand
@@ -664,10 +669,11 @@ def md5sum(argstr):
 def mkdir(argstr):
     p = parseoptions()
     p.usage = '%prog [OPTION]... DIRECTORY...'
-    p.description = "Create the DIRECTORY(ies), if they do not already exist."
+    p.description = "Create the DIRECTORY(ies), if they do not already " + \
+                    "exist."
     p.add_option("-p", "--parents", action="store_true", dest="parents",
             help="no error if existing, make parent directories as needed")
-    p.add_option("-m", "--mode", action="store", dest="mode", default=0o777,
+    p.add_option("-m", "--mode", dest="mode", default=0o777,
             help="set file mode (as in chmod), not a=rwx - umask")
     p.add_option("-v", "--verbose", action="store_true", dest="verbose",
             help="print a message for each created directory")
@@ -681,8 +687,8 @@ def mkdir(argstr):
 
     for arg in args:
         if opts.parents:
-            # Recursively create directories.
-            # We can't use os.makedirs because -v won't show all intermediate directories
+            # Recursively create directories. We can't use os.makedirs
+            # because -v won't show all intermediate directories
             path = arg
             pathlist = []
 
@@ -729,7 +735,9 @@ def mktemp(argstr):
 def mv(argstr):
     p = parseoptions()
     p.description = "Rename SOURCE to DEST, or move SOURCE(s) to DIRECTORY."
-    p.usage = '%prog [OPTION]... [-T] SOURCE DEST\nor:    %prog [OPTION]... SOURCE... DIRECTORY\nor:    %prog [OPTION]... -t DIRECTORY SOURCE...'
+    p.usage = "%prog [OPTION]... [-T] SOURCE DEST\nor:    " + \
+              "%prog [OPTION]... SOURCE... DIRECTORY\nor:    " + \
+              "%prog [OPTION]... -t DIRECTORY SOURCE..."
     p.add_option("-v", "--verbose", action="store_true", dest="verbose",
             help="explain what is being done")
     (opts, args) = p.parse_args(argstr.split())
@@ -835,8 +843,8 @@ def rmdir(argstr):
     p.description = "Remove the DIRECTORY(ies), if they are empty."
     p.usage = '%prog [OPTION]... DIRECTORY...'
     p.add_option("-p", "--parent", action="store_true", dest="parent",
-            help="remove DIRECTORY and its ancestors; e.g., `rmdir -p a/b/c'" +
-                 " is similar to `rmdir a/b/c a/b a'")
+            help="remove DIRECTORY and its ancestors; e.g., " +
+                 "`rmdir -p a/b/c' is similar to `rmdir a/b/c a/b a'")
     (opts, args) = p.parse_args(argstr.split())
     prog = p.get_prog_name()
 
@@ -867,7 +875,8 @@ def sendmail(argstr):
             help="set the envelope sender address")
     p.add_option("-k", "--keyfile", dest="keyfile",
             help="key file to use. implies '-s'")
-    p.add_option("-m", "--messagefile", default=sys.stdin, dest="messagefile",
+    p.add_option("-m", "--messagefile", default=sys.stdin,
+            dest="messagefile",
             help="read message from file. by default, read from stdin.")
     p.add_option("-p", "--port", default=25, dest="port", type="int",
             help="port to send to. defaults is 25")
@@ -884,8 +893,10 @@ def sendmail(argstr):
         msg += line
 
     if opts.ssl or opts.certfile or opts.keyfile:
-        smtp = smtplib.SMTP_SSL(opts.address, opts.port, timeout=opts.timeout,
-                                keyfile=opts.keyfile, certfile=opts.certfile)
+        smtp = smtplib.SMTP_SSL(opts.address, opts.port,
+                                timeout=opts.timeout,
+                                keyfile=opts.keyfile,
+                                certfile=opts.certfile)
     else:
         smtp = smtplib.SMTP(opts.address, opts.port, timeout=opts.timeout)
 
@@ -897,9 +908,11 @@ def sendmail(argstr):
 @addcommand
 def seq(argstr):
     p = parseoptions()
-    p.description = "Print numbers from FIRST to LAST, in steps of INCREMENT."
-    p.usage = '%prog [OPTION]... LAST\nor:    %prog [OPTION]... FIRST LAST\nor:    %prog [OPTION]... FIRST INCREMENT LAST'
-    p.add_option("-s", "--seperator", action="store", dest="seperator",
+    p.description = "Print numbers from FIRST to LAST, in steps of " + \
+                    "INCREMENT."
+    p.usage = "%prog [OPTION]... LAST\nor:    %prog [OPTION]... FIRST " + \
+              "LAST\nor:    %prog [OPTION]... FIRST INCREMENT LAST"
+    p.add_option("-s", "--seperator", dest="seperator",
             help="use SEPERATOR to separate numbers (default: \\n)")
     (opts, args) = p.parse_args(argstr.split())
     prog = p.get_prog_name()
@@ -954,13 +967,14 @@ def sha512sum(argstr):
 
 @addcommand
 def shred(argstr):
-    # TODO: This program acts as 'shred -x', and doesn't round file sizes up to the next full block
     p = parseoptions()
     p.description = "Overwrite the specified FILE(s) repeatedly, in order " + \
                     "to make it harder for even very expensive hardware " + \
                     "probing to recover the data."
     p.usage = '%prog [OPTION]... FILE...'
-    p.add_option("-n", "--iterations", action="store", dest="iterations", default=3,
+    p.epilog = "This program acts as GNU 'shred -x', and doesn't round " + \
+               "sizes up to the next full block"
+    p.add_option("-n", "--iterations", dest="iterations", default=3,
             help="overwrite ITERATIONS times instead of the default (3)")
     p.add_option("-v", "--verbose", action="store_true", dest="verbose",
             help="show progress")
@@ -990,14 +1004,15 @@ def shuf(argstr):
     p = parseoptions()
     p.description = "Write a random permutation of the input lines to " + \
                     "standard output."
-    p.usage = '%prog [OPTION]... [FILE]\nor:    %prog -e [OPTION]... [ARG]...\nor:    %prog -i LO-HI [OPTION]...'
+    p.usage = '%prog [OPTION]... [FILE]\nor:    %prog -e [OPTION]... ' + \
+              '[ARG]...\nor:    %prog -i LO-HI [OPTION]...'
     p.add_option("-e", "--echo", action="store_true", dest="echo",
             help="treat each ARG as an input line")
-    p.add_option("-i", "--input-range", action="store", dest="inputrange",
+    p.add_option("-i", "--input-range", dest="inputrange",
             help="treat each number LO through HI as an input line")
-    p.add_option("-n", "--head-count", action="store", dest="headcount",
+    p.add_option("-n", "--head-count", dest="headcount",
             help="output at most HEADCOUNT lines")
-    p.add_option("-o", "--output", action="store", dest="output",
+    p.add_option("-o", "--output", dest="output",
             help="write result to OUTPUT instead of standard output")
     (opts, args) = p.parse_args(argstr.split())
 
@@ -1078,12 +1093,12 @@ def smtpd(argstr):
 @addcommand
 def sleep(argstr):
     p = parseoptions()
-    p.description = "Pause for NUMBER seconds. SUFFIX may be `s' for seconds" + \
-                    " (the default), `m' for minutes, `h' for hours or `d' " + \
-                    "for days. Unlike most implementations that require " + \
-                    "NUMBER be an integer, here NUMBER may be an arbitrary " + \
-                    "floating point number. Given two or more arguments, " + \
-                    "pause for the amount of time"
+    p.description = "Pause for NUMBER seconds. SUFFIX may be `s' for " + \
+                    "seconds (the default), `m' for minutes, `h' for " + \
+                    "hours or `d' for days. Unlike most implementations " + \
+                    "that require NUMBER be an integer, here NUMBER may " + \
+                    "be an arbitrary floating point number. Given two or " + \
+                    "more arguments, pause for the amount of time"
     p.usage = '%prog NUMBER[SUFFIX]...\nor:    %prog OPTION'
     (opts, args) = p.parse_args(argstr.split())
     prog = p.get_prog_name()
@@ -1124,7 +1139,7 @@ def tail(argstr):
     p.usage = '%prog [OPTION]... [FILE]...'
     p.add_option("-f", "--follow", action="store_true", dest="follow",
             help="output appended data as the file grows")
-    p.add_option("-n", "--lines=N", action="store", dest="lines",
+    p.add_option("-n", "--lines=N", dest="lines",
             help="output the last N lines, instead of the last 10")
     (opts, args) = p.parse_args(argstr.split())
 
@@ -1145,10 +1160,10 @@ def tail(argstr):
 def touch(argstr):
     # TODO: Implement --date, --time and -t
     p = parseoptions()
-    p.description = "Update the access and modification times of each FILE " + \
-                    "to the current time. A FILE argument that does not " + \
-                    "exist is created empty. A FILE argument string of - is" + \
-                    " handled specially and causes touch to"
+    p.description = "Update the access and modification times of each " + \
+                    "FILE to the current time. A FILE argument that does " + \
+                    "not exist is created empty. A FILE argument string " + \
+                    "of - is handled specially and causes touch to"
     p.usage = '%prog [OPTION]... FILE...'
     p.add_option("-a", action="store_true", dest="accessonly",
             help="change only the access time")
@@ -1158,7 +1173,7 @@ def touch(argstr):
             help="(ignored)")
     p.add_option("-m", action="store_true", dest="modonly",
             help="change only the modification time")
-    p.add_option("-r", "--reference", action="store", dest="reference",
+    p.add_option("-r", "--reference", dest="reference",
             help="use this file's times instead of current time")
     (opts, args) = p.parse_args(argstr.split())
     prog = p.get_prog_name()
@@ -1196,25 +1211,27 @@ def uname(argstr):
                     "same as -s."
     p.usage = '%prog [OPTION]...'
     p.add_option("-a", "--all", action="store_true", dest="all",
-            help="print all information, in the following order, except omit -p and -i if unknown")
-    p.add_option("-s", "--kernel-name", action="store_true", dest="kernelname",
-            help="print the kernel name")
+            help="print all information, in the following order, except " + \
+                  "omit -p and -i if unknown")
+    p.add_option("-s", "--kernel-name", action="store_true",
+            dest="kernelname", help="print the kernel name")
     p.add_option("-n", "--nodename", action="store_true", dest="nodename",
             help="print the network node hostname")
-    p.add_option("-r", "--kernel-release", action="store_true", dest="kernelrelease",
-            help="print the kernel release")
-    p.add_option("-v", "--kernel-version", action="store_true", dest="kernelversion",
-            help="print the kernel version")
+    p.add_option("-r", "--kernel-release", action="store_true",
+            dest="kernelrelease", help="print the kernel release")
+    p.add_option("-v", "--kernel-version", action="store_true",
+            dest="kernelversion", help="print the kernel version")
     p.add_option("-m", "--machine", action="store_true", dest="machine",
             help="print the machine hardware name")
     p.add_option("-p", "--processor", action="store_true", dest="processor",
             help='print the processor type or "unknown"')
-    p.add_option("-i", "--hardware-platform", action="store_true", dest="hardwareplatform",
+    p.add_option("-i", "--hardware-platform", action="store_true",
+            dest="hardwareplatform",
             help="print the hardware platform or \"unknown\"")
-    p.add_option("-o", "--operating-system", action="store_true", dest="operatingsystem",
-            help="print the operating system")
-    p.add_option("-A", "--architecture", action="store_true", dest="architecture",
-            help="print the systems architecture")
+    p.add_option("-o", "--operating-system", action="store_true",
+            dest="operatingsystem", help="print the operating system")
+    p.add_option("-A", "--architecture", action="store_true",
+            dest="architecture", help="print the systems architecture")
     (opts, args) = p.parse_args(argstr.split())
 
     output = []
@@ -1256,9 +1273,9 @@ def wget(argstr):
     p = parseoptions()
     p.description = "Download of files from the Internet"
     p.usage = '%prog [OPTION]... [URL]...'
-    p.add_option("-O", "--output-document", action="store", dest="outputdocument",
+    p.add_option("-O", "--output-document", dest="outputdocument",
             help="write documents to FILE.")
-    p.add_option("-u", "--user-agent", action="store", dest="useragent",
+    p.add_option("-u", "--user-agent", dest="useragent",
             help="identify as AGENT instead of PyCoreutils/VERSION.")
     (opts, args) = p.parse_args(argstr.split())
 
@@ -1401,8 +1418,8 @@ def zip(argstr):
                 zf.write(path, zippath, zipfile.ZIP_DEFLATED)
             elif os.path.isdir(path):
                 for nm in os.listdir(path):
-                    addToZip(zf,
-                             os.path.join(path, nm), os.path.join(zippath, nm))
+                    addToZip(zf, os.path.join(path, nm),
+                             os.path.join(zippath, nm))
             else:
                 print("Can't store {0}".format(path), file=sys.stderr)
 
@@ -1429,7 +1446,8 @@ def checkcommand(command):
     if l == 0:
         return False
     if l > 1:
-        raise "Command '%s' has multiple functions associated with it!" % (command)
+        raise "Command `{0}' has multiple functions associated with " + \
+              "it!".format(command)
     return a[0]
 
 
@@ -1580,8 +1598,8 @@ def mode2string(mode):
 
 def parseoptions():
     optparser = optparse.OptionParser(version=__version__)
-    optparser.add_option("--license", action="callback", callback=printlicense,
-        help="show program's license and exit")
+    optparser.add_option("--license", action="callback",
+        callback=printlicense, help="show program's license and exit")
     return optparser
 
 
@@ -1654,10 +1672,10 @@ def showbanner(width=None):
     '''
     subtext = "-= PyCoreutils version {0} =-".format(__version__)
     banner = [
-       " ____  _  _  ___  _____  ____  ____  __  __  ____  ____  __    ___ ",
-       "(  _ \( \/ )/ __)(  _  )(  _ \( ___)(  )(  )(_  _)(_  _)(  )  / __)",
-       " )___/ \  /( (__  )(_)(  )   / )__)  )(__)(   )(   _)(_  )(__ \__ \\",
-       "(__)   (__) \___)(_____)(_)\_)(____)(______) (__) (____)(____)(___/",
+        " ____  _  _  ___  _____  ____  ____  __  __  ____  ____  __    ___ ",
+        "(  _ \( \/ )/ __)(  _  )(  _ \( ___)(  )(  )(_  _)(_  _)(  )  / __)",
+        " )___/ \  /( (__  )(_)(  )   / )__)  )(__)(   )(   _)(_  )(__ \__ \\",
+        "(__)   (__) \___)(_____)(_)\_)(____)(______) (__) (____)(____)(___/",
     ]
 
     if width:
