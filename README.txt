@@ -22,16 +22,16 @@ PyCoreutils requires Python 2.6 or greater. It also works on Python 3.
 Website
 -------
 
-PyCoreutils is located at https://launchpad.net/pycoreutils. Here you can find
-releases, report bugs and download the source.
+PyCoreutils is located at https://launchpad.net/pycoreutils. Here you can
+find releases, report bugs and download the source.
 
 
 Haven't I seen this before?
 ---------------------------
 
 David Cantrell also has a project with the same name at
-https://github.com/dcantrell/pycoreutils. His project is a little different in
-that it uses C-bindings, is GPL-licensed and is structured differently.
+https://github.com/dcantrell/pycoreutils. His project is a little different
+in that it uses C-bindings, is GPL-licensed and is structured differently.
 
 
 Warning
@@ -44,7 +44,6 @@ implemented, and some behave different than one might expect.
 License
 -------
 
-Copyright (c) 2010 Hans van Leeuwen.
+Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
 Release under the MIT license.
 See LICENSE.txt for details.
-
