@@ -14,6 +14,8 @@ if sys.version_info[0] == 2:
     if sys.version_info[1] < 6:
         raise Exception("Pycoreutils requires Python version 2.6 or greater")
 
+    input = raw_input
+
     from BaseHTTPServer import HTTPServer
     from SimpleHTTPServer import SimpleHTTPRequestHandler
     from urllib2 import build_opener, HTTPError
@@ -34,8 +36,9 @@ except ImportError:
 # Import rest
 import asyncore
 import base64 as _base64
+import bz2
 import fileinput
-import gzip
+import gzip as _gzip
 import hashlib
 import logging
 import logging.handlers
@@ -175,6 +178,16 @@ def basename(argstr):
         b = b.rstrip(args[1])
 
     print(b)
+
+
+@addcommand
+def bunzip2(argstr):
+    compressor(argstr, 'bzip2', True)
+
+
+@addcommand
+def bzip2(argstr):
+    compressor(argstr, 'bzip2')
 
 
 @addcommand
@@ -335,59 +348,13 @@ def false(argstr):
 
 
 @addcommand
+def gunzip(argstr):
+    compressor(argstr, 'gzip', True)
+
+
+@addcommand
 def gzip(argstr):
-    # TODO: Decompression
-    p = parseoptions()
-    p.description = "Compress or uncompress FILEs (by default, compress " + \
-                    "FILES in-place)."
-    p.usage = '%prog [OPTION]... [FILE]...'
-    p.add_option("-c", "--stdout", "--as-stdout", action="store_true",
-            dest="stdout",
-            help="write on standard output, keep original files unchanged")
-    p.add_option("-C", "--compresslevel", dest="compresslevel", type="int",
-            default=6, help="set file mode (as in chmod), not a=rwx - umask")
-    p.add_option("-1", "--fast", action="store_const", dest="compresslevel",
-            const=1, help="Use the fastest type of compression")
-    p.add_option("-2", action="store_const", dest="compresslevel", const=2,
-            help="Use compression level 2")
-    p.add_option("-3", action="store_const", dest="compresslevel", const=3,
-            help="Use compression level 3")
-    p.add_option("-4", action="store_const", dest="compresslevel", const=4,
-            help="Use compression level 4")
-    p.add_option("-5", action="store_const", dest="compresslevel", const=5,
-            help="Use compression level 5")
-    p.add_option("-6", action="store_const", dest="compresslevel", const=6,
-            help="Use compression level 6")
-    p.add_option("-7", action="store_const", dest="compresslevel", const=7,
-            help="Use compression level 7")
-    p.add_option("-8", action="store_const", dest="compresslevel", const=8,
-            help="Use compression level 8")
-    p.add_option("-9", "--best", action="store_const", dest="compresslevel",
-            const=9, help="Use the best type of compression")
-    (opts, args) = p.parse_args(argstr.split())
-
-    # Use stdin for input if no file is specified or file is '-'
-    if len(args) == 0 or (len(args) == 1 and args[0] == '-'):
-        infile = sys.stdin
-
-    # Use stdout for output if no file is specified, or if -c is given
-    if len(args) == 0 or opts.stdout:
-        outfile = gzip.GzipFile(fileobj=sys.stdout,
-                                mode='wb',
-                                compresslevel=opts.compresslevel)
-
-    for arg in args:
-        infile = open(arg, 'r')
-        gzippath = arg + '.gz'
-        if os.path.exists(gzippath):
-            q = input("gzip: {0} already exists; do you wish to overwrite " + \
-                      "(y or n)? ".format(gzippath))
-            if q.upper() != 'Y':
-                print("not overwritten", file=sys.stderr)
-                sys.exit(2)
-        outfile = GzipFile(filename=gzippath, mode='wb',
-                           compresslevel=opts.compresslevel)
-        shutil.copyfileobj(infile, outfile)
+    compressor(argstr, 'gzip')
 
 
 @addcommand
@@ -1178,7 +1145,7 @@ def sort(argstr):
     for line in fileinput.input(args):
         l.append(line)
 
-    l.sort(reverse=opts.reverse or False)
+    l.sort(reverse=opts.reverse)
     print(''.join(l))
 
 
@@ -1231,7 +1198,7 @@ def tee(argstr):
         sys.stdout.write(line)
         for fd in fdlist:
             fd.write(line)
-
+        
 
 @addcommand
 def touch(argstr):
@@ -1526,6 +1493,94 @@ def checkcommand(command):
         raise "Command `{0}' has multiple functions associated with " + \
               "it!".format(command)
     return a[0]
+
+
+def compressor(argstr, comptype='gzip', decompress=False):
+    '''
+    Handles compression and decompression as bzip2 and gzip
+    '''
+    p = parseoptions()
+    p.description = "Compress or uncompress FILEs (by default, compress " + \
+                    "FILES in-place)."
+    p.usage = '%prog [OPTION]... [FILE]...'
+    p.add_option("-c", "--stdout", "--as-stdout", action="store_true",
+            dest="stdout",
+            help="write on standard output, keep original files unchanged")
+    p.add_option("-C", "--compresslevel", dest="compresslevel", type="int",
+            default=6, help="set file mode (as in chmod), not a=rwx - umask")
+    p.add_option("-d", "--decompress", action="store_true", dest="decompress",
+            help="decompress")
+    p.add_option("-1", "--fast", action="store_const", dest="compresslevel",
+            const=1, help="Use the fastest type of compression")
+    p.add_option("-2", action="store_const", dest="compresslevel", const=2,
+            help="Use compression level 2")
+    p.add_option("-3", action="store_const", dest="compresslevel", const=3,
+            help="Use compression level 3")
+    p.add_option("-4", action="store_const", dest="compresslevel", const=4,
+            help="Use compression level 4")
+    p.add_option("-5", action="store_const", dest="compresslevel", const=5,
+            help="Use compression level 5")
+    p.add_option("-6", action="store_const", dest="compresslevel", const=6,
+            help="Use compression level 6")
+    p.add_option("-7", action="store_const", dest="compresslevel", const=7,
+            help="Use compression level 7")
+    p.add_option("-8", action="store_const", dest="compresslevel", const=8,
+            help="Use compression level 8")
+    p.add_option("-9", "--best", action="store_const", dest="compresslevel",
+            const=9, help="Use the best type of compression")
+    (opts, args) = p.parse_args(argstr.split())
+    prog = p.get_prog_name()
+
+    if comptype == 'gzip':
+        compresstype = _gzip.GzipFile
+        suffix = '.gz'
+    elif comptype == 'bzip' or comptype == 'bzip2':
+        compresstype = bz2.BZ2File
+        suffix = '.bz2'
+
+    infiles = args
+    stdin = False
+
+    # Use stdin for input if no file is specified or file is '-'
+    if len(args) == 0 or (len(args) == 1 and args[0] == '-'):
+        infiles = [sys.stdin]
+        stdin = True
+
+    for infile in infiles:
+        if opts.decompress or decompress:
+            # Decompress
+            infile = compresstype(infile, 'rb',
+                                  compresslevel=opts.compresslevel)
+            if len(args) == 0 or opts.stdout:
+                outfile = sys.stdout
+            else:
+                unzippath = infile.rstrip(suffix)
+                if os.path.exists(unzippath):
+                    q = input("{0}: {1} already ".format(prog, unzippath) + \
+                              "exists; do you wish to overwrite (y or n)? ")
+                    if q.upper() != 'Y':
+                        print("not overwritten", file=sys.stderr)
+                        sys.exit(2)
+
+                outfile = open(unzippath, 'wb')
+        else:
+            # Compress
+            zippath = infile + suffix
+            infile = open(infile, 'rb')
+            if len(args) == 0 or opts.stdout:
+                outfile = sys.stdout
+            else:
+                if os.path.exists(zippath):
+                    q = input("{0}: {1} already".format(prog, zippath) + \
+                              " exists; do you wish to overwrite (y or n)? ")
+                    if q.upper() != 'Y':
+                        print("not overwritten", file=sys.stderr)
+                        sys.exit(2)
+
+                outfile = compresstype(zippath, 'wb',
+                                       compresslevel=opts.compresslevel)
+
+        shutil.copyfileobj(infile, outfile)
 
 
 def getcurrentusername():
