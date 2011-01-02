@@ -325,6 +325,16 @@ def env(argstr):
 
 
 @addcommand
+def false(argstr):
+    p = parseoptions()
+    p.description = "Do nothing, unsuccessfully"
+    p.usage = "%prog [OPTION]..."
+    (opts, args) = p.parse_args(argstr.split())
+
+    sys.exit(1)
+
+
+@addcommand
 def gzip(argstr):
     # TODO: Decompression
     p = parseoptions()
