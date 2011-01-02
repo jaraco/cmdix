@@ -33,6 +33,7 @@ except ImportError:
 
 # Import rest
 import asyncore
+import base64 as _base64
 import fileinput
 import gzip
 import hashlib
@@ -117,6 +118,31 @@ def arch(argstr):
         sys.exit(1)
 
     print(platform.machine(), end='')
+
+
+@addcommand
+def base64(argstr):
+    p = parseoptions()
+    p.description = "Base64 encode or decode FILE, or standard input, " + \
+                    "to standard output."
+    p.usage = '%prog [OPTION]... [FILE]'
+    p.add_option("-d", action="store_true", dest="decode",
+            help="decode data")
+    (opts, args) = p.parse_args(argstr.split())
+
+    # Use stdin for input if no file is specified or file is '-'
+    if len(args) == 0 or (len(args) == 1 and args[0] == '-'):
+        if opts.decode:
+            _base64.decode(sys.stdout, sys.stdout)
+        else:
+            _base64.encode(sys.stdin, sys.stdout)
+    else:
+        for filename in args:
+            fd = open(filename)
+            if opts.decode:
+                _base64.decode(fd, sys.stdout)
+            else:
+                _base64.encode(fd, sys.stdout)
 
 
 @addcommand
