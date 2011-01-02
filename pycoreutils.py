@@ -1183,6 +1183,30 @@ def tail(argstr):
 
 
 @addcommand
+@onlyunix
+def tee(argstr):
+    p = parseoptions()
+    p.description = "Copy standard input to each FILE, and also to " + \
+                    "standard output."
+    p.usage = "%prog [OPTION]... [FILE]..."
+    p.add_option("-a", "--append", action="store_true", dest="append",
+            help="append to the given FILEs, do not overwrite")
+    (opts, args) = p.parse_args(argstr.split())
+
+    fdlist = []
+    for filename in args:
+        if opts.append:
+            fdlist.append(open(filename, 'a'))
+        else:
+            fdlist.append(open(filename, 'w'))
+
+    for line in sys.stdin.readlines():
+        sys.stdout.write(line)
+        for fd in fdlist:
+            fd.write(line)
+
+
+@addcommand
 def touch(argstr):
     # TODO: Implement --date, --time and -t
     p = parseoptions()
