@@ -1165,6 +1165,23 @@ def sleep(argstr):
     time.sleep(sum(a))
 
 
+@addcommand
+def sort(argstr):
+    p = parseoptions()
+    p.description = "sort lines of text files"
+    p.usage = "%prog [OPTION]..."
+    p.add_option("-r", "--reverse", action="store_true", dest="reverse",
+            help="reverse the result of comparisons")
+    (opts, args) = p.parse_args(argstr.split())
+
+    l = []
+    for line in fileinput.input(args):
+        l.append(line)
+
+    l.sort(reverse=opts.reverse or False)
+    print(''.join(l))
+
+
 def tail(argstr):
     # TODO: Everything!!!!!!!!
     p = parseoptions()
