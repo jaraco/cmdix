@@ -1743,17 +1743,29 @@ def printlicense(option, opt, value, parser):
     sys.exit(0)
 
 
-def run(argv=sys.argv, width=78):
+def run(argv=sys.argv, width=78,
+        stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin):
     '''
     Parse arguments and run command.
     This is where the magic happens :-)
 
-    :argv:  List of arguments
-    :width: Wrap lines a 'width' characters
+    :argv:      List of arguments
+    :width:     Wrap lines a 'width' characters
+    :stdout:    A file-like object to use as stdout
+    :stderr:    A file-like object to use as stderr
+    :stdin:    A file-like object to use as stdin
     '''
+    # Replace std's
+    original_stdout = sys.stdout
+    original_stderr = sys.stderr
+    original_stdin = sys.stdin
+    sys.stdout = stdout
+    sys.stderr = stderr
+    sys.stdin = stdin
+    
     # Get the requested command
     requestcmd = os.path.basename(argv[0])
-    if requestcmd == 'coreutils.py' or requestcmd == 'pycoreutils.py':
+    if requestcmd == 'coreutils.py' or requestcmd == '__init__.py':
         # Print help if pycoreutils.py is directly run without any arguments
         if len(argv) == 1 \
         or argv[1] == "-h" \
@@ -1795,6 +1807,11 @@ def run(argv=sys.argv, width=78):
         print("{0}: {1}: {2}".format(
               argv[0], err.filename, err.strerror), file=sys.stderr)
         sys.exit(err.errno)
+    finally:
+        # Restore std's
+        sys.stdout = original_stdout
+        sys.stderr = original_stderr
+        sys.stdin = original_stdin
 
 
 def showbanner(width=None):
