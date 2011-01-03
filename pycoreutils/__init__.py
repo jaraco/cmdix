@@ -59,7 +59,7 @@ import time
 import zipfile
 
 
-__version__ = '0.0.4'
+__version__ = '0.0.5a'
 __license__ = '''Copyright (c) 2009, 2010, 2011 Hans van Leeuwen
 
 Permission is hereby granted, free of charge, to any person obtaining a

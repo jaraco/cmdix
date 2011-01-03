@@ -15,7 +15,7 @@ setup(
     url = "http://hanz.nl",
     author = "Hans van Leeuwen",
     author_email = "hanz@hanz.nl",
-    py_modules = ["pycoreutils"],
-    scripts = ['coreutils.py', 'sh.py'],
+    packages = ["pycoreutils", "pycoreutils.tests"],
+    scripts = ["coreutils.py", "sh.py"],
 )
 
