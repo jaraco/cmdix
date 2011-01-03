@@ -116,9 +116,7 @@ def arch(argstr):
     prog = p.get_prog_name()
 
     if len(args) > 0:
-        print("{0}: extra operand `{1}'".format(prog, args[0]))
-        print("Try {0} --help' for more information.".format(prog))
-        sys.exit(1)
+        raise ExtraOperandException(prog, args[0])
 
     print(platform.machine(), end='')
 
@@ -158,14 +156,10 @@ def basename(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print("{0}: missing operand".format(prog))
-        print("Try {0} --help' for more information.".format(prog))
-        sys.exit(1)
+        raise MissingOperandException(prog)
 
     if len(args) > 2:
-        print("{0}: extra operand `{1}'".format(prog, args[0]))
-        print("Try {0} --help' for more information.".format(prog))
-        sys.exit(1)
+        raise ExtraOperandException(prog, args[2])
 
     b = args[0]
 
@@ -216,9 +210,7 @@ def cd(argstr):
     elif len(args) == 1:
         pth = os.path.expanduser(args[0])
     else:
-        print("{0}: extra operand `{1}'".format(prog, args[0]))
-        print("Try {0} --help' for more information.".format(prog))
-        sys.exit(1)
+        raise ExtraOperandException(prog, args[1])
 
     os.chdir(pth)
 
@@ -236,9 +228,7 @@ def chown(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print("{0}: missing operand".format(prog))
-        print("Try {0} --help' for more information.".format(prog))
-        sys.exit(1)
+        raise MissingOperandException(prog)
 
     uid = args.pop(0)
     if not uid.isdigit():
@@ -262,9 +252,7 @@ def chroot(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print("{0}: missing operand".format(prog))
-        print("Try {0} --help' for more information.".format(prog))
-        sys.exit(1)
+        raise MissingOperandException(prog)
 
     # If no command is given, run ''${SHELL} -i''
     if len(args) == 1:
@@ -291,14 +279,10 @@ def dirname(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print("{0}: missing operand".format(prog))
-        print("Try {0} --help' for more information.".format(prog))
-        sys.exit(1)
+        raise MissingOperandException(prog)
 
     if len(args) > 1:
-        print("{0}: extra operand `{1}'".format(prog, args[0]))
-        print("Try {0} --help' for more information.".format(prog))
-        sys.exit(1)
+        raise ExtraOperandException(prog, args[1])
 
     d = os.path.dirname(args[0].rstrip('/'))
 
@@ -398,9 +382,7 @@ def id(argstr):
     prog = p.get_prog_name()
 
     if len(args) > 1:
-        print("{0}: extra operand `{1}'".format(prog, args[0]))
-        print("Try {0} --help' for more information.".format(prog))
-        sys.exit(1)
+        raise ExtraOperandException(prog, args[1])
 
     if args == []:
         u = _pwd.getpwuid(os.getuid())
@@ -464,9 +446,7 @@ def kill(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print("{0}: missing PID".format(prog))
-        print("Try {0} --help' for more information.".format(prog))
-        sys.exit(1)
+        raise MissingOperandException(prog)
 
     try:
         sig = int(opts.signal)
@@ -480,17 +460,15 @@ def kill(argstr):
     elif sig.lstrip('SIG') in signals:
         sigint = signals[sig.lstrip('SIG')]
     else:
-        print("kill: {0}: invalid signal specification".format(
-                sig), file=sys.stderr)
-        sys.exit(1)
+        raise StdErrException("kill: {0}: ".format(sig) +\
+                              "invalid signal specification")
 
     for pid in args:
         try:
             pid = int(pid)
         except ValueError:
-            print("kill: {0}: arguments must be process or job IDs".format(
-                   pid), file=sys.stderr)
-            sys.exit(1)
+            raise StdErrException("kill: {0}: ".format(pid) +\
+                                  "arguments must be process or job IDs")
 
         os.kill(pid, sigint)
 
@@ -510,9 +488,7 @@ def ln(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print("{0}: missing operand".format(prog))
-        print("Try {0} --help' for more information.".format(prog))
-        sys.exit(1)
+        raise MissingOperandException(prog)
     elif len(args) == 1:
         src = args[0]
         dst = os.path.basename(src)
@@ -575,13 +551,14 @@ def logger(argstr):
 
     handler = logging.handlers.SysLogHandler(address, facility)
     if facility not in handler.facility_names:
-        print("Unknown facility %s." % facility, file=sys.stderr)
-        print("Valid facilities are:", file=sys.stderr)
+        err = "Unknown facility {0}. ".format(facility) +\
+              "Valid facilities are: "
         facilitylist = list(handler.facility_names.keys())
         facilitylist.sort()
         for f in facilitylist:
-            print(" %s\n" % f, file=sys.stderr)
-        sys.exit(1)
+            err += f + ", "
+
+        raise StdErrException(err)
 
     msg = ' '.join(args)
     levelint = 90 - 10 * handler.priority_names.get(level, 0)
@@ -591,7 +568,7 @@ def logger(argstr):
     logger.log(levelint, msg)
 
     if opts.stderr:
-        print("%s\n" % msg, file=sys.stderr)
+        raise StdErrException(msg)
 
 
 @addcommand
@@ -684,9 +661,7 @@ def mkdir(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print("{0}: missing operand".format(prog))
-        print("Try {0} --help' for more information.".format(prog))
-        sys.exit(1)
+        raise MissingOperandException(prog)
 
     for arg in args:
         if opts.parents:
@@ -747,9 +722,7 @@ def mv(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print("{0}: missing operand".format(prog))
-        print("Try {0} --help' for more information.".format(prog))
-        sys.exit(1)
+        raise MissingOperandException(prog)
     if len(args) == 1:
         print("mv: missing destination file operand after '%s'" % (args[0]))
         print("Try 'mv --help' for more information.")
@@ -803,9 +776,7 @@ def rm(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print("{0}: missing operand".format(prog))
-        print("Try {0} --help' for more information.".format(prog))
-        sys.exit(1)
+        raise MissingOperandException(prog)
 
     def _raise(err):
         if opts.force:
@@ -852,9 +823,7 @@ def rmdir(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print("{0}: missing operand".format(prog))
-        print("Try {0} --help' for more information.".format(prog))
-        sys.exit(1)
+        raise MissingOperandException(prog)
 
     for arg in args:
         if opts.parent:
@@ -921,9 +890,7 @@ def seq(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print("{0}: missing operand".format(prog))
-        print("Try {0} --help' for more information.".format(prog))
-        sys.exit(1)
+        raise MissingOperandException(prog)
 
     if len(args) == 1:
         a = list(range(1, int(args[0])+1))
@@ -985,9 +952,7 @@ def shred(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print("{0}: missing operand".format(prog))
-        print("Try {0} --help' for more information.".format(prog))
-        sys.exit(1)
+        raise MissingOperandException(prog)
 
     for arg in args:
         for i in range(opts.iterations):
@@ -1039,9 +1004,7 @@ def shuf(argstr):
             outfd.write("%s\n" % line)
 
     elif len(args) > 1:
-        print("{0}: extra operand `{1}'".format(prog, args[0]))
-        print("Try {0} --help' for more information.".format(prog))
-        sys.exit(1)
+        raise ExtraOperandException(prog, args[1])
 
     elif opts.inputrange:
         (lo, hi) = opts.inputrange.split('-')
@@ -1107,9 +1070,7 @@ def sleep(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print("{0}: missing operand".format(prog))
-        print("Try {0} --help' for more information.".format(prog))
-        sys.exit(1)
+        raise MissingOperandException(prog)
 
     a = []
     try:
@@ -1223,9 +1184,7 @@ def touch(argstr):
     prog = p.get_prog_name()
 
     if len(args) == 0:
-        print("{0}: missing operand".format(prog))
-        print("Try {0} --help' for more information.".format(prog))
-        sys.exit(1)
+        raise MissingOperandException(prog)
 
     atime = mtime = time.time()
 
@@ -1340,8 +1299,7 @@ def wget(argstr):
         try:
             fdin = opener.open(url)
         except HTTPError as e:
-            print("Error opening %s: %s\n" % (url, e), file=sys.stderr)
-            sys.exit(1)
+            StdErrException("HTTP error opening {0}: {1}".format(url, e))
 
         length = int(fdin.headers['content-length'])
         print("Getting %i bytes from %s" % (length, url))
@@ -1360,9 +1318,7 @@ def whoami(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if len(args) > 0:
-        print("{0}: extra operand `{1}'".format(prog, args[0]))
-        print("Try {0} --help' for more information.".format(prog))
-        sys.exit(1)
+        raise ExtraOperandException(prog, args[0])
 
     print(_pwd.getpwuid(os.getuid())[0])
 
@@ -1465,7 +1421,7 @@ def zip(argstr):
                     addToZip(zf, os.path.join(path, nm),
                              os.path.join(zippath, nm))
             else:
-                print("Can't store {0}".format(path), file=sys.stderr)
+                StdErrException("Can't store {0}".format(path))
 
         zf = zipfile.ZipFile(args[0], 'w', allowZip64=True)
         for src in args[1:]:
@@ -1559,8 +1515,7 @@ def compressor(argstr, comptype='gzip', decompress=False):
                     q = input("{0}: {1} already ".format(prog, unzippath) + \
                               "exists; do you wish to overwrite (y or n)? ")
                     if q.upper() != 'Y':
-                        print("not overwritten", file=sys.stderr)
-                        sys.exit(2)
+                        StdErrException("not overwritten", 2)
 
                 outfile = open(unzippath, 'wb')
         else:
@@ -1574,8 +1529,7 @@ def compressor(argstr, comptype='gzip', decompress=False):
                     q = input("{0}: {1} already".format(prog, zippath) + \
                               " exists; do you wish to overwrite (y or n)? ")
                     if q.upper() != 'Y':
-                        print("not overwritten", file=sys.stderr)
-                        sys.exit(2)
+                        StdErrException("not overwritten", 2)
 
                 outfile = compresstype(zippath, 'wb',
                                        compresslevel=opts.compresslevel)
@@ -1797,21 +1751,22 @@ def run(argv=sys.argv, width=78,
 
     # Run the command
     argstr = ' '.join(argv[1:])
+    errno = 1
     try:
         cmd(argstr)
     except IOError as err:
         print("{0}: {1}: {2}".format(
-              argv[0], err.filename, err.strerror), file=sys.stderr)
-        sys.exit(err.errno)
+              argv[0], err.filename, err.strerror), file=stderr)
+        errno = err.errno
     except OSError as err:
         print("{0}: {1}: {2}".format(
-              argv[0], err.filename, err.strerror), file=sys.stderr)
-        sys.exit(err.errno)
+              argv[0], err.filename, err.strerror), file=stderr)
+        errno = err.errno
+    except StdErrException as err:
+        print(err, file=stderr)
+        errno = err.errno
     finally:
-        # Restore std's
-        sys.stdout = original_stdout
-        sys.stderr = original_stderr
-        sys.stdin = original_stdin
+        sys.exit(errno)
 
 
 def showbanner(width=None):
@@ -1835,6 +1790,62 @@ def showbanner(width=None):
         return ret
     else:
         return "\n".join(banner) + "\n\n" + subtext.center(68) + "\n"
+
+
+
+### EXCEPTIONS ##############################################################
+
+
+class StdErrException(Exception):
+    '''
+    Raised when data is written to stderr
+    '''
+    def __init__(self, text, errno=1):
+        '''
+        :text:  Error text
+        ;errno: Exit status of program
+        '''
+        self.text = text
+        self.errno = errno
+
+    def __str__(self):
+        return self.text
+
+
+class ExtraOperandException(StdErrException):
+    '''
+    Raised when an argument is expected but not found
+    '''
+    def __init__(self, program, operand, errno=1):
+        '''
+        :program:   Program that caused the error
+        :operand:   Value of the extra operand
+        ;errno: Exit status of program
+        '''
+        self.program = program
+        self.operand = operand
+        self.errno = errno
+
+    def __str__(self):
+        return "{0}: extra operand `{1}'. Try {0} --help' for more ".format(
+                self.program, self.operand) + "information."
+
+
+class MissingOperandException(StdErrException):
+    '''
+    Raised when an argument is expected but not found
+    '''
+    def __init__(self, program, errno=1):
+        '''
+        :program:   Program that caused the error
+        ;errno: Exit status of program
+        '''
+        self.program = program
+        self.errno = errno
+
+    def __str__(self):
+        return "{0}: missing operand. Try `{0} --help'".format(self.program) +\
+               " for more information."
 
 
 if __name__ == '__main__':
