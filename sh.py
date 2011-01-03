@@ -38,22 +38,25 @@ class PyCoreutilsShell(cmd.Cmd):
         '''
         Called on an input line when the command prefix is not recognized.
         '''
-        self.stdout.write('%s: command not found\n' % line.split()[0])
+        print('%s: command not found' % line.split()[0])
 
     def do_help(self, arg):
-        self.stdout.write("\nUse 'COMMAND --help' for help\n")
-        self.stdout.write("Available commands:\n")
+        print("\nUse 'COMMAND --help' for help")
+        print("Available commands:")
         for cmd in pycoreutils.listcommands():
-            self.stdout.write("  " + cmd + "\n")
+            print("  " + cmd)
 
     def emptyline(self):
         '''
         Called when an empty line is entered in response to the prompt.
         '''
-        self.stdout.write('\n')
+        print()
 
     def postcmd(self, stop, line):
         self._setprompt()
+        if stop:
+            for l in stop:
+                print(l, end='')
 
     def preloop(self):
         self._setprompt()

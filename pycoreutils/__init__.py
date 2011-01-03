@@ -118,7 +118,7 @@ def arch(argstr):
     if len(args) > 0:
         raise ExtraOperandException(prog, args[0])
 
-    print(platform.machine(), end='')
+    return platform.machine() + "\n"
 
 
 @addcommand
@@ -129,21 +129,29 @@ def base64(argstr):
     p.usage = '%prog [OPTION]... [FILE]'
     p.add_option("-d", action="store_true", dest="decode",
             help="decode data")
+    p.add_option("-w", dest="wrap", default=76, type="int",
+            help="wrap encoded lines after COLS character (default 76). " + \
+                 "Use 0 to disable line wrapping")
     (opts, args) = p.parse_args(argstr.split())
 
-    # Use stdin for input if no file is specified or file is '-'
-    if len(args) == 0 or (len(args) == 1 and args[0] == '-'):
-        if opts.decode:
-            _base64.decode(sys.stdout, sys.stdout)
+    s = ''
+    for line in fileinput.input(args):
+        s += line
+
+    if opts.decode:
+        out = _base64.b64decode(s)
+        if opts.wrap == 0:
+            yield out
         else:
-            _base64.encode(sys.stdin, sys.stdout)
+            for line in textwrap.wrap(out, opts.wrap):
+                yield line + "\n"
     else:
-        for filename in args:
-            fd = open(filename)
-            if opts.decode:
-                _base64.decode(fd, sys.stdout)
-            else:
-                _base64.encode(fd, sys.stdout)
+        out = _base64.b64encode(s)
+        if opts.wrap == 0:
+            yield out
+        else:
+            for line in textwrap.wrap(out, opts.wrap):
+                yield line + "\n"
 
 
 @addcommand
@@ -171,7 +179,7 @@ def basename(argstr):
     if len(args) == 2:
         b = b.rstrip(args[1])
 
-    print(b)
+    return b + "\n"
 
 
 @addcommand
@@ -195,7 +203,7 @@ def cat(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     for line in fileinput.input(args, openhook=fileinput.hook_compressed):
-        print(line, end='')
+        yield line
 
 
 @addcommand
@@ -235,7 +243,7 @@ def chown(argstr):
         try:
             user = _pwd.getpwnam(uid)
         except KeyError:
-            print("chown: invalid user: '{0}'".format(uid))
+            StdErrException("{0}: invalid user: '{1}'".format(prog, uid))
         uid = user.pw_uid
 
     for arg in args:
@@ -259,12 +267,7 @@ def chroot(argstr):
         args.append(os.environ['SHELL'])
         args.append('-i')
 
-    try:
-        os.chroot(args[0])
-    except OSError as err:
-        print("chroot: cannot change root directory to {0}: {1}".format(
-                                                    args[0], err.strerror))
-
+    os.chroot(args[0])
     subprocess.call(args)
 
 
@@ -289,7 +292,7 @@ def dirname(argstr):
     if d == '':
         d = '.'
 
-    print(d)
+    return d + "\n"
 
 
 @addcommand
@@ -309,16 +312,17 @@ def env(argstr):
     if not opts.ignoreenvironment:
         env = os.environ
 
-    for arg in args:
-        x = arg.split('=')
-        if len(x) < 2:
-            print("Invalid argument {0}.".format(arg))
-            print("Arguments should be in the form of 'foo=bar'")
-            sys.exit(127)
-    print(x[0] + '=' + x[1])
-
-    for k, v in env.items():
-        print(k + '=' + v)
+    if len(args) == 0:
+        for k, v in env.items():
+            yield k + '=' + v + "\n"
+    else:
+        for arg in args:
+            x = arg.split('=')
+            if len(x) < 2:
+                StdErrException("Invalid argument {0}. ".format(arg) +\
+                        "Arguments should be in the form of 'foo=bar'", 127)
+            else:
+                yield x[0] + '=' + x[1] + "\n"
 
 
 @addcommand
@@ -355,10 +359,7 @@ def httpd(argstr):
     handler = SimpleHTTPRequestHandler
     server = HTTPServer((opts.address, opts.port), handler)
 
-    try:
-        server.serve_forever()
-    except KeyboardInterrupt:
-        pass
+    server.serve_forever()
 
 
 @addcommand
@@ -396,26 +397,22 @@ def id(argstr):
     groupname = g.gr_name
 
     if opts.group and opts.name:
-        print(groupname)
-        return
+        return groupname
 
     if opts.group:
-        print(gid)
-        return
+        return gid
 
     if opts.user and opts.name:
-        print(username)
-        return
+        return username
 
     if opts.user:
-        print(uid)
-        return
+        return uid
 
     if opts.name:
-        print("id: cannot print only names or real IDs in default format")
-        sys.exit(1)
+        StdErrException("id: cannot print only names or real IDs in " +
+                        "default format")
 
-    print("uid=%i(%s) gid=%i(%s)" % (uid, username, gid, username))
+    return "uid=%i(%s) gid=%i(%s)\n" % (uid, username, gid, username)
 
 
 @addcommand
@@ -505,13 +502,12 @@ def ln(argstr):
 
     for src in args:
         if opts.verbose:
-            print("`%s' -> `%s'" % (src, dst))
+            yield "`{0}' -> `{1}'".format(src, dst)
         try:
             f(src, dst)
         except Exception as err:
-            print("ln: creating {0} link `{1}' => `{2}': {3}".format(
-                   linktype, dst, src, err.strerror))
-            sys.exit(1)
+            yield "ln: creating {0} link `{1}' => `{2}': {3}\n".format(
+                   linktype, dst, src, err.strerror)
 
 
 @addcommand
@@ -573,7 +569,7 @@ def logger(argstr):
 
 @addcommand
 def ls(argstr):
-    # TODO: Show user and group names in ls -l
+    # TODO: Show user and group names in ls -l, correctly format dates in ls -l
     p = parseoptions()
     p.description = "List information about the FILEs (the current " + \
                     "directory by default). Sort entries " + \
@@ -595,7 +591,7 @@ def ls(argstr):
         for f in dirlist:
             path = os.path.join(arg, f)
             if not opts.longlist:
-                print(f)
+                yield f + "\n"
             else:
                 st = os.lstat(path)
                 mode = mode2string(st.st_mode)
@@ -622,12 +618,11 @@ def ls(argstr):
             modtime = "{0}-{1}-{2} {3:0>2}:{4:0>2}".format(
                                                             mtime.tm_year,
                                                             mtime.tm_mon,
-                                                            mtime.tm_yday,
+                                                            mtime.tm_mday,
                                                             mtime.tm_hour,
                                                             mtime.tm_min
                                                             )
-            print("{0} {1:>{nlink}} {2:<5} {3:<5} {4:>{size}} {5} " + \
-                  "{6}".format(
+            yield "{0} {1:>{nlink}} {2:<5} {3:<5} {4:>{size}} {5} {6}".format(
                                 mode,
                                 nlink,
                                 uid,
@@ -637,12 +632,12 @@ def ls(argstr):
                                 f,
                                 size=sizelen,
                                 nlink=nlinklen,
-                                ))
+                                ) + "\n"
 
 
 @addcommand
 def md5sum(argstr):
-    hasher('md5', argstr)
+    return hasher('md5', argstr)
 
 
 @addcommand
@@ -679,11 +674,11 @@ def mkdir(argstr):
             for path in pathlist:
                 os.mkdir(path, int(opts.mode))
                 if opts.verbose:
-                    print("mkdir: created directory '%s'" % (path))
+                    yield "mkdir: created directory `%s'\n" % (path)
         else:
             os.mkdir(arg, int(opts.mode))
             if opts.verbose:
-                print("mkdir: created directory '%s'" % (arg))
+                yield "mkdir: created directory `%s'\n" % (arg)
 
 
 @addcommand
@@ -699,14 +694,14 @@ def mktemp(argstr):
 
     if len(args) == 0:
         if opts.directory:
-            print(tempfile.mkdtemp(prefix='tmp.'))
+            return tempfile.mkdtemp(prefix='tmp.') + "\n"
         else:
-            print(tempfile.mkstemp(prefix='tmp.')[1])
+            return tempfile.mkstemp(prefix='tmp.')[1] + "\n"
     elif len(args) == 1:
         raise NotImplementedError("Templates are not yet implemented")
     else:
-        print("mktemp: too many templates")
-        print("Try `mktemp --help' for more information.")
+        raise StdErrException("mktemp: too many templates. " +\
+                              "Try `mktemp --help' for more information.")
 
 
 @addcommand
@@ -724,20 +719,17 @@ def mv(argstr):
     if len(args) == 0:
         raise MissingOperandException(prog)
     if len(args) == 1:
-        print("mv: missing destination file operand after '%s'" % (args[0]))
-        print("Try 'mv --help' for more information.")
-        sys.exit(1)
+        StdErrException("mv: missing destination file operand after " +\
+                        "'%s'" % args[0] +\
+                        "Try 'mv --help' for more information.")
 
     dest = args.pop()
 
     for src in args:
         if opts.verbose:
-            print("'%s' -> '%s'" % (src, dest))
-        try:
-            shutil.move(src, dest)
-        except IOError as err:
-            print("mv: %s" % (err.strerror))
-            sys.exit(1)
+            yield "'{0}' -> '{1}'\n".format(src, dest)
+
+        shutil.move(src, dest)
 
 
 @addcommand
@@ -752,11 +744,11 @@ def pwd(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if opts.logical:
-        print(os.getenv('PWD'))
+        return os.getenv('PWD') + "\n"
     elif opts.physical:
-        print(os.path.realpath(os.getcwd()))
+        return os.path.realpath(os.getcwd()) + "\n"
     else:
-        print(os.getcwd())
+        return os.getcwd() + "\n"
 
 
 
@@ -779,10 +771,7 @@ def rm(argstr):
         raise MissingOperandException(prog)
 
     def _raise(err):
-        if opts.force:
-            if opts.verbose:
-                print("skipped `{0}'".format(arg))
-        else:
+        if not opts.force:
             raise err
 
     for arg in args:
@@ -794,19 +783,19 @@ def rm(argstr):
                     path = os.path.join(root, name)
                     os.remove(path)
                     if opts.verbose:
-                        print("Removed file `{0}'".format(path))
+                        yield "Removed file `{0}'\n".format(path)
                 for name in dirs:
                     path = os.path.join(root, name)
                     os.rmdir(path)
                     if opts.verbose:
-                        print("Removed directory `{0}'".format(path))
+                        yield "Removed directory `{0}'\n".format(path)
             os.rmdir(arg)
         else:
             # Remove single file
             try:
                 os.remove(arg)
                 if opts.verbose:
-                    print("Removed `{0}'".format(arg))
+                    yield "Removed `{0}'\n".format(arg)
             except OSError as err:
                 _raise(err)
 
@@ -901,38 +890,38 @@ def seq(argstr):
 
     if opts.seperator == None:
         for x in a:
-            print(x)
+            yield str(x) + "\n"
     else:
         for x in range(len(a)-1, 0, -1):
             a.insert(x, opts.seperator)
         for x in a:
-            sys.stdout.write(str(x))
-        print()
+            yield str(x)
+        yield "\n"
 
 
 @addcommand
 def sha1sum(argstr):
-    hasher('sha1', argstr)
+    return hasher('sha1', argstr)
 
 
 @addcommand
 def sha224sum(argstr):
-    hasher('sha224', argstr)
+    return hasher('sha224', argstr)
 
 
 @addcommand
 def sha256sum(argstr):
-    hasher('sha256', argstr)
+    return hasher('sha256', argstr)
 
 
 @addcommand
 def sha384sum(argstr):
-    hasher('sha384', argstr)
+    return hasher('sha384', argstr)
 
 
 @addcommand
 def sha512sum(argstr):
-    hasher('sha512', argstr)
+    return hasher('sha512', argstr)
 
 
 @addcommand
@@ -993,8 +982,8 @@ def shuf(argstr):
 
     if opts.echo:
         if opts.inputrange:
-            print("shuf: cannot combine -e and -i options")
-            sys.exit(1)
+            StdErrException("shuf: cannot combine -e and -i options")
+
         lines = args
         random.shuffle(lines)
 
@@ -1050,10 +1039,7 @@ def smtpd(argstr):
     _smtpd.SMTPServer((opts.localaddress, opts.localport),
                       (opts.remoteaddress, opts.remoteport))
 
-    try:
-        asyncore.loop()
-    except KeyboardInterrupt:
-        pass
+    asyncore.loop()
 
 
 @addcommand
@@ -1086,8 +1072,8 @@ def sleep(argstr):
             else:
                 a.append(float(arg))
     except ValueError:
-        print("sleep: invalid time interval `%s'" % (arg))
-        print("Try sleep --help' for more information.")
+        StdErrException("sleep: invalid time interval `%s'. " % (arg) +\
+                        "Try sleep --help' for more information.")
         sys.exit(1)
 
     time.sleep(sum(a))
@@ -1106,8 +1092,8 @@ def sort(argstr):
     for line in fileinput.input(args):
         l.append(line)
 
-    l.sort(reverse=opts.reverse)
-    print(''.join(l))
+    l.sort(reverse=opts.reverse or False)
+    return ''.join(l)
 
 
 def tail(argstr):
@@ -1134,7 +1120,7 @@ def tail(argstr):
             time.sleep(interval)
             f.seek(where)
         else:
-            print(line, end='')
+            yield line
 
 
 @addcommand
@@ -1159,7 +1145,7 @@ def tee(argstr):
         sys.stdout.write(line)
         for fd in fdlist:
             fd.write(line)
-        
+
 
 @addcommand
 def touch(argstr):
@@ -1267,7 +1253,7 @@ def uname(argstr):
     if opts.operatingsystem or opts.all or output == []:
         output.append(platform.system())
 
-    print(" ".join(output))
+    return " ".join(output)
 
 
 @addcommand
@@ -1302,10 +1288,10 @@ def wget(argstr):
             StdErrException("HTTP error opening {0}: {1}".format(url, e))
 
         length = int(fdin.headers['content-length'])
-        print("Getting %i bytes from %s" % (length, url))
+        yield "Getting %i bytes from %s...\n" % (length, url)
 
         shutil.copyfileobj(fdin, fdout)
-        print("Done")
+        yield "Done\n"
 
 
 @addcommand
@@ -1320,7 +1306,7 @@ def whoami(argstr):
     if len(args) > 0:
         raise ExtraOperandException(prog, args[0])
 
-    print(_pwd.getpwuid(os.getuid())[0])
+    return _pwd.getpwuid(os.getuid())[0] + "\n"
 
 
 @addcommand
@@ -1339,11 +1325,8 @@ def yes(argstr):
     if x == '':
         x = 'y'
 
-    try:
-        while 1:
-            print(x)
-    except KeyboardInterrupt:
-        sys.exit()
+    while 1:
+        yield x + "\n"
 
 
 @addcommand
@@ -1385,7 +1368,7 @@ def zip(argstr):
             sys.stderr("Error on file {0}\n".format(badfile))
             sys.exit(1)
         else:
-            print("{0} tested ok".format(args[0]))
+            return "{0} tested ok".format(args[0]) + "\n"
 
     elif opts.extract:
         if len(args) != 2:
@@ -1587,10 +1570,10 @@ def hasher(algorithm, argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if len(args) == 0 or args == ['-']:
-        print(myhash(sys.stdin) + '  -')
+        yield myhash(sys.stdin) + '  -' + "\n"
     else:
         for arg in args:
-            print(myhash(open(arg, 'r')) + '  ' + arg)
+            yield myhash(open(arg, 'r')) + '  ' + arg + "\n"
 
 
 def listcommands():
@@ -1683,18 +1666,16 @@ def mode2string(mode):
 
 
 def parseoptions():
-    optparser = optparse.OptionParser(version=__version__)
-    optparser.add_option("--license", action="callback",
-        callback=printlicense, help="show program's license and exit")
-    return optparser
-
-
-def printlicense(option, opt, value, parser):
-    '''
-    Print the license and exit
-    '''
-    print(__license__)
-    sys.exit(0)
+    def showhelp(option, opt, value, parser):
+        raise StdOutException(parser.format_help())
+    def showlicense(option, opt, value, parser):
+        raise StdOutException(__license__)
+    p = optparse.OptionParser(version=__version__, add_help_option=False)
+    p.add_option("-h", "-?", "--help", action="callback", callback=showhelp,
+                 help="show program's help message and exit")
+    p.add_option("--license", action="callback", callback=showlicense,
+                 help="show program's license and exit")
+    return p
 
 
 def run(argv=sys.argv, width=78,
@@ -1753,7 +1734,8 @@ def run(argv=sys.argv, width=78,
     argstr = ' '.join(argv[1:])
     errno = 1
     try:
-        cmd(argstr)
+        for out in cmd(argstr):
+            print(out, end='', file=stdout)
     except IOError as err:
         print("{0}: {1}: {2}".format(
               argv[0], err.filename, err.strerror), file=stderr)
@@ -1762,11 +1744,16 @@ def run(argv=sys.argv, width=78,
         print("{0}: {1}: {2}".format(
               argv[0], err.filename, err.strerror), file=stderr)
         errno = err.errno
+    except StdOutException as err:
+        print(err, file=stdout)
+        errno = err.errno
     except StdErrException as err:
         print(err, file=stderr)
         errno = err.errno
-    finally:
-        sys.exit(errno)
+    except KeyboardInterrupt:
+        errno = 0
+
+    sys.exit(errno)
 
 
 def showbanner(width=None):
@@ -1794,6 +1781,22 @@ def showbanner(width=None):
 
 
 ### EXCEPTIONS ##############################################################
+
+
+class StdOutException(Exception):
+    '''
+    Raised when data is written to stdout
+    '''
+    def __init__(self, text, errno=1):
+        '''
+        :text:  Output text
+        ;errno: Exit status of program
+        '''
+        self.text = text
+        self.errno = errno
+
+    def __str__(self):
+        return self.text
 
 
 class StdErrException(Exception):
