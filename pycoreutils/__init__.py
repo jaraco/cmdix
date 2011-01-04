@@ -691,13 +691,7 @@ def ls(argstr):
                     nlinklen = _nlinklen
 
         for mode, nlink, uid, gid, size, mtime, f in l:
-            modtime = "{0}-{1}-{2} {3:0>2}:{4:0>2}".format(
-                                                            mtime.tm_year,
-                                                            mtime.tm_mon,
-                                                            mtime.tm_mday,
-                                                            mtime.tm_hour,
-                                                            mtime.tm_min
-                                                            )
+            modtime = time.strftime('%Y-%m-%d %H:%m', mtime)
             yield "{0} {1:>{nlink}} {2:<5} {3:<5} {4:>{size}} {5} {6}".format(
                                 mode,
                                 nlink,
