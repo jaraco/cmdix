@@ -342,7 +342,7 @@ def cp(argstr):
             dstfile = dstbase
             if os.path.isdir(dstbase):
                 dstfile = os.path.join(dstbase, src)
-            _copy(src, destfile)
+            _copy(src, dstfile)
             if opts.verbose:
                 yield "`{0}' -> `{1}'\n".format(srcfile, dstfile)
 
