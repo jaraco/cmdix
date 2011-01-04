@@ -46,7 +46,7 @@ def getalltests():
     Returns a testsuite containing all tests in test_*.py
     '''
     testcaselist = []
-    for filename in os.listdir(os.path.dirname(__file__)):
+    for filename in os.listdir(os.path.abspath(os.path.dirname(__file__))):
         if filename.startswith('test_') and filename.endswith('.py'):
             testcaselist.append("pycoreutils.tests." + filename.rstrip('.py'))
     return unittest.TestLoader().loadTestsFromNames(testcaselist)
