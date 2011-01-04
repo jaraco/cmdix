@@ -1378,6 +1378,7 @@ def whoami(argstr):
                     "effective user ID.\nSame as id -un."
     p.usage = '%prog [OPTION]...'
     (opts, args) = p.parse_args(argstr.split())
+    prog = p.get_prog_name()
 
     if len(args) > 0:
         raise ExtraOperandException(prog, args[0])
@@ -1498,18 +1499,6 @@ def zip(argstr):
 ### HELPER FUNCTIONS ########################################################
 
 
-def checkcommand(command):
-    ''' Check a command is available '''
-    a = [cmd for cmd in _cmds if cmd.__name__ == command]
-    l = len(a)
-    if l == 0:
-        return False
-    if l > 1:
-        raise "Command `{0}' has multiple functions associated with " + \
-              "it!".format(command)
-    return a[0]
-
-
 def compressor(argstr, comptype='gzip', decompress=False):
     '''
     Handles compression and decompression as bzip2 and gzip
@@ -1594,6 +1583,39 @@ def compressor(argstr, comptype='gzip', decompress=False):
                                        compresslevel=opts.compresslevel)
 
         shutil.copyfileobj(infile, outfile)
+
+
+def createcommandlinks(pycorepath, directory):
+    '''
+    Create a symlink to pycoreutils for every available command
+
+    :pycorepath:    Path to link to
+    :directory:     Directory where to store the links
+    '''
+    l = []
+    for command in listcommands():
+        linkname = os.path.join(directory, command)
+        if os.path.exists(linkname):
+            raise StdErrException("{0} already exists. Not doing anything.")
+        l.append(linkname)
+
+    for linkname in l:
+        os.symlink(os.path.abspath(pycorepath), linkname)
+
+
+def getcommand(commandname):
+    '''
+    Returns the function of the given commandname.
+    Raises a CommandNotFoundException if the command is not found
+    '''
+    a = [cmd for cmd in _cmds if cmd.__name__ == commandname]
+    l = len(a)
+    if l == 0:
+        raise CommandNotFoundException(commandname)
+    if l > 1:
+        raise "Command `{0}' has multiple functions ".format(commandname) +\
+              "associated with it! This should never happen!"
+    return a[0]
 
 
 def getcurrentusername():
@@ -1744,8 +1766,10 @@ def mode2string(mode):
 def parseoptions():
     def showhelp(option, opt, value, parser):
         raise StdOutException(parser.format_help())
+
     def showlicense(option, opt, value, parser):
         raise StdOutException(__license__)
+
     p = optparse.OptionParser(version=__version__, add_help_option=False)
     p.add_option("-h", "-?", "--help", action="callback", callback=showhelp,
                  help="show program's help message and exit")
@@ -1754,82 +1778,104 @@ def parseoptions():
     return p
 
 
-def run(argv=sys.argv, width=78,
-        stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin):
+def run(argv=sys.argv, stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin):
     '''
-    Parse arguments and run command.
+    Parse commandline arguments and run command.
     This is where the magic happens :-)
 
     :argv:      List of arguments
-    :width:     Wrap lines a 'width' characters
     :stdout:    A file-like object to use as stdout
     :stderr:    A file-like object to use as stderr
-    :stdin:    A file-like object to use as stdin
+    :stdin:     A file-like object to use as stdin
     '''
-    # Replace std's
-    original_stdout = sys.stdout
-    original_stderr = sys.stderr
-    original_stdin = sys.stdin
-    sys.stdout = stdout
-    sys.stderr = stderr
-    sys.stdin = stdin
-    
-    # Get the requested command
-    requestcmd = os.path.basename(argv[0])
-    if requestcmd == 'coreutils.py' or requestcmd == '__init__.py':
-        # Print help if pycoreutils.py is directly run without any arguments
-        if len(argv) == 1 \
-        or argv[1] == "-h" \
-        or argv[1] == "-?" \
-        or argv[1] == "--help":
-            print(showbanner(width))
-            print("Usage: {0} COMMAND [ OPTIONS ... ]\n".format(requestcmd))
-            print("Available commands:")
+    if os.path.basename(argv[0]) in ['__init__.py', 'coreutils.py']:
+        argv = argv[1:]
 
-            cmdstring = ", ".join(listcommands())
-            for line in textwrap.wrap(cmdstring, width):
-                print(line)
+    p = optparse.OptionParser(version=__version__)
+    p.disable_interspersed_args()  # Important!
+    p.description = "Coreutils in Pure Python."
+    p.usage = "%prog [OPTION]... [COMMAND]..."
+    p.epilog = "Available Commands: " + ", ".join(listcommands())
+    p.add_option("--createcommandlinks", dest="createcommanddirectory",
+            help="Create a symlink to pycoreutils for every available command")
+    (opts, args) = p.parse_args(argv)
+    prog = p.get_prog_name()
 
-            print("\nUse `{0} COMMAND --help' for help".format(requestcmd))
-            sys.exit(1)
+    if argv == []:
+        p.print_help()
+        return
 
-        argv.pop(0)
-        requestcmd = argv[0]
-    cmd = checkcommand(requestcmd)
-    if cmd == False:
-        print("Command %s not supported." % (argv[0]))
-        print("Use pycoreutils.py --help for a list of valid commands.")
-        sys.exit(1)
-
-    # Check if the '_onlyunix'-flag is set
-    if hasattr(cmd, '_onlyunix') and platform.system() == 'Windows':
-        print("Command %s does not work on Windows" % (argv[0]))
-        sys.exit(1)
+    if opts.createcommanddirectory:
+        return createcommandlinks(prog, opts.createcommanddirectory)
 
     # Run the command
-    argstr = ' '.join(argv[1:])
     errno = 1
     try:
-        for out in cmd(argstr):
+        commandline = " ".join(args)
+        for out in runcommandline(commandline,
+                                  stdout=stdout,
+                                  stderr=stderr,
+                                  stdin=stdin):
             print(out, end='', file=stdout)
-    except IOError as err:
-        print("{0}: {1}: {2}".format(
-              argv[0], err.filename, err.strerror), file=stderr)
-        errno = err.errno
-    except OSError as err:
-        print("{0}: {1}: {2}".format(
-              argv[0], err.filename, err.strerror), file=stderr)
-        errno = err.errno
+    except CommandNotFoundException as err:
+        print(err, file=stderr)
+        print("Use {0} --help for a list of valid commands.".format(prog))
+        errno = 2
     except StdOutException as err:
         print(err, file=stdout)
         errno = err.errno
     except StdErrException as err:
         print(err, file=stderr)
         errno = err.errno
+    except IOError as err:
+        print("{0}: {1}: {2}".format(
+              prog, err.filename, err.strerror), file=stderr)
+        errno = err.errno
+    except OSError as err:
+        print("{0}: {1}: {2}".format(
+              prog, err.filename, err.strerror), file=stderr)
+        errno = err.errno
     except KeyboardInterrupt:
         errno = 0
 
     sys.exit(errno)
+
+
+def runcommandline(commandline, stdout=sys.stdout,
+                   stderr=sys.stderr, stdin=sys.stdin):
+    '''
+    Process a commandline
+
+    :commandline:   String representing the commandline, i.e. "ls -l /tmp"
+    :stdout:        A file-like object to use as stdout
+    :stderr:        A file-like object to use as stderr
+    :stdin:         A file-like object to use as stdin
+    '''
+    # Replace std's
+    sys.stdout = stdout
+    sys.stderr = stderr
+    sys.stdin = stdin
+
+    argv = commandline.split(' ')
+
+    prog = os.path.basename(argv[0])
+    argstr = ' '.join(argv[1:])
+    command = getcommand(prog)
+    error = None
+
+    try:
+        return command(argstr)
+    except Exception as err:
+        error = err  # Will be raised later
+
+    # Restore std's
+    sys.stdout = sys.__stdout__
+    sys.stderr = sys.__stderr__
+    sys.stdin = sys.__stdin__
+
+    # Raise previously caught error
+    if error:
+        raise err
 
 
 def showbanner(width=None):
@@ -1879,7 +1925,7 @@ class StdErrException(Exception):
     '''
     Raised when data is written to stderr
     '''
-    def __init__(self, text, errno=1):
+    def __init__(self, text, errno=2):
         '''
         :text:  Error text
         ;errno: Exit status of program
@@ -1889,6 +1935,17 @@ class StdErrException(Exception):
 
     def __str__(self):
         return self.text
+
+
+class CommandNotFoundException(Exception):
+    '''
+    Raised when an unknown command is requested
+    '''
+    def __init__(self, prog):
+        self.prog = prog
+
+    def __str__(self):
+        return "Command `{0}' not found.".format(self.prog)
 
 
 class ExtraOperandException(StdErrException):
