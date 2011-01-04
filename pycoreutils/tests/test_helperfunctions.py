@@ -13,6 +13,9 @@ from pycoreutils.tests import BaseTestCase
 
 
 class TestCase(BaseTestCase):
+    def test_runcommandline(self):
+        self.assertEqual(self.runcommandline('basename foo'), 'foo\n')
+
     def test_showbanner(self):
         self.assertEqual(pycoreutils.showbanner(width=70),
 "  ____  _  _  ___  _____  ____  ____  __  __  ____  ____  __    ___   \n" +\

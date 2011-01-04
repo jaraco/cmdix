@@ -2,15 +2,20 @@
 PyCoreutils
 ***********
 
-A pure-Python implementation of the GNU Coreutils.
+What is this?
+-------------
+
+PyCoreutils is a pure Python implementation of various standard UNIX commands,
+like 'ls', 'cp' and 'gzip'. It also contains sh.py, a shell-like environment
+which will make Unix-users feel right at home on the Windows command-prompt.
 
 
-Goals
------
+Now why you wanna go and do that?
+---------------------------------
 
-1. Have fun!
+1. Fun!
 2. Have a Linux-like shell environment in Windows.
-3. One day create a pure-Python Linux distribution.
+3. Create a Python-only Linux distribution.
 
 
 Requirements
@@ -34,16 +39,16 @@ https://github.com/dcantrell/pycoreutils. His project is a little different
 in that it uses C-bindings, is GPL-licensed and is structured differently.
 
 
-Warning
--------
-
-This is alpha software, Not all the flags in the help-section are
-implemented, and some behave different than one might expect.
-
-
 License
 -------
 
 Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
 Release under the MIT license.
 See LICENSE.txt for details.
+
+
+Warning
+-------
+
+This is alpha software, Not all the flags in the help-section are
+implemented, and some behave different than one might expect.

@@ -15,6 +15,20 @@ import pycoreutils
 
 class BaseTestCase(unittest.TestCase):
 
+    def createfile(self, filename, size=1048576, fill='0'):
+        '''
+        Create a temporary file of 'size' filled with 'fill'
+        '''
+        with open(os.path.join(self.workdir, filename), 'w') as fd:
+            for i in xrange(size):
+                fd.write(fill)
+
+    def runcommandline(self, commandline):
+        output = ''
+        for line in pycoreutils.runcommandline(commandline):
+            output += line
+        return output
+
     def setUp(self):
         '''
         Create temporary work directory
@@ -31,14 +45,6 @@ class BaseTestCase(unittest.TestCase):
             for name in dirs:
                 os.rmdir(os.path.join(root, name))
         os.rmdir(self.workdir)
-
-    def _createfile(self, filename, size=1048576, fill='0'):
-        '''
-        Create a temporary file of 'size' filled with 'fill'
-        '''
-        with open(os.path.join(self.workdir, filename), 'w') as fd:
-            for i in xrange(size):
-                fd.write(fill)
 
 
 def getalltests():
