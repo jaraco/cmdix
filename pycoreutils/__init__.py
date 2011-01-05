@@ -1583,8 +1583,8 @@ def createcommandlinks(pycorepath, directory):
     '''
     Create a symlink to pycoreutils for every available command
 
-    :pycorepath:    Path to link to
-    :directory:     Directory where to store the links
+    :param pycorepath:  Path to link to
+    :param directory:   Directory where to store the links
     '''
     l = []
     for command in listcommands():
@@ -1777,10 +1777,11 @@ def run(argv=sys.argv, stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin):
     Parse commandline arguments and run command.
     This is where the magic happens :-)
 
-    :argv:      List of arguments
-    :stdout:    A file-like object to use as stdout
-    :stderr:    A file-like object to use as stderr
-    :stdin:     A file-like object to use as stdin
+    :param argv:    List of arguments
+    :param stdout:  A file-like object to use as stdout
+    :param stderr:  A file-like object to use as stderr
+    :param stdin:   A file-like object to use as stdin
+    :return:        The exit status of the command. None means 0.
     '''
     if os.path.basename(argv[0]) in ['__init__.py', 'coreutils.py']:
         argv = argv[1:]
@@ -1798,8 +1799,7 @@ def run(argv=sys.argv, stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin):
     prog = p.get_prog_name()
 
     if argv == []:
-        p.print_help()
-        return
+        return p.print_help()
 
     if opts.runtests:
         try:
@@ -1808,13 +1808,13 @@ def run(argv=sys.argv, stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin):
             print("Can't import pycoreutils.tests. Please make sure to " +\
                   "include it in your PYTHONPATH", file=stderr)
             sys.exit(1)
-        tests.runalltests()
+        return tests.runalltests()
 
     if opts.createcommanddirectory:
         return createcommandlinks(prog, opts.createcommanddirectory)
 
     # Run the command
-    errno = 1
+    errno = 0
     try:
         commandline = " ".join(args)
         for out in runcommandline(commandline,
@@ -1843,7 +1843,7 @@ def run(argv=sys.argv, stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin):
     except KeyboardInterrupt:
         errno = 0
 
-    sys.exit(errno)
+    return errno
 
 
 def runcommandline(commandline, stdout=sys.stdout,
@@ -1851,10 +1851,10 @@ def runcommandline(commandline, stdout=sys.stdout,
     '''
     Process a commandline
 
-    :commandline:   String representing the commandline, i.e. "ls -l /tmp"
-    :stdout:        A file-like object to use as stdout
-    :stderr:        A file-like object to use as stderr
-    :stdin:         A file-like object to use as stdin
+    :param commandline:   String representing the commandline, i.e. "ls -l /tmp"
+    :param stdout:        A file-like object to use as stdout
+    :param stderr:        A file-like object to use as stderr
+    :param stdin:         A file-like object to use as stdin
     '''
     # Replace std's
     sys.stdout = stdout
@@ -1990,4 +1990,4 @@ class MissingOperandException(StdErrException):
 
 
 if __name__ == '__main__':
-    run()
+    sys.exit(run())
