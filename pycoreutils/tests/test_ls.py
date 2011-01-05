@@ -22,7 +22,7 @@ class TestCase(BaseTestCase):
         self.createfile('foo', 100)
         self.createfile('bar', 100)
         self.assertEqual(
-            self.runcommandline('ls'),
+            self.runcommandline('ls')[0],
             'bar\nbiz\nfoo\n'
         )
 
@@ -41,7 +41,7 @@ class TestCase(BaseTestCase):
         gid = 1000
         date = time.strftime('%Y-%m-%d %H:%m', time.localtime())
         self.assertEqual(
-            self.runcommandline('ls -l'),
+            self.runcommandline('ls -l')[0],
             '--w-r---wx 1 {0}  {1}  999999 {2} bar\n'.format(uid, gid, date) +\
             'drwxr-xr-x 2 {0}  {1}      40 {2} biz\n'.format(uid, gid, date) +\
             '-rw-r--r-- 1 {0}  {1}     100 {2} foo\n'.format(uid, gid, date)

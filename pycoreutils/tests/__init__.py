@@ -7,6 +7,7 @@
 
 import os
 import os.path
+import subprocess
 import tempfile
 import unittest
 
@@ -20,14 +21,20 @@ class BaseTestCase(unittest.TestCase):
         Create a temporary file of 'size' filled with 'fill'
         '''
         with open(os.path.join(self.workdir, filename), 'w') as fd:
-            for i in xrange(size):
-                fd.write(fill)
+                fd.write(fill * size)
 
-    def runcommandline(self, commandline):
-        output = ''
-        for line in pycoreutils.runcommandline(commandline):
-            output += line
-        return output
+    def runcommandline(self, commandline, stdin=None):
+        '''
+        Run commandline as a subprocess.
+
+        :param commandline: A string containing the commandline, i.e. 'ls -l X'
+        :return:            A tuple containing the unicoded stdout and stderr
+        '''
+        stdout, stderr = subprocess.Popen(commandline.split(),
+                                          stdout=subprocess.PIPE,
+                                          stderr=subprocess.PIPE
+                                         ).communicate(stdin)
+        return stdout.decode('utf8'), stderr.decode('utf8')
 
     def setUp(self):
         '''
