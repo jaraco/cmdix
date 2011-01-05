@@ -1792,12 +1792,23 @@ def run(argv=sys.argv, stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin):
     p.epilog = "Available Commands: " + ", ".join(listcommands())
     p.add_option("--createcommandlinks", dest="createcommanddirectory",
             help="Create a symlink to pycoreutils for every available command")
+    p.add_option("--runtests", action="store_true", dest="runtests",
+            help="Run all sort of tests")
     (opts, args) = p.parse_args(argv)
     prog = p.get_prog_name()
 
     if argv == []:
         p.print_help()
         return
+
+    if opts.runtests:
+        try:
+            from pycoreutils import tests
+        except ImportError:
+            print("Can't import pycoreutils.tests. Please make sure to " +\
+                  "include it in your PYTHONPATH", file=stderr)
+            sys.exit(1)
+        tests.runalltests()
 
     if opts.createcommanddirectory:
         return createcommandlinks(prog, opts.createcommanddirectory)

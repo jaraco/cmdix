@@ -8,6 +8,7 @@
 from __future__ import unicode_literals
 
 import unittest
+
 import pycoreutils
 from pycoreutils.tests import BaseTestCase
 

@@ -34,6 +34,7 @@ class BaseTestCase(unittest.TestCase):
         Create temporary work directory
         '''
         self.workdir = tempfile.mkdtemp(prefix='pycoreutilstest.')
+        os.chdir(self.workdir)
 
     def tearDown(self):
         '''
