@@ -24,11 +24,34 @@ Requirements
 PyCoreutils requires Python 2.6 or greater. It also works on Python 3.
 
 
-Website
+Install
 -------
 
-PyCoreutils is located at https://launchpad.net/pycoreutils. Here you can
-find releases, report bugs and download the source.
+To install the last stable version, use:
+
+::
+
+   pip install pycoreutils
+
+or
+
+::
+
+   easy_install pycoreutils
+
+
+To install the latest development code, try:
+
+::
+
+   pip install bzr+http://bazaar.launchpad.net/~hanz/pycoreutils/trunk
+
+
+Downloads
+---------
+
+Releases and documentation can be found at http://pypi.python.org/pypi/pycoreutils.
+The source code can be found at https://launchpad.net/pycoreutils.
 
 
 Haven't I seen this before?
