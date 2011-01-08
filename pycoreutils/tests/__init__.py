@@ -42,6 +42,46 @@ class BaseTestCase(unittest.TestCase):
         self.workdir = tempfile.mkdtemp(prefix='pycoreutilstest.')
         os.chdir(self.workdir)
 
+    def setup_filesystem(self):
+        '''
+        Create the following filesystem:
+
+        /dir1
+        /dir1/dir1-1
+        /dir1/dir1-1/dir1-1-1
+        /dir1/dir1-1/dir1-1-1/file1-1-1-1
+        /dir1/dir1-1/dir1-1-2
+        /dir1/dir1-2
+        /dir1/dir1-2/dir1-2-1
+        /dir1/dir1-2/file1-2-1
+        /dir1/dir1-2/file1-2-2
+        /dir1/dir1-3
+        /dir1/file1-1
+        /dir1/file1-2
+        /dir2
+        /dir2/dir2-1
+        /dir2/dir2-2
+        /dir2/dir2-2/file2-2-1
+        /file1
+        /file2.txt
+        /file3
+        '''
+        os.makedirs('dir1/dir1-1/dir1-1-1')
+        os.makedirs('dir1/dir1-1/dir1-1-2')
+        os.makedirs('dir1/dir1-2/dir1-2-1')
+        os.makedirs('dir1/dir1-3')
+        os.makedirs('dir2/dir2-1')
+        os.makedirs('dir2/dir2-2')
+        self.createfile('file1', 111)
+        self.createfile('file2.txt', 2222)
+        self.createfile('file3.empty', 0)
+        self.createfile('dir1/file1-1', 33333)
+        self.createfile('dir1/file1-2', 44444)
+        self.createfile('dir1/dir1-1/dir1-1-1/file1-1-1-1', 55555)
+        self.createfile('dir1/dir1-2/file1-2-1', 66666)
+        self.createfile('dir1/dir1-2/file1-2-2', 77777)
+        self.createfile('dir2/dir2-2/file2-2-1', 88888)
+
     def tearDown(self):
         '''
         Recursively remove work directory
