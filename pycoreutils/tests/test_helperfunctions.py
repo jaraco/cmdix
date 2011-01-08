@@ -14,6 +14,9 @@ from pycoreutils.tests import BaseTestCase
 
 
 class TestCase(BaseTestCase):
+    def test_mode2string(self):
+        self.assertEqual(pycoreutils.mode2string(33261), '-rwxr-xr-x')
+
     def test_runcommandline(self):
         self.assertEqual(self.runcommandline('basename foo'), 'foo\n')
 
