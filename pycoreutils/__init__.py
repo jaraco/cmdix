@@ -577,7 +577,7 @@ def id(argstr):
         StdErrException("id: cannot print only names or real IDs in " +
                         "default format")
 
-    return "uid=%i(%s) gid=%i(%s)\n" % (uid, username, gid, username)
+    return "uid={0}({1}) gid={2}({3})\n".format(uid, username, gid, username)
 
 
 @addcommand
@@ -594,7 +594,7 @@ def kill(argstr):
     # Add a string option for each signal
     for name, sigint in list(signals.items()):
         signame = 'SIG' + name.upper()
-        p.add_option("--%s" % signame, action="store_const", dest="signal",
+        p.add_option("--" + signame, action="store_const", dest="signal",
             const=sigint,
             help="send signal {0}".format(signame))
 
@@ -833,11 +833,11 @@ def mkdir(argstr):
             for path in pathlist:
                 os.mkdir(path, int(opts.mode))
                 if opts.verbose:
-                    yield "mkdir: created directory `%s'\n" % (path)
+                    yield "mkdir: created directory `{0}'\n".format(path)
         else:
             os.mkdir(arg, int(opts.mode))
             if opts.verbose:
-                yield "mkdir: created directory `%s'\n" % (arg)
+                yield "mkdir: created directory `{0}'\n".format(arg)
 
 
 @addcommand
@@ -879,7 +879,7 @@ def mv(argstr):
         raise MissingOperandException(prog)
     if len(args) == 1:
         StdErrException("mv: missing destination file operand after " +\
-                        "'%s'" % args[0] +\
+                        "'{0}'".format(args[0]) +\
                         "Try 'mv --help' for more information.")
 
     dest = args.pop()
@@ -1149,7 +1149,7 @@ def shuf(argstr):
         if opts.headcount:
             lines = lines[0:int(opts.headcount)]
         for line in lines:
-            outfd.write("%s\n" % line)
+            outfd.write(line + '\n')
 
     elif len(args) > 1:
         raise ExtraOperandException(prog, args[1])
@@ -1162,7 +1162,7 @@ def shuf(argstr):
         if opts.headcount:
             lines = lines[0:int(opts.headcount)]
         for line in lines:
-            outfd.write("%i\n" % line)
+            outfd.write(line + '\n')
 
     else:
         # Use stdin for input if no file is specified
@@ -1231,7 +1231,7 @@ def sleep(argstr):
             else:
                 a.append(float(arg))
     except ValueError:
-        StdErrException("sleep: invalid time interval `%s'. " % (arg) +\
+        StdErrException("sleep: invalid time interval `{0}'. ".format(arg) +\
                         "Try sleep --help' for more information.")
         sys.exit(1)
 
@@ -1507,7 +1507,7 @@ def wget(argstr):
     if opts.useragent:
         useragent = opts.useragent
     else:
-        useragent = 'PyCoreutils/%s' % __version__
+        useragent = 'PyCoreutils/' + __version__
 
     opener = build_opener()
     opener.addheaders = [('User-agent', useragent)]
@@ -1519,7 +1519,7 @@ def wget(argstr):
             StdErrException("HTTP error opening {0}: {1}".format(url, e))
 
         length = int(fdin.headers['content-length'])
-        yield "Getting %i bytes from %s...\n" % (length, url)
+        yield "Getting {0} bytes from {1}...\n".format(length, url)
 
         shutil.copyfileobj(fdin, fdout)
         yield "Done\n"
@@ -1817,8 +1817,9 @@ def hasher(algorithm, argstr):
         return h.hexdigest()
  
     p = parseoptions()
-    p.description = "Print or check %s checksums.\n" % (algorithm.upper()) + \
-                    "With no FILE, or when FILE is -, read standard input."
+    p.description = "Print or check {0} ".format(algorithm.upper()) +\
+                    "checksums. With no FILE, or when FILE is -, read " +\
+                    "standard input."
     p.usage = '%prog [OPTION]... FILE...'
     (opts, args) = p.parse_args(argstr.split())
 

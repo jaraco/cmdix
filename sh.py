@@ -62,9 +62,9 @@ class PyCoreutilsShell(cmd.Cmd):
         '''
         Update the prompt
         '''
-        self.prompt = '%s@%s:%s$ ' % (pycoreutils.getcurrentusername(),
-                                      platform.node(),
-                                      os.getcwd())
+        self.prompt = '{0}@{1}:{2}$ '.format(pycoreutils.getcurrentusername(),
+                                             platform.node(),
+                                             os.getcwd())
 
 
 if __name__ == '__main__':
