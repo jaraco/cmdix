@@ -17,28 +17,13 @@ import pycoreutils
 
 class PyCoreutilsShell(cmd.Cmd):
 
-    def _setcommands(self):
-        '''
-        Copy all the commands to a 'do_foo' function, so it fits in the
-        framework
-        '''
-        for cmd in pycoreutils._cmds:
-            x = 'self.do_%s = cmd' % cmd.__name__
-            exec(x)
-
-    def _setprompt(self):
-        '''
-        Update the prompt
-        '''
-        self.prompt = '%s@%s:%s$ ' % (pycoreutils.getcurrentusername(),
-                                      platform.node(),
-                                      os.getcwd())
+    exitstatus = 0
 
     def default(self, line):
         '''
         Called on an input line when the command prefix is not recognized.
         '''
-        print('%s: command not found' % line.split()[0])
+        self.exitstatus = pycoreutils.run(line.split())
 
     def do_help(self, arg):
         print("\nUse 'COMMAND --help' for help")
@@ -53,14 +38,21 @@ class PyCoreutilsShell(cmd.Cmd):
         print()
 
     def postcmd(self, stop, line):
-        self._setprompt()
+        self.updateprompt()
         if stop:
             for l in stop:
                 print(l, end='')
 
     def preloop(self):
-        self._setprompt()
-        self._setcommands()
+        self.updateprompt()
+
+    def updateprompt(self):
+        '''
+        Update the prompt
+        '''
+        self.prompt = '%s@%s:%s$ ' % (pycoreutils.getcurrentusername(),
+                                      platform.node(),
+                                      os.getcwd())
 
 
 if __name__ == '__main__':
