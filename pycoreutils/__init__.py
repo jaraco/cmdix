@@ -1665,7 +1665,7 @@ def hasher(algorithm, argstr):
         yield myhash(sys.stdin) + '  -' + "\n"
     else:
         for arg in args:
-            yield myhash(open(arg, 'r')) + '  ' + arg + "\n"
+            yield myhash(open(arg, 'rb')) + '  ' + arg + "\n"
 
 
 def listcommands():
