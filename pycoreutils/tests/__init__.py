@@ -30,11 +30,10 @@ class BaseTestCase(unittest.TestCase):
         :param commandline: A string containing the commandline, i.e. 'ls -l X'
         :return:            A tuple containing the unicoded stdout and stderr
         '''
-        stdout, stderr = subprocess.Popen(commandline.split(),
-                                          stdout=subprocess.PIPE,
-                                          stderr=subprocess.PIPE
-                                         ).communicate(stdin)
-        return stdout.decode('utf8'), stderr.decode('utf8')
+        r = ''
+        for line in pycoreutils.runcommandline(commandline):
+            r += line
+        return r
 
     def setUp(self):
         '''
