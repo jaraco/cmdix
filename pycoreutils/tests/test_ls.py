@@ -17,13 +17,11 @@ from pycoreutils.tests import BaseTestCase
 
 
 class TestCase(BaseTestCase):
-    def test_simple(self):
-        os.mkdir('biz')
-        self.createfile('foo', 100)
-        self.createfile('bar', 100)
+    def test_ls(self):
+        self.setup_filesystem()
         self.assertEqual(
-            self.runcommandline('ls')[0],
-            'bar\nbiz\nfoo\n'
+            self.runcommandline('ls'),
+            'dir1\ndir2\nfile1\nfile2.txt\nfile3.empty\n'
         )
 
     def test_ls_l(self):
