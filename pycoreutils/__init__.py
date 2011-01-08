@@ -1976,13 +1976,12 @@ def run(argv=sys.argv, stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin):
 
     # Run the command
     errno = 0
+    commandline = " ".join(args)
     try:
-        commandline = " ".join(args)
-        for out in runcommandline(commandline,
-                                  stdout=stdout,
-                                  stderr=stderr,
-                                  stdin=stdin):
-            print(out, end='', file=stdout)
+        output = runcommandline(commandline,
+                                stdout=stdout,
+                                stderr=stderr,
+                                stdin=stdin)
     except CommandNotFoundException as err:
         print(err, file=stderr)
         print("Use {0} --help for a list of valid commands.".format(prog))
@@ -2003,6 +2002,11 @@ def run(argv=sys.argv, stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin):
         errno = err.errno
     except KeyboardInterrupt:
         errno = 0
+    else:
+        # Print the output
+        if output:
+            for out in output:
+                print(out, end='', file=stdout)
 
     return errno
 
