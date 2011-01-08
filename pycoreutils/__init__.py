@@ -1880,7 +1880,7 @@ def runcommandline(commandline, stdout=sys.stdout,
 
     # Raise previously caught error
     if error:
-        raise err
+        raise error
 
 
 def showbanner(width=None):
