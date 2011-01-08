@@ -10,6 +10,7 @@ from __future__ import print_function, unicode_literals
 import cmd
 import os
 import platform
+import pprint
 import sys
 
 import pycoreutils
@@ -30,6 +31,17 @@ class PyCoreutilsShell(cmd.Cmd):
         print("Available commands:")
         for cmd in pycoreutils.listcommands():
             print("  " + cmd)
+
+    def do_shell(self, line):
+        '''
+        Run when them command is '!' or 'shell'.
+        Execute the line using the Python interpreter.
+        i.e. "!dir()"
+        '''
+        try:
+            exec("pprint.pprint({0})".format(line))
+        except Exception as err:
+            pprint.pprint(err)
 
     def emptyline(self):
         '''
