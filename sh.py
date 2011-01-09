@@ -26,6 +26,15 @@ class PyCoreutilsShell(cmd.Cmd):
         '''
         self.exitstatus = pycoreutils.run(line.split())
 
+    def do_exit(self, n=None):
+        '''
+        Exit the shell.
+
+        Exits the shell with a status of N.  If N is omitted, the exit status
+        is that of the last command executed.
+        '''
+        sys.exit(n or self.exitstatus)
+
     def do_help(self, arg):
         print("\nUse 'COMMAND --help' for help")
         print("Available commands:")
