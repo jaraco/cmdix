@@ -576,7 +576,10 @@ def httpd(argstr):
     handler = SimpleHTTPRequestHandler
     server = HTTPServer((opts.address, opts.port), handler)
 
-    server.serve_forever()
+    try:
+        server.serve_forever()
+    finally:
+        server.server_close()
 
 
 @addcommand
