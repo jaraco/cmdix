@@ -2030,29 +2030,21 @@ def mode2string(mode):
 
 
 def parseoptions():
-    def showhelp(option, opt, value, parser):
-        raise StdOutException(parser.format_help())
-
     def showlicense(option, opt, value, parser):
-        raise StdOutException(__license__)
+        print(__license__)
 
-    p = optparse.OptionParser(version=__version__, add_help_option=False)
-    p.add_option("-h", "-?", "--help", action="callback", callback=showhelp,
-                 help="show program's help message and exit")
+    p = optparse.OptionParser(version=__version__)
     p.add_option("--license", action="callback", callback=showlicense,
                  help="show program's license and exit")
     return p
 
 
-def run(argv=sys.argv, stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin):
+def run(argv=sys.argv):
     '''
     Parse commandline arguments and run command.
     This is where the magic happens :-)
 
     :param argv:    List of arguments
-    :param stdout:  A file-like object to use as stdout
-    :param stderr:  A file-like object to use as stderr
-    :param stdin:   A file-like object to use as stdin
     :return:        The exit status of the command. None means 0.
     '''
     if os.path.basename(argv[0]) in ['__init__.py', 'coreutils.py']:
@@ -2078,7 +2070,7 @@ def run(argv=sys.argv, stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin):
             from pycoreutils import tests
         except ImportError:
             print("Can't import pycoreutils.tests. Please make sure to " +\
-                  "include it in your PYTHONPATH", file=stderr)
+                  "include it in your PYTHONPATH", file=sys.stderr)
             sys.exit(1)
         return tests.runalltests()
 
@@ -2089,27 +2081,24 @@ def run(argv=sys.argv, stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin):
     errno = 0
     commandline = " ".join(args)
     try:
-        output = runcommandline(commandline,
-                                stdout=stdout,
-                                stderr=stderr,
-                                stdin=stdin)
+        output = runcommandline(commandline)
     except CommandNotFoundException as err:
-        print(err, file=stderr)
+        print(err, file=sys.stderr)
         print("Use {0} --help for a list of valid commands.".format(prog))
         errno = 2
     except StdOutException as err:
-        print(err, file=stdout)
+        print(err)
         errno = err.errno
     except StdErrException as err:
-        print(err, file=stderr)
+        print(err, file=sys.stderr)
         errno = err.errno
     except IOError as err:
         print("{0}: {1}: {2}".format(
-              prog, err.filename, err.strerror), file=stderr)
+              prog, err.filename, err.strerror), file=sys.stderr)
         errno = err.errno
     except OSError as err:
         print("{0}: {1}: {2}".format(
-              prog, err.filename, err.strerror), file=stderr)
+              prog, err.filename, err.strerror), file=sys.stderr)
         errno = err.errno
     except KeyboardInterrupt:
         errno = 0
@@ -2117,46 +2106,22 @@ def run(argv=sys.argv, stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin):
         # Print the output
         if output:
             for out in output:
-                print(out, end='', file=stdout)
+                print(out, end='')
 
     return errno
 
 
-def runcommandline(commandline, stdout=sys.stdout,
-                   stderr=sys.stderr, stdin=sys.stdin):
+def runcommandline(commandline):
     '''
     Process a commandline
 
     :param commandline:   String representing the commandline, i.e. "ls -l /tmp"
-    :param stdout:        A file-like object to use as stdout
-    :param stderr:        A file-like object to use as stderr
-    :param stdin:         A file-like object to use as stdin
     '''
-    # Replace std's
-    sys.stdout = stdout
-    sys.stderr = stderr
-    sys.stdin = stdin
-
     argv = commandline.split(' ')
-
     prog = os.path.basename(argv[0])
     argstr = ' '.join(argv[1:])
     command = getcommand(prog)
-    error = None
-
-    try:
-        return command(argstr)
-    except Exception as err:
-        error = err  # Will be raised later
-
-    # Restore std's
-    sys.stdout = sys.__stdout__
-    sys.stderr = sys.__stderr__
-    sys.stdin = sys.__stdin__
-
-    # Raise previously caught error
-    if error:
-        raise error
+    return command(argstr)
 
 
 def showbanner(width=None):
