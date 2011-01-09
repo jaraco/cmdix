@@ -528,6 +528,21 @@ def env(argstr):
 
 
 @addcommand
+def expand(argstr):
+    p = parseoptions()
+    p.description = "Convert tabs in each FILE to spaces"
+    p.usage = "%prog [OPTION]... [FILE]..."
+    p.epilog = "If the FILE ends with '.bz2' or '.gz', the file will be " +\
+               "decompressed automatically."
+    p.add_option("-t", "--tabs", type="int", default=8, dest="tabs",
+            help="have tabs NUMBER characters apart, not 8")
+    (opts, args) = p.parse_args(argstr.split())
+
+    for line in fileinput.input(args, openhook=fileinput.hook_compressed):
+        yield line.expandtabs(opts.tabs)
+
+
+@addcommand
 def false(argstr):
     p = parseoptions()
     p.description = "Do nothing, unsuccessfully"
