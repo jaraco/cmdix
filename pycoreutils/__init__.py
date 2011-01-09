@@ -2030,13 +2030,7 @@ def mode2string(mode):
 
 
 def parseoptions():
-    def showlicense(option, opt, value, parser):
-        print(__license__)
-
-    p = optparse.OptionParser(version=__version__)
-    p.add_option("--license", action="callback", callback=showlicense,
-                 help="show program's license and exit")
-    return p
+    return optparse.OptionParser(version=__version__)
 
 
 def run(argv=sys.argv):
@@ -2057,6 +2051,8 @@ def run(argv=sys.argv):
     p.epilog = "Available Commands: " + ", ".join(listcommands())
     p.add_option("--createcommandlinks", dest="createcommanddirectory",
             help="Create a symlink to pycoreutils for every available command")
+    p.add_option("--license", action="store_true", dest="license",
+                 help="show program's license and exit")
     p.add_option("--runtests", action="store_true", dest="runtests",
             help="Run all sort of tests")
     (opts, args) = p.parse_args(argv)
@@ -2064,6 +2060,9 @@ def run(argv=sys.argv):
 
     if argv == []:
         return p.print_help()
+
+    if opts.license:
+        return print(__license__)
 
     if opts.runtests:
         try:
