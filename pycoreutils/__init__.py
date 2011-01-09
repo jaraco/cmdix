@@ -37,6 +37,7 @@ except ImportError:
 import asyncore
 import base64 as _base64
 import bz2
+import calendar
 import collections
 import fileinput
 import gzip as _gzip
@@ -193,6 +194,42 @@ def bunzip2(argstr):
 @addcommand
 def bzip2(argstr):
     compressor(argstr, 'bzip2')
+
+
+@addcommand
+def cal(argstr):
+    now = time.localtime()
+    p = parseoptions()
+    p.description = "Displays a calendar"
+    p.usage = '%prog [OPTION]... [FILE]...'
+    p.epilog = "If the FILE ends with '.bz2' or '.gz', the file will be " + \
+               "decompressed automatically."
+    p.add_option("-M", action="store_const", dest="firstweekday", const=0,
+            help="Weeks start on Monday")
+    p.add_option("-S", action="store_const", dest="firstweekday", const=6,
+            help="Weeks start on Sunday", default=6)
+    p.add_option("-y", action="store_true", dest="year",
+            help="Display a calendar for the specified year")
+    (opts, args) = p.parse_args(argstr.split())
+    prog = p.get_prog_name()
+
+    cal = calendar.LocaleTextCalendar(opts.firstweekday)
+
+    if opts.year:
+        if args != []:
+            for arg in args:
+                yield cal.formatyear(int(arg))
+        else:
+            yield cal.formatyear(now.tm_year)
+    else:
+        if len(args) > 2:
+            raise ExtraOperandException(prog, args[1])
+        elif len(args) == 2:
+            yield cal.formatmonth(int(args[1]), int(args[0]))
+        elif len(args) == 1:
+            yield cal.formatyear(int(args[0]))
+        else:
+            yield cal.formatmonth(now.tm_year, now.tm_mon)
 
 
 @addcommand
