@@ -28,6 +28,7 @@ __all__ = [
     'cmd_mkdir',
     'cmd_mktemp',
     'cmd_mv',
+    'cmd_nl',
     'cmd_pwd',
     'cmd_rm',
     'cmd_rmdir',
