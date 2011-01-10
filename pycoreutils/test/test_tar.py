@@ -7,12 +7,11 @@
 
 from __future__ import unicode_literals
 
-import os
 import tarfile
 import unittest
 
 from pycoreutils import StdErrException
-from pycoreutils.tests import BaseTestCase
+from pycoreutils.test import BaseTestCase
 
 
 class TestCase(BaseTestCase):

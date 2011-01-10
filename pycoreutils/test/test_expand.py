@@ -9,7 +9,7 @@ from __future__ import unicode_literals
 
 import unittest
 
-from pycoreutils.tests import BaseTestCase
+from pycoreutils.test import BaseTestCase
 
 
 class TestCase(BaseTestCase):

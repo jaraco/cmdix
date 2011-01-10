@@ -9,16 +9,14 @@ from __future__ import unicode_literals
 
 import unittest
 
-from pycoreutils.tests import BaseTestCase
+from pycoreutils.test import BaseTestCase
 
 
 class TestCase(BaseTestCase):
-    def test_simple(self):
-        self.createfile('foo')
+    def test_basename(self):
         self.assertEqual(
-            self.runcommandline('md5sum foo'),
-            'd8d4c2d1c8e4b04d96bca23175d071c5  foo\n'
-        )
+            self.runcommandline('basename foo/bar/biz'),
+            'biz\n')
 
 
 if __name__ == '__main__':

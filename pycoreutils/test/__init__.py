@@ -21,7 +21,7 @@ class BaseTestCase(unittest.TestCase):
         Create a temporary file of 'size' filled with 'fill'
         '''
         with open(os.path.join(self.workdir, filename), 'w') as fd:
-                fd.write(fill * size)
+            fd.write(fill * size)
 
     def runcommandline(self, commandline, stdin=None):
         '''
@@ -101,7 +101,7 @@ def getalltests():
     testcaselist = []
     for filename in os.listdir(os.path.abspath(os.path.dirname(__file__))):
         if filename.startswith('test_') and filename.endswith('.py'):
-            testcaselist.append("pycoreutils.tests." + filename.rstrip('.py'))
+            testcaselist.append("pycoreutils.test." + filename.rstrip('.py'))
     return unittest.TestLoader().loadTestsFromNames(testcaselist)
 
 

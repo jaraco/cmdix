@@ -25,10 +25,14 @@ setup(
         "Topic :: Utilities",
     ],
     license = "MIT",
-    url = "https://launchpad.net/pycoreutils",
+    url = "http://pypi.python.org/pypi/pycoreutils",
     author = "Hans van Leeuwen",
     author_email = "hansvl@gmail.com",
-    packages = ["pycoreutils", "pycoreutils.tests"],
-    scripts = ["coreutils.py", "sh.py"],
+    scripts = ["coreutils.py"],
+    packages = [
+        "pycoreutils",
+        "pycoreutils.command",
+        "pycoreutils.test"
+    ],
 )
 
