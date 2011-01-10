@@ -20,6 +20,9 @@ def rmdir(argstr):
     (opts, args) = p.parse_args(argstr.split())
     prog = p.get_prog_name()
 
+    if opts.help:
+        return p.format_help()
+
     if len(args) == 0:
         raise pycoreutils.MissingOperandException(prog)
 

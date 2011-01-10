@@ -16,6 +16,10 @@ def yes(argstr):
     p.usage = '%prog [STRING]...\nor:    %prog OPTION'
     (opts, args) = p.parse_args(argstr.split())
 
+    if opts.help:
+        yield p.format_help()
+        exit()
+
     x = ''
     for arg in args:
         x += arg + ' '

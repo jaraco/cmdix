@@ -24,6 +24,10 @@ def ln(argstr):
     (opts, args) = p.parse_args(argstr.split())
     prog = p.get_prog_name()
 
+    if opts.help:
+        yield p.format_help()
+        exit()
+
     if len(args) == 0:
         raise pycoreutils.MissingOperandException(prog)
     elif len(args) == 1:

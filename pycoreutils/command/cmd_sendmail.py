@@ -41,6 +41,9 @@ def sendmail(argstr):
             help="show smtp session")
     (opts, args) = p.parse_args(argstr.split())
 
+    if opts.help:
+        return p.format_help()
+
     msg = ""
     for line in fileinput.input(opts.messagefile):
         msg += line

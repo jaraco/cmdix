@@ -20,6 +20,10 @@ def env(argstr):
             dest="ignoreenvironment", help="start with an empty environment")
     (opts, args) = p.parse_args(argstr.split())
 
+    if opts.help:
+        yield p.format_help()
+        exit()
+
     env = {}
     if not opts.ignoreenvironment:
         env = os.environ

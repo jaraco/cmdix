@@ -20,6 +20,9 @@ def mktemp(argstr):
             help="create a directory, not a file")
     (opts, args) = p.parse_args(argstr.split())
 
+    if opts.help:
+        return p.format_help()
+
     if len(args) == 0:
         if opts.directory:
             return tempfile.mkdtemp(prefix='tmp.') + "\n"

@@ -28,6 +28,10 @@ def wget(argstr):
             help="identify as AGENT instead of PyCoreutils/VERSION.")
     (opts, args) = p.parse_args(argstr.split())
 
+    if opts.help:
+        yield p.format_help()
+        exit()
+
     if opts.outputdocument:
         fdout = open(opts.outputdocument, 'w')
     else:
