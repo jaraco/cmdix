@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 # Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# Release under the MIT license.
 # See LICENSE.txt for details.
 
 import os
@@ -16,12 +15,15 @@ import pycoreutils
 
 class BaseTestCase(unittest.TestCase):
 
-    def createfile(self, filename, size=1048576, fill='0'):
+    def createfile(self, filename, content=None, size=64*1024, fill='0'):
         '''
         Create a temporary file of 'size' filled with 'fill'
         '''
         with open(os.path.join(self.workdir, filename), 'w') as fd:
-            fd.write(fill * size)
+            if content:
+                fd.write(content)
+            else:
+                fd.write(fill * size)
 
     def runcommandline(self, commandline, stdin=None):
         '''
@@ -72,15 +74,15 @@ class BaseTestCase(unittest.TestCase):
         os.makedirs('dir1/dir1-3')
         os.makedirs('dir2/dir2-1')
         os.makedirs('dir2/dir2-2')
-        self.createfile('file1', 111)
-        self.createfile('file2.txt', 2222)
-        self.createfile('file3.empty', 0)
-        self.createfile('dir1/file1-1', 33333)
-        self.createfile('dir1/file1-2', 44444)
-        self.createfile('dir1/dir1-1/dir1-1-1/file1-1-1-1', 55555)
-        self.createfile('dir1/dir1-2/file1-2-1', 66666)
-        self.createfile('dir1/dir1-2/file1-2-2', 77777)
-        self.createfile('dir2/dir2-2/file2-2-1', 88888)
+        self.createfile('file1', size=111)
+        self.createfile('file2.txt', size=2222)
+        self.createfile('file3.empty', size=0)
+        self.createfile('dir1/file1-1', size=33333)
+        self.createfile('dir1/file1-2', size=44444)
+        self.createfile('dir1/dir1-1/dir1-1-1/file1-1-1-1', size=55555)
+        self.createfile('dir1/dir1-2/file1-2-1', size=66666)
+        self.createfile('dir1/dir1-2/file1-2-2', size=77777)
+        self.createfile('dir2/dir2-2/file2-2-1', size=88888)
 
     def tearDown(self):
         '''

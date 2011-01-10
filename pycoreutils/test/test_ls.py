@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 # Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# Release under the MIT license.
 # See LICENSE.txt for details.
 
 from __future__ import unicode_literals
@@ -25,8 +24,8 @@ class TestCase(BaseTestCase):
 
     def test_ls_l(self):
         os.mkdir('biz')
-        self.createfile('foo', 100)
-        self.createfile('bar', 999999)
+        self.createfile('foo', size=100)
+        self.createfile('bar', size=999999)
         os.chmod('bar',
                     stat.S_IWUSR +\
                     stat.S_IRGRP +\
