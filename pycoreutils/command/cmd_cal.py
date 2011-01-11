@@ -15,9 +15,8 @@ def cal(argstr):
     now = time.localtime()
     p = pycoreutils.parseoptions()
     p.description = "Displays a calendar"
-    p.usage = '%prog [OPTION]... [FILE]...'
-    p.epilog = "If the FILE ends with '.bz2' or '.gz', the file will be " + \
-               "decompressed automatically."
+    p.usage = '%prog [OPTION]... [[MONTH] YEAR]\n' +\
+       '       %prog -y [OPTION]... [YEAR]...'
     p.add_option("-M", action="store_const", dest="firstweekday", const=0,
             help="Weeks start on Monday")
     p.add_option("-S", action="store_const", dest="firstweekday", const=6,
@@ -31,7 +30,7 @@ def cal(argstr):
         yield p.format_help()
         exit()
 
-    cal = calendar.LocaleTextCalendar(opts.firstweekday)
+    cal = calendar.TextCalendar(opts.firstweekday)
 
     if opts.year:
         if args != []:
