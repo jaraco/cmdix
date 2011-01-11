@@ -8,10 +8,16 @@ import filecmp
 import os
 import os.path
 import subprocess
+import sys
 import tempfile
 import unittest
 
 import pycoreutils
+
+if sys.version_info[0] == 2:
+    from StringIO import StringIO
+else:
+    from io import StringIO
 
 
 class BaseTestCase(unittest.TestCase):
@@ -87,6 +93,9 @@ class BaseTestCase(unittest.TestCase):
         self.createfile('dir1/dir1-2/file1-2-1', size=66666)
         self.createfile('dir1/dir1-2/file1-2-2', size=77777)
         self.createfile('dir2/dir2-2/file2-2-1', size=88888)
+
+    def setStdin(self, string):
+        sys.stdin = StringIO(string)
 
     def tearDown(self):
         '''
