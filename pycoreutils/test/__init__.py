@@ -42,9 +42,15 @@ class BaseTestCase(unittest.TestCase):
         :param commandline: A string containing the commandline, i.e. 'ls -l X'
         :return:            A tuple containing the unicoded stdout and stderr
         '''
-        r = ''
-        for line in pycoreutils.runcommandline(commandline):
-            r += line
+        l = []
+        for output in pycoreutils.runcommandline(commandline):
+            l.append(output)
+        if not l:
+            return ''
+        if type(l[0]) == bytes:
+            r = b''.join(l)
+        else:
+            r = ''.join(l)
         return r
 
     def setUp(self):
