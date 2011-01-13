@@ -5,6 +5,7 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
+from wsgiref import simple_server
 import bz2
 import gzip
 import hashlib
@@ -12,6 +13,7 @@ import optparse
 import os
 import shutil
 import signal
+import ssl
 import stat
 import sys
 
@@ -63,6 +65,35 @@ def onlyunix(f):
     '''
     f._onlyunix = True
     return f
+
+
+### CLASSES #################################################################
+
+
+class WSGIServer(simple_server.WSGIServer):
+    '''
+    WSGIServer with SSL support
+    '''
+    def __init__(self, server_address, certfile=None, keyfile=None, \
+                       ca_certs=None, ssl_version=ssl.PROTOCOL_SSLv23, \
+                       handler=simple_server.WSGIRequestHandler):
+        simple_server.WSGIServer.__init__(self, server_address, handler)
+        self.allow_reuse_address = True
+        self.certfile = certfile
+        self.keyfile = keyfile
+        self.ssl_version = ssl_version
+        self.ca_certs = ca_certs
+
+    def get_request(self):
+        sock, addr = self.socket.accept()
+        if self.certfile:
+            sock = ssl.wrap_socket(sock,
+                                    server_side=True,
+                                    certfile=self.certfile,
+                                    keyfile=self.keyfile,
+                                    ssl_version=self.ssl_version,
+                                    ca_certs=self.ca_certs)
+        return sock, addr
 
 
 ### HELPER FUNCTIONS ########################################################
@@ -455,6 +486,52 @@ def showbanner(width=None):
         return ret
     else:
         return "\n".join(banner) + "\n\n" + subtext.center(68) + "\n"
+
+
+def wsgiserver(app, opts):
+    '''
+    Parse opts and return a WSGIServer running app
+    '''
+    # Set protocol version
+    if opts.ssl_version:
+        if opts.ssl_version == 'SSLv23':
+            ssl_version = ssl.PROTOCOL_SSLv23
+        elif opts.ssl_version == 'SSLv3':
+            ssl_version = ssl.PROTOCOL_SSLv23
+        elif opts.ssl_version == 'TLSv1':
+            ssl_version = ssl.PROTOCOL_TLSv1
+
+    server = WSGIServer((opts.address, opts.port),
+                         certfile=opts.certfile,
+                         keyfile=opts.keyfile,
+                         ca_certs=opts.cafile,
+                         ssl_version=ssl_version)
+    server.set_app(app)
+    return server
+
+
+def wsgiserver_getoptions():
+    '''
+    Return an OptionParser with the options for wsgiserver
+    '''
+    p = parseoptions()
+    p.epilog = "To enable https, you must supply a certificate file using " +\
+               "'-c' and a key using '-k', both PEM-formatted. If both the " +\
+               "certificate and the key are in one file, just use '-c'."
+    p.add_option("-a", "--address", default="", dest="address",
+            help="address to bind to")
+    p.add_option("-c", "--certfile", dest="certfile",
+            help="Use ssl-certificate for https")
+    p.add_option("-p", "--port", default=8000, dest="port", type="int",
+            help="port to listen to")
+    p.add_option("-k", "--keyfile", dest="keyfile",
+            help="Use ssl-certificate for https")
+    p.add_option("-V", "--ssl-version", dest="ssl_version", default="SSLv23",
+            help="Must be either 'SSLv23' (default), 'SSLv3', or 'TLSv1'")
+    p.add_option("--cafile", dest="cafile",
+            help="Authenticate remote certificate using CA certificate " +\
+                 "file. Requires -c")
+    return p
 
 
 ### EXCEPTIONS ##############################################################
