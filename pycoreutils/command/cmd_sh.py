@@ -6,7 +6,6 @@
 
 from __future__ import print_function, unicode_literals
 import pycoreutils
-from pycoreutils.shell import PyCoreutilsShell
 
 
 @pycoreutils.addcommand
@@ -23,4 +22,4 @@ def sh(argstr):
     if len(args) > 0:
         raise pycoreutils.ExtraOperandException(prog, args[0])
 
-    return PyCoreutilsShell().cmdloop(pycoreutils.showbanner(width=80))
+    return pycoreutils.PyCoreutils().cmdloop(pycoreutils.showbanner(width=80))
