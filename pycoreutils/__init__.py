@@ -6,6 +6,7 @@
 
 from __future__ import print_function, unicode_literals
 from wsgiref import simple_server
+import base64
 import bz2
 import gzip
 import hashlib
@@ -94,6 +95,32 @@ class WSGIServer(simple_server.WSGIServer):
                                     ssl_version=self.ssl_version,
                                     ca_certs=self.ca_certs)
         return sock, addr
+
+
+class WSGIAuth():
+    '''
+    WSGI middleware for basic authentication
+    '''
+    def __init__(self, app, userdict, realm='authentication'):
+        self.app = app
+        self.userdict = userdict
+        self.realm = realm
+
+    def __call__(self, environ, start_response):
+        if environ.has_key('HTTP_AUTHORIZATION'):
+            authtype, authinfo = environ['HTTP_AUTHORIZATION'].split(None, 1)
+            if authtype.upper() != 'BASIC':
+                start_response(b'200 ', [(b'Content-Type', b'text/html')])
+                return [b"Only basic authentication is supported"]
+            encodedinfo = bytes(authinfo.encode())
+            decodedinfo = base64.b64decode(encodedinfo).decode()
+            username, password = decodedinfo.split(':', 1)
+            if self.userdict.has_key(username):
+                if self.userdict[username] == password:
+                    return self.app(environ, start_response)
+
+        return wsgi_error(start_response, 401, "Authentication required",
+                  [(b'WWW-Authenticate', b'Basic realm={0}'.format(self.realm))])
 
 
 ### HELPER FUNCTIONS ########################################################
@@ -488,6 +515,15 @@ def showbanner(width=None):
         return "\n".join(banner) + "\n\n" + subtext.center(68) + "\n"
 
 
+def wsgierror(start_response, code, text, headers=[]):
+    h = [(b'Content-Type', b'text/html')]
+    h.extend(headers)
+    start_response(b'{0} '.format(code), h)
+    return [b'''<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"><html><head>
+                <title>{code} {text}</title></head><body><h1>{code} {text}</h1>
+                </body></html>'''.format(code=code, text=text)]
+
+
 def wsgiserver(app, opts):
     '''
     Parse opts and return a WSGIServer running app
@@ -500,6 +536,14 @@ def wsgiserver(app, opts):
             ssl_version = ssl.PROTOCOL_SSLv23
         elif opts.ssl_version == 'TLSv1':
             ssl_version = ssl.PROTOCOL_TLSv1
+
+    # Authentication
+    if opts.userlist:
+        userdict = {}
+        for x in opts.userlist:
+            username, password = x.split(':', 1)
+            userdict[username] = password
+        app = WSGIAuth(app, userdict)
 
     server = WSGIServer((opts.address, opts.port),
                          certfile=opts.certfile,
@@ -526,6 +570,9 @@ def wsgiserver_getoptions():
             help="port to listen to")
     p.add_option("-k", "--keyfile", dest="keyfile",
             help="Use ssl-certificate for https")
+    p.add_option("-u", "--user", action="append", dest="userlist",
+            help="Add a user for authentication in the form of " +\
+                 "'USER:PASSWORD'. Can be specified multiple times.")
     p.add_option("-V", "--ssl-version", dest="ssl_version", default="SSLv23",
             help="Must be either 'SSLv23' (default), 'SSLv3', or 'TLSv1'")
     p.add_option("--cafile", dest="cafile",
