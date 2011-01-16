@@ -133,6 +133,12 @@ class PyCoreutils(cmd.Cmd):
     def preloop(self):
         self.updateprompt()
 
+    def runcommandline(self, commandline):
+        s = ''
+        for output in self.onecmd(commandline):
+            s += output
+        return s
+
     def updateprompt(self):
         '''
         Update the prompt using format() on the template in self.prompttemplate
@@ -562,11 +568,7 @@ def runcommandline(commandline):
 
     :param commandline: String representing the commandline, i.e. "ls -l /tmp"
     '''
-    argv = commandline.split(' ')
-    prog = os.path.basename(argv[0])
-    argstr = ' '.join(argv[1:])
-    command = getcommand(prog)
-    return command(argstr)
+    return PyCoreutils().runcommandline(commandline)
 
 
 def showbanner(width=None):
