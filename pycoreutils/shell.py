@@ -19,11 +19,19 @@ class PyCoreutilsShell(cmd.Cmd):
 
     exitstatus = 0
 
+    def __init__(self, *args, **kwargs):
+        # Copy all commands from pycoreutils.commands to a 'do_foo' function
+        for func in pycoreutils._cmds:
+            x = 'self.do_{0} = func'.format(func.__name__)
+            exec(x)
+        return cmd.Cmd.__init__(self, *args, **kwargs)
+
     def default(self, line):
         '''
         Called on an input line when the command prefix is not recognized.
         '''
-        self.exitstatus = pycoreutils.run(line.split())
+        self.exitstatus = 127
+        print("{0}: Command not found".format(line.split(None, 1)[0]))
 
     def do_exit(self, n=None):
         '''
