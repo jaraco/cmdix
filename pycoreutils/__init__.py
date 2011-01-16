@@ -91,7 +91,7 @@ class PyCoreutils(cmd.Cmd):
         Called on an input line when the command prefix is not recognized.
         '''
         self.exitstatus = 127
-        print("{0}: Command not found".format(line.split(None, 1)[0]))
+        return "{0}: Command not found\n".format(line.split(None, 1)[0])
 
     def do_exit(self, n=None):
         '''
@@ -103,9 +103,9 @@ class PyCoreutils(cmd.Cmd):
         sys.exit(n or self.exitstatus)
 
     def do_help(self, arg):
-        yield "Use 'COMMAND --help' for help\n"
-        yield "Available commands:\n"
-        yield ", ".join(listcommands()) + "\n"
+        return "Use 'COMMAND --help' for help\n" +\
+               "Available commands:\n" +\
+               ", ".join(listcommands()) + "\n"
 
     def do_shell(self, line):
         '''
@@ -114,9 +114,11 @@ class PyCoreutils(cmd.Cmd):
         i.e. "!dir()"
         '''
         try:
-            exec("pprint.pprint({0})".format(line))
+            exec("r = {0}".format(line))
         except Exception as err:
-            pprint.pprint(err)
+            return pprint.pformat(err) + '\n'
+        else:
+            return pprint.pformat(r) + '\n'
 
     def emptyline(self):
         '''
