@@ -14,6 +14,7 @@ import hashlib
 import optparse
 import os
 import platform
+import pprint
 import shutil
 import signal
 import ssl
