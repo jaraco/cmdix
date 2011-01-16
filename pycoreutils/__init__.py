@@ -22,9 +22,8 @@ import stat
 import sys
 
 
-if sys.version_info[0] == 2:
-    if sys.version_info[1] < 6:
-        raise Exception("Pycoreutils requires Python version 2.6 or greater")
+if sys.version_info[0] == 2 and sys.version_info[1] < 6:
+    raise Exception("Pycoreutils requires Python version 2.6 or greater")
 
 
 __version__ = '0.0.6a'
