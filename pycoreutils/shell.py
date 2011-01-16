@@ -18,6 +18,7 @@ import pycoreutils
 class PyCoreutilsShell(cmd.Cmd):
 
     exitstatus = 0
+    prompttemplate = '{username}@{hostname}:{currentpath}$ '
 
     def __init__(self, *args, **kwargs):
         # Copy all commands from pycoreutils.commands to a 'do_foo' function
@@ -76,11 +77,17 @@ class PyCoreutilsShell(cmd.Cmd):
 
     def updateprompt(self):
         '''
-        Update the prompt
+        Update the prompt using format() on the template in self.prompttemplate
+
+        You can use the following keywords:
+        - currentpath
+        - hostname
+        - username
         '''
-        self.prompt = '{0}@{1}:{2}$ '.format(pycoreutils.getcurrentusername(),
-                                             platform.node(),
-                                             os.getcwd())
+        self.prompt = self.prompttemplate.format(
+                                currentpath=os.getcwd(),
+                                hostname=platform.node(),
+                                username=pycoreutils.getcurrentusername())
 
 
 if __name__ == '__main__':
