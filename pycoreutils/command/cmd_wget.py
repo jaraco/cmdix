@@ -30,7 +30,7 @@ def wget(argstr):
 
     if opts.help:
         yield p.format_help()
-        exit()
+        return
 
     if opts.outputdocument:
         fdout = open(opts.outputdocument, 'w')

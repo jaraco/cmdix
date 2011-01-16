@@ -18,7 +18,7 @@ def yes(argstr):
 
     if opts.help:
         yield p.format_help()
-        exit()
+        return
 
     x = ''
     for arg in args:

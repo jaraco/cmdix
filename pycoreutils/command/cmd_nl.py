@@ -26,7 +26,7 @@ def nl(argstr):
 
     if opts.help:
         yield p.format_help()
-        exit()
+        return
 
     linenr = 0
     for line in fileinput.input(args):

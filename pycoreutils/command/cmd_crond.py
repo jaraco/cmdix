@@ -33,7 +33,7 @@ def crond(argstr):
 
     if opts.help:
         yield p.format_help()
-        exit()
+        return
 
     if opts.logfile:
         logfile = open(opts.logfile, 'a')

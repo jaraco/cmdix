@@ -22,7 +22,7 @@ def expand(argstr):
 
     if opts.help:
         yield p.format_help()
-        exit()
+        return
 
     for line in fileinput.input(args, openhook=fileinput.hook_compressed):
         yield line.expandtabs(opts.tabs)

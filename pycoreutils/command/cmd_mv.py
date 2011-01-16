@@ -23,7 +23,7 @@ def mv(argstr):
 
     if opts.help:
         yield p.format_help()
-        exit()
+        return
 
     if len(args) == 0:
         raise pycoreutils.MissingOperandException(prog)

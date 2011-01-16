@@ -36,7 +36,7 @@ def tar(argstr):
 
     if opts.help:
         yield p.format_help()
-        exit()
+        return
 
     if bool(opts.list) + bool(opts.create) + bool(opts.extract) > 1:
         raise pycoreutils.StdErrException(

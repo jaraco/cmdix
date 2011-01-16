@@ -27,7 +27,7 @@ def tail(argstr):
 
     if opts.help:
         yield p.format_help()
-        exit()
+        return
 
     interval = 1.0
     f = open('/var/log/messages')

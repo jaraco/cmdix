@@ -26,7 +26,7 @@ def base64(argstr):
 
     if opts.help:
         yield p.format_help()
-        exit()
+        return
 
     s = ''
     for line in fileinput.input(args):
