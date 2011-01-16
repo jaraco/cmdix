@@ -119,7 +119,7 @@ class WSGIAuth():
                 if self.userdict[username] == password:
                     return self.app(environ, start_response)
 
-        return wsgi_error(start_response, 401, "Authentication required",
+        return wsgierror(start_response, 401, "Authentication required",
                   [(b'WWW-Authenticate', b'Basic realm={0}'.format(self.realm))])
 
 
