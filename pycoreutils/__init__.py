@@ -741,14 +741,13 @@ class MissingOperandException(StdErrException):
 
 
 # Finally import all commands so addcommand() will register them
-from pycoreutils.command import *
-
 try:
     from pycoreutils.command import *
 except ImportError:
     print("Can't import pycoreutils.command. Please make sure to " +\
           "include it in your PYTHONPATH", file=sys.stderr)
     sys.exit(1)
+
 
 if __name__ == '__main__':
     sys.exit(run())
