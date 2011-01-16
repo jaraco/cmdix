@@ -102,10 +102,9 @@ class PyCoreutils(cmd.Cmd):
         sys.exit(n or self.exitstatus)
 
     def do_help(self, arg):
-        print("\nUse 'COMMAND --help' for help")
-        print("Available commands:")
-        for cmd in listcommands():
-            print("  " + cmd)
+        yield "Use 'COMMAND --help' for help\n"
+        yield "Available commands:\n"
+        yield ", ".join(listcommands()) + "\n"
 
     def do_shell(self, line):
         '''
