@@ -13,9 +13,33 @@ import posixpath
 import sys
 
 if sys.version_info[0] == 2:
-    from urlparse import urljoin
+    from urlparse import parse_qs, urljoin
 else:
-    from urllib.parse import urljoin
+    from urllib.parse import parse_qs, urljoin
+
+
+def wsgishell(environ, start_response):
+    '''
+    Web shell
+    '''
+    if environ['REQUEST_METHOD'].upper() != 'GET':
+        return pycoreutils.wsgierror(start_response, 400, 'Bad Request')
+
+    qs = parse_qs(environ['QUERY_STRING'])
+    if 'commandline' in qs:
+        commandline = qs['commandline'][0]
+        start_response(b'200 ', [(b'Content-Type', b'text/html')])
+        s = ''
+        for x in pycoreutils.runcommandline(commandline):
+            s += x
+        return str(s)
+    else:
+        html = template.format(title='PyCoreutils Console',
+                            css=css,
+                            banner=pycoreutils.showbanner(),
+                            javascript=javascript)
+        start_response(b'200 ', [(b'Content-Type', b'text/html')])
+        return [html.encode()]        
 
 
 def wsgistatic(environ, start_response):
@@ -80,6 +104,8 @@ def list_directory(urlpath, filepath):
 def httpd(argstr):
     p = pycoreutils.wsgiserver_getoptions()
     p.description = "Start a web server that serves the current directory"
+    p.add_option("-s", "--shell", action="store_true", dest="shell",
+            help="Start a web shell")
     p.usage = '%prog [OPTION]...'
 
     (opts, args) = p.parse_args(argstr.split())
@@ -87,10 +113,123 @@ def httpd(argstr):
     if opts.help:
         yield p.format_help()
         exit()
+    if opts.shell:
+        app = wsgishell
+    else:
+        app = wsgistatic
 
-    server = pycoreutils.wsgiserver(wsgistatic, opts)
+    server = pycoreutils.wsgiserver(app, opts)
 
     try:
         server.serve_forever()
     finally:
         server.server_close()
+
+
+
+template = '''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>{title}</title>
+    <meta http-equiv='content-type' content='text/html; charset=utf-8' />
+    <style type="text/css">{css}</style>
+    <script type="text/javascript">{javascript}</script>
+</head>
+
+<body>
+    <div id="main">
+        <pre><b>{banner}</b></pre>
+        <textarea id="output" readOnly=true></textarea>
+        <br/>
+        <input id="inputtext" type="text">
+        <div id="status"><i>Loading...</i></div>
+    </div>
+</body>
+</html>
+'''
+
+css = '''
+body {
+    background: #000;
+    color: #CCC;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+a:link, a:visited, a:active, a:hover {
+    color: #ccc;
+    text-decoration : none;
+    font-weight: bold;
+}
+
+input, textarea {
+    background: #444;
+    border : 1px solid #fff;
+    font-size : 15px;
+    color: #fff;
+    margin: 4px;
+    width: 95%;
+}
+
+#main {
+    text-align: center;
+}
+
+#output {
+    height: 400px;
+}
+
+#status {
+    font-size: 0.8em;
+    font-style: italic;
+}
+'''
+
+javascript = '''
+function getXMLHttpRequest() {
+    var xmlhttp = false;
+    var arr = [
+        function(){return new XMLHttpRequest();},
+        function(){return new ActiveXObject("Microsoft.XMLHTTP");},
+        function(){return new ActiveXObject("Msxml2.XMLHTTP");}
+    ]
+    for (var i=0; i!=arr.length; ++i) {
+        try {
+            xmlhttp = arr[i]()
+            break
+        } catch (e){}
+    }
+    return xmlhttp;
+}
+
+updateoutput = function() {
+    if (xhr.readyState == 4) {
+        output.innerHTML += xhr.responseText
+        status.innerHTML = ''
+    }
+}
+
+
+submitinput = function() {
+    commandline = inputtext.value
+    inputtext.value = ''
+    xhr = getXMLHttpRequest()
+    xhr.onreadystatechange = updateoutput
+    xhr.open('GET', '/?commandline=' + commandline)
+    output.innerHTML += "# " + commandline + "\\n"
+    status.innerHTML = "Running command <strong>" + commandline + "</strong>"
+    xhr.send()
+}
+
+
+window.onload = function () {
+    inputtext = document.getElementById('inputtext')
+    inputtext.onchange = submitinput
+    inputtext.autofocus = true
+    output = document.getElementById('output')
+    status = document.getElementById('status')
+    status.innerHTML = ""
+}
+'''
