@@ -8,6 +8,7 @@ from __future__ import print_function, unicode_literals
 import base64
 import bz2
 import cmd
+import glob
 import gzip
 import hashlib
 import optparse
@@ -148,6 +149,20 @@ class PyCoreutils(cmd.Cmd):
 
 
 ### HELPER FUNCTIONS ########################################################
+
+
+def args2fds(args):
+    '''
+
+    '''
+    fdlist = []
+    for arg in args:
+        for filename in glob.iglob(arg):
+            if filename:
+                    yield open(filename)
+            else:
+                print("{0}: cannot access {1}:".format(sys.argv[0], arg) +\
+                      "No such file or directory")
 
 
 def compressor(argstr, comptype='gzip', decompress=False):

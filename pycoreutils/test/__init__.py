@@ -33,7 +33,7 @@ class BaseTestCase(unittest.TestCase):
             if content:
                 fd.write(content)
             else:
-                fd.write(fill * size)
+                fd.write(size / len(fill) * fill)
 
     def runcommandline(self, commandline, stdin=None):
         '''
