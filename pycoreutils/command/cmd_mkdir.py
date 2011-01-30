@@ -25,7 +25,7 @@ def mkdir(argstr):
     prog = p.get_prog_name()
 
     if opts.help:
-        yield p.format_help()
+        print(p.format_help())
         return
 
     if len(args) == 0:
@@ -47,8 +47,8 @@ def mkdir(argstr):
             for path in pathlist:
                 os.mkdir(path, int(opts.mode))
                 if opts.verbose:
-                    yield "mkdir: created directory `{0}'\n".format(path)
+                    print("mkdir: created directory `{0}'".format(path))
         else:
             os.mkdir(arg, int(opts.mode))
             if opts.verbose:
-                yield "mkdir: created directory `{0}'\n".format(arg)
+                print("mkdir: created directory `{0}'".format(arg))

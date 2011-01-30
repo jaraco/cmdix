@@ -35,12 +35,12 @@ def tar(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if opts.help:
-        yield p.format_help()
+        print(p.format_help())
         return
 
     if bool(opts.list) + bool(opts.create) + bool(opts.extract) > 1:
-        raise pycoreutils.StdErrException(
-                                "You can only use one of '-c', '-t' or 'x'")
+        print("You may not specify more than one of '-ctx'", file=sys.stderr)
+        sys.exit(2)
 
     if opts.extract or opts.list:
         if opts.archive:
@@ -62,7 +62,7 @@ def tar(argstr):
             name = tarinfo.name
             if tarinfo.isdir():
                     name += '/'
-            yield name + '\n'
+            print(name)
         tar.close()
 
     elif opts.create:
@@ -84,5 +84,4 @@ def tar(argstr):
             tar.add(arg)
         tar.close()
     else:
-        raise pycoreutils.StdErrException("Either '-c', '-t' or '-x' " +\
-                                          "should be specified")
+        print("Either '-c', '-t' or '-x' should be specified", file=sys.stderr)

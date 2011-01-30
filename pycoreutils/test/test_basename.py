@@ -14,7 +14,7 @@ from pycoreutils.test import BaseTestCase
 class TestCase(BaseTestCase):
     def test_basename(self):
         self.assertEqual(
-            self.runcommandline('basename foo/bar/biz'),
+            self.runcommandline('basename foo/bar/biz')[0],
             'biz\n')
 
 

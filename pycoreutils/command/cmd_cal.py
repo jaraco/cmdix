@@ -27,7 +27,7 @@ def cal(argstr):
     prog = p.get_prog_name()
 
     if opts.help:
-        yield p.format_help()
+        print(p.format_help())
         return
 
     cal = calendar.TextCalendar(opts.firstweekday)
@@ -35,15 +35,15 @@ def cal(argstr):
     if opts.year:
         if args != []:
             for arg in args:
-                yield cal.formatyear(int(arg))
+                print(cal.formatyear(int(arg)), end='')
         else:
-            yield cal.formatyear(now.tm_year)
+            print(cal.formatyear(now.tm_year), end='')
     else:
         if len(args) > 2:
             raise pycoreutils.ExtraOperandException(prog, args[1])
         elif len(args) == 2:
-            yield cal.formatmonth(int(args[1]), int(args[0]))
+            print(cal.formatmonth(int(args[1]), int(args[0])), end='')
         elif len(args) == 1:
-            yield cal.formatyear(int(args[0]))
+            print(cal.formatyear(int(args[0])), end='')
         else:
-            yield cal.formatmonth(now.tm_year, now.tm_mon)
+            print(cal.formatmonth(now.tm_year, now.tm_mon), end='')

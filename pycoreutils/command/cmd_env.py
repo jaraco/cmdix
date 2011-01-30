@@ -21,7 +21,7 @@ def env(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if opts.help:
-        yield p.format_help()
+        print(p.format_help())
         return
 
     env = {}
@@ -30,7 +30,7 @@ def env(argstr):
 
     if len(args) == 0:
         for k, v in env.items():
-            yield k + '=' + v + "\n"
+            print(k + '=' + v)
     else:
         for arg in args:
             x = arg.split('=')
@@ -39,4 +39,4 @@ def env(argstr):
                         "Invalid argument {0}. ".format(arg) +\
                         "Arguments should be in the form of 'foo=bar'", 127)
             else:
-                yield x[0] + '=' + x[1] + "\n"
+                print(x[0] + '=' + x[1])

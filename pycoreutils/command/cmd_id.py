@@ -7,6 +7,7 @@
 from __future__ import print_function, unicode_literals
 import pycoreutils
 import os
+import sys
 
 try:
     import grp
@@ -36,7 +37,8 @@ def id(argstr):
     prog = p.get_prog_name()
 
     if opts.help:
-        return p.format_help()
+        print(p.format_help())
+        sys.exit(0)
 
     if len(args) > 1:
         raise pycoreutils.ExtraOperandException(prog, args[1])
@@ -68,4 +70,4 @@ def id(argstr):
         pycoreutils.StdErrException("id: cannot print only names " +
                                     "or real IDs in default format")
 
-    return "uid={0}({1}) gid={2}({3})\n".format(uid, username, gid, username)
+    print("uid={0}({1}) gid={2}({3})".format(uid, username, gid, username))

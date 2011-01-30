@@ -10,4 +10,4 @@ import pycoreutils
 
 @pycoreutils.addcommand
 def md5sum(argstr):
-    return pycoreutils.hasher('md5', argstr)
+    pycoreutils.hasher('md5', argstr)

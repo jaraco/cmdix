@@ -21,7 +21,7 @@ def seq(argstr):
     prog = p.get_prog_name()
 
     if opts.help:
-        yield p.format_help()
+        print(p.format_help())
         return
 
     if len(args) == 0:
@@ -36,10 +36,10 @@ def seq(argstr):
 
     if opts.seperator == None:
         for x in a:
-            yield str(x) + "\n"
+            print(str(x))
     else:
         for x in range(len(a) - 1, 0, -1):
             a.insert(x, opts.seperator)
         for x in a:
-            yield str(x)
-        yield "\n"
+            print(str(x), end='')
+        print()

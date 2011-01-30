@@ -25,7 +25,7 @@ def base64(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if opts.help:
-        yield p.format_help()
+        print(p.format_help())
         return
 
     s = ''
@@ -35,14 +35,14 @@ def base64(argstr):
     if opts.decode:
         out = _base64.b64decode(s)
         if opts.wrap == 0:
-            yield out
+            print(out)
         else:
             for line in textwrap.wrap(out, opts.wrap):
-                yield line + "\n"
+                print(line)
     else:
         out = _base64.b64encode(s)
         if opts.wrap == 0:
-            yield out
+            print(out)
         else:
             for line in textwrap.wrap(out, opts.wrap):
-                yield line + "\n"
+                print(line)

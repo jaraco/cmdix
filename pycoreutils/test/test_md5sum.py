@@ -15,7 +15,7 @@ class TestCase(BaseTestCase):
     def test_simple(self):
         self.createfile('foo')
         self.assertEqual(
-            self.runcommandline('md5sum foo'),
+            self.runcommandline('md5sum foo')[0],
             'cf4b5c51a442990ed7304b535c9468c4  foo\n'
         )
 

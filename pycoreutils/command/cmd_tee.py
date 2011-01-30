@@ -21,7 +21,8 @@ def tee(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if opts.help:
-        return p.format_help()
+        print(p.format_help())
+        sys.exit(0)
 
     fdlist = []
     for filename in args:

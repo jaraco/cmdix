@@ -7,6 +7,7 @@
 from __future__ import print_function, unicode_literals
 import pycoreutils
 import os.path
+import sys
 
 
 @pycoreutils.addcommand
@@ -19,7 +20,8 @@ def basename(argstr):
     prog = p.get_prog_name()
 
     if opts.help:
-        return p.format_help()
+        print(p.format_help())
+        sys.exit(0)
 
     if len(args) == 0:
         raise pycoreutils.MissingOperandException(prog)
@@ -37,4 +39,4 @@ def basename(argstr):
     if len(args) == 2:
         b = b.rstrip(args[1])
 
-    return b + "\n"
+    print(b)

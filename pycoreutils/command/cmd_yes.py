@@ -17,7 +17,7 @@ def yes(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if opts.help:
-        yield p.format_help()
+        print(p.format_help())
         return
 
     x = ''
@@ -29,4 +29,4 @@ def yes(argstr):
         x = 'y'
 
     while 1:
-        yield x + "\n"
+        print(x)

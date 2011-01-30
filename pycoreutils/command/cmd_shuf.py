@@ -29,7 +29,8 @@ def shuf(argstr):
     prog = p.get_prog_name()
 
     if opts.help:
-        return p.format_help()
+        print(p.format_help())
+        sys.exit(0)
 
     lines = ''
     outfd = sys.stdout

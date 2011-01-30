@@ -26,7 +26,7 @@ def rm(argstr):
     prog = p.get_prog_name()
 
     if opts.help:
-        yield p.format_help()
+        print(p.format_help())
         return
 
     if len(args) == 0:
@@ -45,18 +45,18 @@ def rm(argstr):
                     path = os.path.join(root, name)
                     os.remove(path)
                     if opts.verbose:
-                        yield "Removed file `{0}'\n".format(path)
+                        print("Removed file `{0}'\n".format(path))
                 for name in dirs:
                     path = os.path.join(root, name)
                     os.rmdir(path)
                     if opts.verbose:
-                        yield "Removed directory `{0}'\n".format(path)
+                        print("Removed directory `{0}'\n".format(path))
             os.rmdir(arg)
         else:
             # Remove single file
             try:
                 os.remove(arg)
                 if opts.verbose:
-                    yield "Removed `{0}'\n".format(arg)
+                    print("Removed `{0}'\n".format(arg))
             except OSError as err:
                 _raise(err)

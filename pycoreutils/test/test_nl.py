@@ -20,19 +20,19 @@ class TestCase(BaseTestCase):
     def test_nl(self):
         self.createfile('foo', content=testdata)
         self.assertEqual(
-            self.runcommandline('nl foo'),
+            self.runcommandline('nl foo')[0],
             '       \n     1\tfoo bar\n       \n     2\tbiz\n     3\t ')
 
     def test_nl_s(self):
         self.createfile('foo', content=testdata)
         self.assertEqual(
-            self.runcommandline('nl -s XYZ foo'),
+            self.runcommandline('nl -s XYZ foo')[0],
             '         \n     1XYZfoo bar\n         \n     2XYZbiz\n     3XYZ ')
 
     def test_nl_w(self):
         self.createfile('foo', content=testdata)
         self.assertEqual(
-            self.runcommandline('nl -w 2 foo'),
+            self.runcommandline('nl -w 2 foo')[0],
             '   \n 1\tfoo bar\n   \n 2\tbiz\n 3\t ')
 
 

@@ -14,7 +14,7 @@ from pycoreutils.test import BaseTestCase
 class TestCase(BaseTestCase):
     def test_cal_1arg(self):
         self.assertEqual(
-            self.runcommandline('cal -S 123'), '''\
+            self.runcommandline('cal -S 123')[0], '''\
                                   123
 
       January                   February                   March
@@ -55,7 +55,7 @@ Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa
 
     def test_cal_2args(self):
         self.assertEqual(
-            self.runcommandline('cal -M 12 4000'), '''\
+            self.runcommandline('cal -M 12 4000')[0], '''\
    December 4000
 Mo Tu We Th Fr Sa Su
              1  2  3
@@ -67,7 +67,7 @@ Mo Tu We Th Fr Sa Su
 
     def test_cal_y(self):
         self.assertEqual(
-            self.runcommandline('cal -y 2000 3000'), '''\
+            self.runcommandline('cal -y 2000 3000')[0], '''\
                                   2000
 
       January                   February                   March

@@ -7,6 +7,7 @@
 from __future__ import print_function, unicode_literals
 import pycoreutils
 import os
+import sys
 
 
 @pycoreutils.addcommand
@@ -21,11 +22,12 @@ def pwd(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if opts.help:
-        return p.format_help()
+        print(p.format_help())
+        sys.exit(0)
 
     if opts.logical:
-        return os.getenv('PWD') + "\n"
+        print(os.getenv('PWD'))
     elif opts.physical:
-        return os.path.realpath(os.getcwd()) + "\n"
+        print(os.path.realpath(os.getcwd()))
     else:
-        return os.getcwd() + "\n"
+        print(os.getcwd())

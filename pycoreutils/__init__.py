@@ -132,12 +132,6 @@ class PyCoreutils(cmd.Cmd):
     def preloop(self):
         self.updateprompt()
 
-    def runcommandline(self, commandline):
-        s = ''
-        for output in self.onecmd(commandline):
-            s += output
-        return s
-
     def updateprompt(self):
         '''
         Update the prompt using format() on the template in self.prompttemplate
@@ -327,10 +321,10 @@ def hasher(algorithm, argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if len(args) == 0 or args == ['-']:
-        yield myhash(sys.stdin) + '  -' + "\n"
+        print(myhash(sys.stdin) + '  -')
     else:
         for arg in args:
-            yield myhash(open(arg, 'rb')) + '  ' + arg + "\n"
+            print(myhash(open(arg, 'rb')) + '  ' + arg)
 
 
 def listcommands():
@@ -479,7 +473,7 @@ def run(argv=sys.argv):
     errno = 0
     commandline = " ".join(args)
     try:
-        output = runcommandline(commandline)
+        runcommandline(commandline)
     except CommandNotFoundException as err:
         print(err, file=sys.stderr)
         print("Use {0} --help for a list of valid commands.".format(prog))
@@ -500,11 +494,6 @@ def run(argv=sys.argv):
         errno = err.errno
     except KeyboardInterrupt:
         errno = 0
-    else:
-        # Print the output
-        if output:
-            for out in output:
-                print(out, end='')
 
     return errno
 
@@ -515,7 +504,7 @@ def runcommandline(commandline):
 
     :param commandline: String representing the commandline, i.e. "ls -l /tmp"
     '''
-    return PyCoreutils().runcommandline(commandline)
+    return PyCoreutils().onecmd(commandline)
 
 
 def showbanner(width=None):

@@ -8,6 +8,7 @@ from __future__ import print_function, unicode_literals
 import pycoreutils
 import os
 import signal
+import sys
 
 
 @pycoreutils.addcommand
@@ -24,7 +25,8 @@ def kill(argstr):
     prog = p.get_prog_name()
 
     if opts.help:
-        return p.format_help()
+        print(p.format_help())
+        sys.exit(0)
 
     # Add a string option for each signal
     for name, sigint in list(signals.items()):

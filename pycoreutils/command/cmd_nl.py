@@ -25,14 +25,14 @@ def nl(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if opts.help:
-        yield p.format_help()
+        print(p.format_help())
         return
 
     linenr = 0
     for line in fileinput.input(args):
         if line == "\n":
-            yield " " * (opts.width + len(opts.separator)) + line
+            print(" " * (opts.width + len(opts.separator)) + line, end='')
         else:
             linenr += 1
-            yield "{0:>{width}}{1}{2}".format(linenr, opts.separator, line,
-                                              width=opts.width)
+            print("{0:>{width}}{1}{2}".format(linenr, opts.separator, line,
+                                              width=opts.width), end='')

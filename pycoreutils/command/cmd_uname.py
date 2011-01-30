@@ -7,6 +7,7 @@
 from __future__ import print_function, unicode_literals
 import pycoreutils
 import platform
+import sys
 
 
 @pycoreutils.addcommand
@@ -40,7 +41,8 @@ def uname(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if opts.help:
-        return p.format_help()
+        print(p.format_help())
+        sys.exit(0)
 
     output = []
 
@@ -72,4 +74,4 @@ def uname(argstr):
     if opts.operatingsystem or opts.all or output == []:
         output.append(platform.system())
 
-    return " ".join(output) + "\n"
+    print(" ".join(output))

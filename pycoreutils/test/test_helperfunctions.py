@@ -17,7 +17,7 @@ class TestCase(BaseTestCase):
         self.assertEqual(pycoreutils.mode2string(33261), '-rwxr-xr-x')
 
     def test_runcommandline(self):
-        self.assertEqual(self.runcommandline('basename foo'), 'foo\n')
+        self.assertEqual(self.runcommandline('basename foo')[0], 'foo\n')
 
     def test_showbanner(self):
         self.assertEqual(pycoreutils.showbanner(width=70),

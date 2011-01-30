@@ -26,7 +26,7 @@ def wc(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if opts.help:
-        yield p.format_help()
+        print(p.format_help())
         return
 
     fdict = {}
@@ -52,20 +52,20 @@ def wc(argstr):
 
     for filename, v in fdict.items():
         if opts.lines:
-            yield "{0:>{l}} ".format(v['lines'], l=maxlen)
+            print("{0:>{l}} ".format(v['lines'], l=maxlen), end='')
         if opts.words:
-            yield "{0:>{l}} ".format(v['words'], l=maxlen)
+            print("{0:>{l}} ".format(v['words'], l=maxlen), end='')
         if opts.chars:
-            yield "{0:>{l}} ".format(v['chars'], l=maxlen)
+            print("{0:>{l}} ".format(v['chars'], l=maxlen), end='')
         if filename != '-':
-            yield filename
-        yield '\n'
+            print(filename, end='')
+        print()
 
     if len(fdict) > 1:
         if opts.lines:
-            yield "{0:>{l}} ".format(totlines, l=maxlen)
+            print("{0:>{l}} ".format(totlines, l=maxlen), end='')
         if opts.words:
-            yield "{0:>{l}} ".format(totwords, l=maxlen)
+            print("{0:>{l}} ".format(totwords, l=maxlen), end='')
         if opts.chars:
-            yield "{0:>{l}} ".format(totchars, l=maxlen)
-        yield 'total\n'
+            print("{0:>{l}} ".format(totchars, l=maxlen), end='')
+        print('total')

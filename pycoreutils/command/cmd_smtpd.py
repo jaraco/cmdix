@@ -8,6 +8,7 @@ from __future__ import print_function, unicode_literals
 import pycoreutils
 import asyncore
 import smtpd as _smtpd
+import sys
 
 
 @pycoreutils.addcommand
@@ -26,7 +27,8 @@ def smtpd(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if opts.help:
-        return p.format_help()
+        print(p.format_help())
+        sys.exit(0)
 
     _smtpd.SMTPServer((opts.localaddress, opts.localport),
                       (opts.remoteaddress, opts.remoteport))

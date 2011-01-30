@@ -6,6 +6,7 @@
 
 from __future__ import print_function, unicode_literals
 import pycoreutils
+import sys
 import tempfile
 
 
@@ -21,15 +22,16 @@ def mktemp(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if opts.help:
-        return p.format_help()
+        print(p.format_help())
+        sys.exit(0)
 
     if len(args) == 0:
         if opts.directory:
-            return tempfile.mkdtemp(prefix='tmp.') + "\n"
+            print(tempfile.mkdtemp(prefix='tmp.'))
         else:
-            return tempfile.mkstemp(prefix='tmp.')[1] + "\n"
+            print(tempfile.mkstemp(prefix='tmp.')[1])
     elif len(args) == 1:
         raise NotImplementedError("Templates are not yet implemented")
     else:
-        raise pycoreutils.StdErrException("mktemp: too many templates. " +\
-                              "Try `mktemp --help' for more information.")
+        print("mktemp: too many templates. Try `mktemp --help' for more " +\
+              "information.", file=sys.stderr)

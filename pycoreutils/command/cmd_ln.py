@@ -25,7 +25,7 @@ def ln(argstr):
     prog = p.get_prog_name()
 
     if opts.help:
-        yield p.format_help()
+        print(p.format_help())
         return
 
     if len(args) == 0:
@@ -46,9 +46,9 @@ def ln(argstr):
 
     for src in args:
         if opts.verbose:
-            yield "`{0}' -> `{1}'".format(src, dst)
+            print("`{0}' -> `{1}'".format(src, dst))
         try:
             f(src, dst)
         except Exception as err:
-            yield "ln: creating {0} link `{1}' => `{2}': {3}\n".format(
-                   linktype, dst, src, err.strerror)
+            print("ln: creating {0} link `{1}' => `{2}': {3}\n".format(
+                   linktype, dst, src, err.strerror))

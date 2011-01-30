@@ -33,7 +33,8 @@ def zip(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if opts.help:
-        return p.format_help()
+        print(p.format_help())
+        sys.exit(0)
 
     if opts.list:
         if len(args) != 1:
@@ -53,7 +54,8 @@ def zip(argstr):
             sys.stderr("Error on file {0}\n".format(badfile))
             sys.exit(1)
         else:
-            return "{0} tested ok".format(args[0]) + "\n"
+            print("{0} tested ok".format(args[0]) + "\n")
+            sys.exit(0)
 
     elif opts.extract:
         if len(args) != 2:

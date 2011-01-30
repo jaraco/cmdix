@@ -18,7 +18,7 @@ class TestCase(BaseTestCase):
     def test_ls(self):
         self.setup_filesystem()
         self.assertEqual(
-            self.runcommandline('ls'),
+            self.runcommandline('ls')[0],
             'dir1\ndir2\nfile1\nfile2.txt\nfile3.empty\n'
         )
 
@@ -37,7 +37,7 @@ class TestCase(BaseTestCase):
         gid = 1000
         date = time.strftime('%Y-%m-%d %H:%m', time.localtime())
         self.assertEqual(
-            self.runcommandline('ls -l'),
+            self.runcommandline('ls -l')[0],
             '--w-r---wx 1 {0}  {1}  999999 {2} bar\n'.format(uid, gid, date) +\
             'drwxr-xr-x 2 {0}  {1}      40 {2} biz\n'.format(uid, gid, date) +\
             '-rw-r--r-- 1 {0}  {1}     100 {2} foo\n'.format(uid, gid, date)

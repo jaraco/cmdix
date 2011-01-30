@@ -7,6 +7,7 @@
 from __future__ import print_function, unicode_literals
 import pycoreutils
 import os
+import sys
 
 try:
     import pwd
@@ -27,7 +28,8 @@ def chown(argstr):
     prog = p.get_prog_name()
 
     if opts.help:
-        return p.format_help()
+        print(p.format_help())
+        sys.exit(0)
 
     if len(args) == 0:
         raise pycoreutils.MissingOperandException(prog)

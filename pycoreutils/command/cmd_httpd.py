@@ -15,8 +15,10 @@ import ssl
 import sys
 
 if sys.version_info[0] == 2:
+    from StringIO import StringIO
     from urlparse import parse_qs, urljoin
 else:
+    from io import StringIO
     from urllib.parse import parse_qs, urljoin
 
 
@@ -121,18 +123,27 @@ def wsgishell(environ, start_response):
     qs = parse_qs(environ['QUERY_STRING'])
     if 'commandline' in qs:
         commandline = qs['commandline'][0]
+        stdoutio = StringIO()
+        stderrio = StringIO()
+        sys.stdout = stdoutio
+        sys.stderr = stderrio
+        pycoreutils.runcommandline(commandline)
+        sys.stdout = sys.__stdout__
+        sys.stderr = sys.__stderr__
+        stdoutio.seek(0)
+        stderrio.seek(0)
+        stdoutstr = ''.join(stdoutio.readlines())
+        stderrstr = ''.join(stderrio.readlines())
         start_response(b'200 ', [(b'Content-Type', b'text/html')])
-        s = ''
-        for x in pycoreutils.runcommandline(commandline):
-            s += x
-        return str(s)
+        return [str("<div class='stdout'>{0}</div>").format(stdoutstr),
+                str("<div class='stderr'>{0}</div>").format(stderrstr)]
     else:
         html = template.format(title='PyCoreutils Console',
                             css=css,
                             banner=pycoreutils.showbanner(),
                             javascript=javascript)
         start_response(b'200 ', [(b'Content-Type', b'text/html')])
-        return [html.encode()]        
+        return [html.encode()]
 
 
 def wsgistatic(environ, start_response):
@@ -223,7 +234,7 @@ def httpd(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if opts.help:
-        yield p.format_help()
+        print(p.format_help())
         return
     if opts.shell:
         app = wsgishell
@@ -253,8 +264,7 @@ template = '''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 <body>
     <div id="main">
         <pre><b>{banner}</b></pre>
-        <textarea id="output" readOnly=true></textarea>
-        <br/>
+        <div id="output"></div>
         <input id="inputtext" type="text">
         <div id="status"><i>Loading...</i></div>
     </div>
@@ -268,6 +278,12 @@ body {
     color: #CCC;
     font-family: monospace;
     font-size: 14px;
+    margin: 0px;
+    padding: 0px;
+}
+
+pre {
+    margin: 0px;
 }
 
 a:link, a:visited, a:active, a:hover {
@@ -276,17 +292,41 @@ a:link, a:visited, a:active, a:hover {
     font-weight: bold;
 }
 
-input, textarea {
+input, #output {
     background: #444;
     border : 1px solid #fff;
     font-size : 15px;
     color: #fff;
-    margin: 4px;
     width: 95%;
 }
 
 #main {
     text-align: center;
+}
+
+#output {
+    height: 400px;
+    overflow: auto;
+}
+
+#status {
+    font-size: 0.8em;
+    font-style: italic;
+}
+
+.prompt {
+    color: #ff0;
+    text-align: left;
+}
+
+.stdout {
+    color: #fff;
+    text-align: left;
+}
+
+.stderr {
+    color: #f00;
+    text-align: left;
 }
 
 #output {
@@ -318,11 +358,11 @@ function getXMLHttpRequest() {
 
 updateoutput = function() {
     if (xhr.readyState == 4) {
-        output.innerHTML += xhr.responseText
+        output.innerHTML += "<pre>" + xhr.responseText + "</pre>"
+        output.scrollTop = output.scrollHeight - output.clientHeight
         status.innerHTML = ''
     }
 }
-
 
 submitinput = function() {
     commandline = inputtext.value
@@ -330,11 +370,10 @@ submitinput = function() {
     xhr = getXMLHttpRequest()
     xhr.onreadystatechange = updateoutput
     xhr.open('GET', '/?commandline=' + commandline)
-    output.innerHTML += "# " + commandline + "\\n"
+    output.innerHTML += "<pre class=prompt># " + commandline + "</pre>"
     status.innerHTML = "Running command <strong>" + commandline + "</strong>"
     xhr.send()
 }
-
 
 window.onload = function () {
     inputtext = document.getElementById('inputtext')

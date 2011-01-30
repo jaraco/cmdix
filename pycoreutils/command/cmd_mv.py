@@ -22,7 +22,7 @@ def mv(argstr):
     prog = p.get_prog_name()
 
     if opts.help:
-        yield p.format_help()
+        print(p.format_help())
         return
 
     if len(args) == 0:
@@ -36,6 +36,6 @@ def mv(argstr):
 
     for src in args:
         if opts.verbose:
-            yield "'{0}' -> '{1}'\n".format(src, dest)
+            print("'{0}' -> '{1}'".format(src, dest))
 
         shutil.move(src, dest)

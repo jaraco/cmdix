@@ -29,7 +29,7 @@ def wget(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if opts.help:
-        yield p.format_help()
+        print(p.format_help())
         return
 
     if opts.outputdocument:
@@ -53,7 +53,7 @@ def wget(argstr):
                                         "{0}: {1}".format(url, e))
 
         length = int(fdin.headers['content-length'])
-        yield "Getting {0} bytes from {1}...\n".format(length, url)
+        print("Getting {0} bytes from {1}...".format(length, url))
 
         shutil.copyfileobj(fdin, fdout)
-        yield "Done\n"
+        print("Done")

@@ -7,6 +7,7 @@
 from __future__ import print_function, unicode_literals
 import pycoreutils
 import fileinput
+import sys
 
 
 @pycoreutils.addcommand
@@ -19,11 +20,12 @@ def sort(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if opts.help:
-        return p.format_help()
+        print(p.format_help())
+        sys.exit(0)
 
     l = []
     for line in fileinput.input(args):
         l.append(line)
 
     l.sort(reverse=opts.reverse or False)
-    return ''.join(l)
+    print(''.join(l), end='')

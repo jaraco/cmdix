@@ -42,7 +42,8 @@ def sendmail(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if opts.help:
-        return p.format_help()
+        print(p.format_help())
+        sys.exit(0)
 
     msg = ""
     for line in fileinput.input(opts.messagefile):

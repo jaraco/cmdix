@@ -45,7 +45,7 @@ class TestCase(BaseTestCase):
         for archive in ('foo.tar', 'foo.tar.bz2', 'foo.tar.gz'):
             # Create an archive
             self.assertEqual(self.runcommandline(
-                    'tar -cf {0} dir1 dir2 file1'.format(archive)), '')
+                    'tar -cf {0} dir1 dir2 file1'.format(archive))[0], '')
             l = []
             for tarinfo in tarfile.open(archive):
                 name = tarinfo.name
@@ -57,7 +57,7 @@ class TestCase(BaseTestCase):
 
             # List the archive
             x = self.runcommandline(
-                    'tar -tf {0}'.format(archive)).split()
+                    'tar -tf {0}'.format(archive))[0].split()
             x.sort()
             self.assertEqual(x, good)
 
@@ -67,7 +67,7 @@ class TestCase(BaseTestCase):
             os.mkdir('extractdir')
             os.chdir('extractdir')
             x = self.runcommandline(
-                    'tar -xf {0}'.format(os.path.join(d, archive))).split()
+                    'tar -xf {0}'.format(os.path.join(d, archive)))[0].split()
             self.assertEqual(x, good)
             """
 

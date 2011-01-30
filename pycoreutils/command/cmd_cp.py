@@ -28,7 +28,7 @@ def cp(argstr):
     prog = p.get_prog_name()
 
     if opts.help:
-        yield p.format_help()
+        print(p.format_help())
         return
 
     if len(args) == 0:
@@ -66,7 +66,7 @@ def cp(argstr):
                     if not os.path.exists(dstbase):
                         os.mkdir(dstdir)
                     if opts.verbose:
-                        yield "`{0}' -> `{1}'\n".format(root, dstdir)
+                        print("`{0}' -> `{1}'".format(root, dstdir))
 
                 # Copy file
                 for filename in filenames:
@@ -80,11 +80,11 @@ def cp(argstr):
                             continue
                     _copy(srcfile, dstfile)
                     if opts.verbose:
-                        yield "`{0}' -> `{1}'\n".format(srcfile, dstfile)
+                        print("`{0}' -> `{1}'".format(srcfile, dstfile))
         else:
             dstfile = dstbase
             if os.path.isdir(dstbase):
                 dstfile = os.path.join(dstbase, src)
             _copy(src, dstfile)
             if opts.verbose:
-                yield "`{0}' -> `{1}'\n".format(src, dstfile)
+                print("`{0}' -> `{1}'".format(src, dstfile))

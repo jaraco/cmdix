@@ -32,7 +32,7 @@ def crond(argstr):
     prog = p.get_prog_name()
 
     if opts.help:
-        yield p.format_help()
+        print(p.format_help())
         return
 
     if opts.logfile:
@@ -63,9 +63,9 @@ def crond(argstr):
                         cmd=split[6])
             joblist.append(job)
             if opts.verbose:
-                yield 'Read {0}'.format(job)
+                print('Read {0}'.format(job))
         elif split:
-            yield 'Ignoring invalid line {0}'.format(line)
+            print('Ignoring invalid line {0}'.format(line))
 
     def checkjobs():
         ''' Check if there are jobs available '''
@@ -101,4 +101,4 @@ def crond(argstr):
 
     scheduler.enter(1, 1, checkjobs, ())
     scheduler.run()
-    raise pycoreutils.StdErrException("No more jobs. This should not happen!")
+    print("No more jobs. This should not happen!", file=sys.stderr)

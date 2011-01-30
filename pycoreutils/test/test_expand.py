@@ -15,14 +15,14 @@ class TestCase(BaseTestCase):
     def test_expand(self):
         self.createfile('foo', fill='\t', size=100)
         self.assertEqual(
-            self.runcommandline('expand foo'),
+            self.runcommandline('expand foo')[0],
             ' ' * 100 * 8
         )
 
     def test_expand_t(self):
         self.createfile('foo', fill='\t', size=100)
         self.assertEqual(
-            self.runcommandline('expand -t 4 foo'),
+            self.runcommandline('expand -t 4 foo')[0],
             ' ' * 100 * 4
         )
 

@@ -21,8 +21,8 @@ def expand(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if opts.help:
-        yield p.format_help()
+        print(p.format_help())
         return
 
     for line in fileinput.input(args, openhook=fileinput.hook_compressed):
-        yield line.expandtabs(opts.tabs)
+        print(line.expandtabs(opts.tabs), end='')

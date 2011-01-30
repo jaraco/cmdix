@@ -24,7 +24,7 @@ def ls(argstr):
     (opts, args) = p.parse_args(argstr.split())
 
     if opts.help:
-        yield p.format_help()
+        print(p.format_help())
         return
 
     if len(args) < 1:
@@ -39,7 +39,7 @@ def ls(argstr):
         for f in dirlist:
             path = os.path.join(arg, f)
             if not opts.longlist:
-                yield f + "\n"
+                print(f)
             else:
                 st = os.lstat(path)
                 mode = pycoreutils.mode2string(st.st_mode)
@@ -64,7 +64,7 @@ def ls(argstr):
 
         for mode, nlink, uid, gid, size, mtime, f in l:
             modtime = time.strftime('%Y-%m-%d %H:%m', mtime)
-            yield "{0} {1:>{nlink}} {2:<5} {3:<5} {4:>{size}} {5} {6}".format(
+            print("{0} {1:>{nlink}} {2:<5} {3:<5} {4:>{size}} {5} {6}".format(
                                 mode,
                                 nlink,
                                 uid,
@@ -74,4 +74,4 @@ def ls(argstr):
                                 f,
                                 size=sizelen,
                                 nlink=nlinklen,
-                                ) + "\n"
+                                ))
