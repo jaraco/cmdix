@@ -9,5 +9,5 @@ import pycoreutils
 
 
 @pycoreutils.addcommand
-def gzip(argstr):
-    pycoreutils.compressor(argstr, 'gzip')
+def gzip(p):
+    pycoreutils.compressor(p, 'gzip')

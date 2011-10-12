@@ -12,42 +12,39 @@ import sys
 
 
 @pycoreutils.addcommand
-def kill(argstr):
-    signals = pycoreutils.getsignals()
-
-    p = pycoreutils.parseoptions()
+def kill(p):
+    p.set_defaults(func=func)
     p.description = ""
-    p.usage = '%prog kill [ -SIGNAL | -s SIGNAL ] PID ...'
-    p.add_option("-s", "--signal",  action="store", dest="signal",
+    p.usage = '%(prog)s kill [ -SIGNAL | -s SIGNAL ] PID ...'
+    p.add_argument("pid", nargs="+")
+    p.add_argument("-s", "--signal",  action="store", dest="signal",
             default=signal.SIGTERM,
             help="send signal")
-    (opts, args) = p.parse_args(argstr.split())
-    prog = p.get_prog_name()
 
-    if opts.help:
-        print(p.format_help())
-        sys.exit(0)
+
+def func(args):
+    signals = pycoreutils.getsignals()
 
     # Add a string option for each signal
     for name, sigint in list(signals.items()):
         signame = 'SIG' + name.upper()
-        p.add_option("--" + signame, action="store_const", dest="signal",
+        p.add_argument("--" + signame, action="store_const", dest="signal",
             const=sigint,
             help="send signal {0}".format(signame))
 
     # Add an integer option for each signal
     for sigint in set(signals.values()):
         if sigint < 10:
-            p.add_option("-%i" % sigint, action="store_const", dest="signal",
+            p.add_argument("-%i" % sigint, action="store_const", dest="signal",
                 const=sigint, help="send signal {0}".format(sigint))
 
     if len(args) == 0:
         raise pycoreutils.MissingOperandException(prog)
 
     try:
-        sig = int(opts.signal)
+        sig = int(args.signal)
     except ValueError:
-        sig = opts.signal.upper()
+        sig = args.signal.upper()
 
     if list(signals.values()).count(sig):
         sigint = sig
@@ -59,7 +56,7 @@ def kill(argstr):
         raise pycoreutils.StdErrException("kill: {0}: ".format(sig) +\
                               "invalid signal specification")
 
-    for pid in args:
+    for pid in args.pid:
         try:
             pid = int(pid)
         except ValueError:

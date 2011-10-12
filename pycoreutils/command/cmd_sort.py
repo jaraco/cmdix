@@ -11,21 +11,18 @@ import sys
 
 
 @pycoreutils.addcommand
-def sort(argstr):
-    p = pycoreutils.parseoptions()
+def sort(p):
+    p.set_defaults(func=func)
     p.description = "sort lines of text files"
-    p.usage = "%prog [OPTION]..."
-    p.add_option("-r", "--reverse", action="store_true", dest="reverse",
+    p.add_argument('files', nargs='*')
+    p.add_argument("-r", "--reverse", action="store_true", dest="reverse",
             help="reverse the result of comparisons")
-    (opts, args) = p.parse_args(argstr.split())
 
-    if opts.help:
-        print(p.format_help())
-        sys.exit(0)
 
+def func(args):
     l = []
-    for line in fileinput.input(args):
+    for line in fileinput.input(args.files):
         l.append(line)
 
-    l.sort(reverse=opts.reverse or False)
+    l.sort(reverse=args.reverse or False)
     print(''.join(l), end='')

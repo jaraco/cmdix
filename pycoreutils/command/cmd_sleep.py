@@ -11,28 +11,21 @@ import sys
 
 
 @pycoreutils.addcommand
-def sleep(argstr):
-    p = pycoreutils.parseoptions()
+def sleep(p):
+    p.set_defaults(func=func)
     p.description = "Pause for NUMBER seconds. SUFFIX may be `s' for " + \
                     "seconds (the default), `m' for minutes, `h' for " + \
                     "hours or `d' for days. Unlike most implementations " + \
                     "that require NUMBER be an integer, here NUMBER may " + \
                     "be an arbitrary floating point number. Given two or " + \
                     "more arguments, pause for the amount of time"
-    p.usage = '%prog NUMBER[SUFFIX]...\nor:    %prog OPTION'
-    (opts, args) = p.parse_args(argstr.split())
-    prog = p.get_prog_name()
+    p.add_argument('number', nargs='+')
 
-    if opts.help:
-        print(p.format_help())
-        sys.exit(0)
 
-    if len(args) == 0:
-        raise pycoreutils.MissingOperandException(prog)
-
+def func(args):
     a = []
     try:
-        for arg in args:
+        for arg in args.number:
             if arg.endswith('s'):
                 a.append(float(arg[0:-1]))
             elif arg.endswith('m'):

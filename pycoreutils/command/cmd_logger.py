@@ -11,40 +11,37 @@ import sys
 
 
 @pycoreutils.addcommand
-def logger(argstr):
+def logger(p):
     # TODO: -i, -f, t
-    p = pycoreutils.parseoptions()
+    p.set_defaults(func=func)
     p.description = "A shell command interface to the syslog system log " +\
                     "module"
-    p.usage = '%prog [OPTION] [ MESSAGE ... ]'
-    p.add_option("--host", dest="host",
+    p.add_argument("message", nargs='?')
+    p.add_argument("--host", dest="host",
             help="Address of the syslog daemon. The default is `localhost'")
-    p.add_option("-p", dest="priority",
+    p.add_argument("-p", dest="priority",
             help="Enter the message with the specified priority. The " +\
                  "priority may as a ``facility.level'' pair. For example, " +\
                  "``-p local3.info'' logs the message(s) as informational " +\
                  "level in the local3 facility. " +\
                  "The default is ``user.notice.''")
-    p.add_option("--port", dest="port",
+    p.add_argument("--port", dest="port",
             help="Port of the syslog daemon. The default is 514'.'")
-    p.add_option("-s", action="store_true", dest="stderr",
+    p.add_argument("-s", action="store_true", dest="stderr",
             help="Log the message to standard error, as well as the " +\
                  "system log.")
-    (opts, args) = p.parse_args(argstr.split())
 
-    if opts.help:
-        print(p.format_help())
-        sys.exit(0)
 
-    if opts.priority:
-        facility, level = opts.priority.split('.', 2)
+def func(args):
+    if args.priority:
+        facility, level = args.priority.split('.', 2)
     else:
         facility = 'user'
         level = 'notice'
 
-    if opts.host or opts.port:
-        host = opts.host or 'localhost'
-        port = opts.port or 514
+    if args.host or args.port:
+        host = args.host or 'localhost'
+        port = args.port or 514
         address = (host, port)
     else:
         address = '/dev/log'
@@ -60,12 +57,12 @@ def logger(argstr):
 
         raise pycoreutils.StdErrException(err)
 
-    msg = ' '.join(args)
+    msg = ' '.join(args.message)
     levelint = 90 - 10 * handler.priority_names.get(level, 0)
 
     logger = logging.getLogger('Logger')
     logger.addHandler(handler)
     logger.log(levelint, msg)
 
-    if opts.stderr:
+    if args.stderr:
         raise pycoreutils.StdErrException(msg)

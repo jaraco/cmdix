@@ -9,24 +9,17 @@ import pycoreutils
 
 
 @pycoreutils.addcommand
-def seq(argstr):
-    p = pycoreutils.parseoptions()
-    p.description = "Print numbers from FIRST to LAST, in steps of " + \
+def seq(p):
+    p.set_defaults(func=func)
+    p.description = "Print numbers from FIRST to LAST, in steps of " +\
                     "INCREMENT."
-    p.usage = "%prog [OPTION]... LAST\nor:    %prog [OPTION]... FIRST " + \
-              "LAST\nor:    %prog [OPTION]... FIRST INCREMENT LAST"
-    p.add_option("-s", "--seperator", dest="seperator",
+    p.usage = "%(prog)s [OPTION]... LAST\nor:    %(prog)s [OPTION]... FIRST" +\
+              " LAST\nor:    %(prog)s [OPTION]... FIRST INCREMENT LAST"
+    p.add_argument("-s", "--seperator", dest="seperator",
             help="use SEPERATOR to separate numbers (default: \\n)")
-    (opts, args) = p.parse_args(argstr.split())
-    prog = p.get_prog_name()
 
-    if opts.help:
-        print(p.format_help())
-        return
 
-    if len(args) == 0:
-        raise pycoreutils.MissingOperandException(prog)
-
+def func(args):
     if len(args) == 1:
         a = list(range(1, int(args[0]) + 1))
     elif len(args) == 2:

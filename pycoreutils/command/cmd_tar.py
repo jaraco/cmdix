@@ -11,40 +11,38 @@ import tarfile
 
 
 @pycoreutils.addcommand
-def tar(argstr):
-    p = pycoreutils.parseoptions()
+def tar(p):
+    p.set_defaults(func=func)
     p.description = "saves many files together into a single tape or disk " +\
                    "archive, and can restore individual files from the archive"
-    p.usage = '%prog -x [OPTION]...\n' + \
-       '       %prog -t [OPTION]...\n' + \
-       '       %prog -c [OPTION]... TARFILE SOURCE...\n'
+    p.usage = '%(prog)s -x [OPTION]...\n' + \
+       '       %(prog)s -t [OPTION]...\n' + \
+       '       %(prog)s -c [OPTION]... TARFILE SOURCE...\n'
     p.epilog = "Files that end with '.bz2' or '.gz' are decompressed " +\
                "automatically."
-    p.add_option("-c", "--create", action="store_true", dest="create",
+    p.add_argument("files", nargs="*")
+    p.add_argument("-c", "--create", action="store_true", dest="create",
             help="create zipfile from source.")
-    p.add_option("-t", "--list", action="store_true", dest="list",
+    p.add_argument("-t", "--list", action="store_true", dest="list",
             help="list files in zipfile.")
-    p.add_option("-x", "--extract", action="store_true", dest="extract",
+    p.add_argument("-x", "--extract", action="store_true", dest="extract",
             help="extract tarfile into current directory.")
-    p.add_option("-j", "--bzip2", action="store_true", dest="bzip2",
+    p.add_argument("-j", "--bzip2", action="store_true", dest="bzip2",
             help="(de)compress using bzip2")
-    p.add_option("-f", "--file", dest="archive",
+    p.add_argument("-f", "--file", dest="archive",
             help="use archive file or device ARCHIVE")
-    p.add_option("-z", "--gzip", action="store_true", dest="gzip",
+    p.add_argument("-z", "--gzip", action="store_true", dest="gzip",
             help="(de)compress using gzip")
-    (opts, args) = p.parse_args(argstr.split())
 
-    if opts.help:
-        print(p.format_help())
-        return
 
-    if bool(opts.list) + bool(opts.create) + bool(opts.extract) > 1:
+def func(args):
+    if bool(args.list) + bool(args.create) + bool(args.extract) > 1:
         print("You may not specify more than one of '-ctx'", file=sys.stderr)
         sys.exit(2)
 
-    if opts.extract or opts.list:
-        if opts.archive:
-            infile = open(opts.archive, 'rb')
+    if args.extract or args.list:
+        if args.archive:
+            infile = open(args.archive, 'rb')
         else:
             infile = sys.stdin
         try:
@@ -53,11 +51,11 @@ def tar(argstr):
             raise pycoreutils.StdErrException("Could not parse file " +\
                 "{0}. Are you sure it is a tar-archive?".format(infile.name))
 
-    if opts.extract:
+    if args.extract:
         tar.extractall()
         tar.close()
 
-    elif opts.list:
+    elif args.list:
         for tarinfo in tar:
             name = tarinfo.name
             if tarinfo.isdir():
@@ -65,22 +63,22 @@ def tar(argstr):
             print(name)
         tar.close()
 
-    elif opts.create:
+    elif args.create:
         # Set outfile
-        if opts.archive:
-            outfile = open(opts.archive, 'wb')
+        if args.archive:
+            outfile = open(args.archive, 'wb')
         else:
             outfile = sys.stout
 
         # Set mode
-        if opts.gzip:
+        if args.gzip:
             mode = 'w:gz'
-        elif opts.bzip2:
+        elif args.bzip2:
             mode = 'w:bz2'
         else:
             mode = 'w'
         tar = tarfile.open(fileobj=outfile, mode=mode)
-        for arg in args:
+        for arg in args.files:
             tar.add(arg)
         tar.close()
     else:

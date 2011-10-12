@@ -16,27 +16,22 @@ import time
 
 
 @pycoreutils.addcommand
-def crond(argstr):
+def crond(p):
     # TODO: Environment variables, different users and daemonize
-    p = pycoreutils.parseoptions()
+    p.set_defaults(func=func)
     p.description = "Very simple cron daemon"
-    p.usage = "%prog [OPTION]... CRONFILE..."
     p.epilog = "If CRONFILE ends with '.bz2' or '.gz', the file will be " + \
                "decompressed automatically."
-    p.add_option("-l", "--logfile", dest="logfile", help="log to file")
-    p.add_option("-v", "--verbose", action="store_true", dest="verbose",
-            help="show debug info")
-    p.add_option("--dryrun", action="store_true", dest="dryrun",
-            help="don't actually do anything")
-    (opts, args) = p.parse_args(argstr.split())
-    prog = p.get_prog_name()
+    p.add_argument("-l", "--logfile", dest="logfile", help="log to file")
+    p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
+                   help="show debug info")
+    p.add_argument("--dryrun", action="store_true", dest="dryrun",
+                   help="don't actually do anything")
 
-    if opts.help:
-        print(p.format_help())
-        return
 
-    if opts.logfile:
-        logfile = open(opts.logfile, 'a')
+def func(args):
+    if args.logfile:
+        logfile = open(args.logfile, 'a')
     else:
         logfile = sys.stdout
 
@@ -54,7 +49,7 @@ def crond(argstr):
     logger.addHandler(handler)
 
     # Read crontab and load jobs
-    for line in fileinput.input(args):
+    for line in fileinput.input(args.cronfile):
         # Strip comments and split the string
         split = line.strip().partition('#')[0].split(None, 6)
         if len(split) == 7:
@@ -62,7 +57,7 @@ def crond(argstr):
                         mon=split[3], wday=split[4], user=split[5],
                         cmd=split[6])
             joblist.append(job)
-            if opts.verbose:
+            if args.verbose:
                 print('Read {0}'.format(job))
         elif split:
             print('Ignoring invalid line {0}'.format(line))
@@ -79,10 +74,10 @@ def crond(argstr):
             and job.mon in ['*', now.tm_mon]   \
             and job.wday in ['*', now.tm_wday]:
                 cmd = job.cmd
-                if opts.verbose:
+                if args.verbose:
                     logger.info("Running job {0}".format(cmd))
 
-                if opts.dryrun:
+                if args.dryrun:
                     break
 
                 # Run the command
@@ -90,13 +85,13 @@ def crond(argstr):
                                                   stdout=subprocess.PIPE,
                                                   stderr=subprocess.PIPE,
                                                   shell=True).communicate()
-                if opts.verbose:
+                if args.verbose:
                     if stdout:
                         logger.info("{0}: {1}".format(cmd, stdout.strip()))
                     if stderr:
                         logger.error("{0}: {1}".format(cmd, stderr.strip()))
             else:
-                if opts.verbose:
+                if args.verbose:
                     logger.info("Skipping job {0}".format(job))
 
     scheduler.enter(1, 1, checkjobs, ())

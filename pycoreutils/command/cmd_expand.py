@@ -10,19 +10,17 @@ import fileinput
 
 
 @pycoreutils.addcommand
-def expand(argstr):
-    p = pycoreutils.parseoptions()
+def expand(p):
+    p.set_defaults(func=func)
     p.description = "Convert tabs in each FILE to spaces"
-    p.usage = "%prog [OPTION]... [FILE]..."
+    p.add_argument('files', nargs='*')
     p.epilog = "If the FILE ends with '.bz2' or '.gz', the file will be " +\
                "decompressed automatically."
-    p.add_option("-t", "--tabs", type="int", default=8, dest="tabs",
-            help="have tabs NUMBER characters apart, not 8")
-    (opts, args) = p.parse_args(argstr.split())
+    p.add_argument("-t", "--tabs", type=int, default=8,
+                   help="have tabs NUMBER characters apart, not 8")
 
-    if opts.help:
-        print(p.format_help())
-        return
 
-    for line in fileinput.input(args, openhook=fileinput.hook_compressed):
-        print(line.expandtabs(opts.tabs), end='')
+def func(args):
+    for f in args.files:
+        for line in fileinput.input(f, openhook=fileinput.hook_compressed):
+            print(line.expandtabs(args.tabs), end='')

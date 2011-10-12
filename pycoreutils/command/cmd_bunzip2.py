@@ -9,5 +9,5 @@ import pycoreutils
 
 
 @pycoreutils.addcommand
-def bunzip2(argstr):
-    pycoreutils.compressor(argstr, 'bzip2', True)
+def bunzip2(p):
+    pycoreutils.compressor(p, 'bzip2', True)

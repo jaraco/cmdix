@@ -11,28 +11,16 @@ import sys
 
 
 @pycoreutils.addcommand
-def dirname(argstr):
-    p = pycoreutils.parseoptions()
+def dirname(p):
+    p.set_defaults(func=func)
     p.description = "Print NAME with its trailing /component removed; if " + \
                     "NAME contains no /'s, output `.' (meaning the current" + \
                     " directory)."
-    p.usage = '%prog [NAME]\nor:    %prog [OPTION]'
-    (opts, args) = p.parse_args(argstr.split())
-    prog = p.get_prog_name()
+    p.add_argument('path')
 
-    if opts.help:
-        print(p.format_help())
-        sys.exit(0)
 
-    if len(args) == 0:
-        raise pycoreutils.MissingOperandException(prog)
-
-    if len(args) > 1:
-        raise pycoreutils.ExtraOperandException(prog, args[1])
-
-    d = os.path.dirname(args[0].rstrip('/'))
-
+def func(args):
+    d = os.path.dirname(args.path.rstrip('/'))
     if d == '':
         d = '.'
-
     return d + "\n"

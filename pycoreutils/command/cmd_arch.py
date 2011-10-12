@@ -11,18 +11,10 @@ import sys
 
 
 @pycoreutils.addcommand
-def arch(argstr):
-    p = pycoreutils.parseoptions()
+def arch(p):
+    p.set_defaults(func=func)
     p.description = "Print machine architecture."
-    p.usage = '%prog [OPTION]'
-    (opts, args) = p.parse_args(argstr.split())
-    prog = p.get_prog_name()
 
-    if opts.help:
-        print(p.format_help())
-        sys.exit(0)
 
-    if len(args) > 0:
-        raise pycoreutils.ExtraOperandException(prog, args[0])
-
+def func(args):
     print(platform.machine())

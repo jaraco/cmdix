@@ -12,25 +12,21 @@ import sys
 
 
 @pycoreutils.addcommand
-def smtpd(argstr):
-    p = pycoreutils.parseoptions()
+def smtpd(p):
+    p.set_defaults(func=func)
     p.description = "An RFC 2821 smtp proxy."
-    p.usage = '%prog [OPTION]...'
-    p.add_option("-a", "--remoteaddress", default="", dest="remoteaddress",
-            help="remote address to connect to")
-    p.add_option("-p", "--remoteport", default=8025, dest="remoteport",
-            type="int", help="remote port to connect to")
-    p.add_option("-A", "--localaddress", default="", dest="localaddress",
-            help="local address to bind to")
-    p.add_option("-P", "--localport", default=8025, dest="localport",
-            type="int", help="local port to listen to")
-    (opts, args) = p.parse_args(argstr.split())
+    p.add_argument("-a", "--remoteaddress",
+                   help="remote address to connect to")
+    p.add_argument("-p", "--remoteport", default=25, type=int,
+                   help="remote port to connect to")
+    p.add_argument("-A", "--localaddress", default="",
+                   help="local address to bind to")
+    p.add_argument("-P", "--localport", default=25, type=int,
+                   help="local port to listen to")
 
-    if opts.help:
-        print(p.format_help())
-        sys.exit(0)
 
-    _smtpd.SMTPServer((opts.localaddress, opts.localport),
-                      (opts.remoteaddress, opts.remoteport))
+def func(args):
+    _smtpd.SMTPServer((args.localaddress, args.localport),
+                      (args.remoteaddress, args.remoteport))
 
     asyncore.loop()

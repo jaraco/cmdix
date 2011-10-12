@@ -9,5 +9,5 @@ import pycoreutils
 
 
 @pycoreutils.addcommand
-def sha384sum(argstr):
-    pycoreutils.hasher('sha384', argstr)
+def sha384sum(p):
+    pycoreutils.hasher('sha384', p)

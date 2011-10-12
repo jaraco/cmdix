@@ -18,35 +18,29 @@ except ImportError as err:
 
 @pycoreutils.addcommand
 @pycoreutils.onlyunix
-def id(argstr):
+def id(p):
     # TODO: List all groups a user belongs to
-    p = pycoreutils.parseoptions()
+    p.set_defaults(func=func)
     p.description = "Print user and group information for the specified " + \
                     "USERNAME, or (when USERNAME omitted) for the current " + \
                     "user."
-    p.usage = '%prog [OPTION]... [USERNAME]'
-    p.add_option("-a", action="store_true", dest="ignoreme",
+    p.usage = '%(prog)s [OPTION]... [USERNAME]'
+    p.add_argument('username', nargs='?')
+    p.add_argument("-a", action="store_true", dest="ignoreme",
             help="ignore, for compatibility with other versions")
-    p.add_option("-g", "--group", action="store_true", dest="group",
+    p.add_argument("-g", "--group", action="store_true", dest="group",
             help="print only the effective group ID")
-    p.add_option("-n", "--name", action="store_true", dest="name",
+    p.add_argument("-n", "--name", action="store_true", dest="name",
             help="print a name instead of a number, for -ug")
-    p.add_option("-u", "--user", action="store_true", dest="user",
+    p.add_argument("-u", "--user", action="store_true", dest="user",
             help="print only the effective group ID")
-    (opts, args) = p.parse_args(argstr.split())
-    prog = p.get_prog_name()
 
-    if opts.help:
-        print(p.format_help())
-        sys.exit(0)
 
-    if len(args) > 1:
-        raise pycoreutils.ExtraOperandException(prog, args[1])
-
-    if args == []:
-        u = pwd.getpwuid(os.getuid())
+def func(args):
+    if args.username:
+        u = pwd.getpwnam(args.username)
     else:
-        u = pwd.getpwnam(args[0])
+        u = pwd.getpwuid(os.getuid())
 
     uid = u.pw_uid
     gid = u.pw_gid
@@ -54,19 +48,19 @@ def id(argstr):
     g = grp.getgrgid(gid)
     groupname = g.gr_name
 
-    if opts.group and opts.name:
+    if args.group and args.name:
         return groupname
 
-    if opts.group:
+    if args.group:
         return gid
 
-    if opts.user and opts.name:
+    if args.user and args.name:
         return username
 
-    if opts.user:
+    if args.user:
         return uid
 
-    if opts.name:
+    if args.name:
         pycoreutils.StdErrException("id: cannot print only names " +
                                     "or real IDs in default format")
 

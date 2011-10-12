@@ -25,7 +25,7 @@ class BaseTestCase(unittest.TestCase):
     def assertSamefile(self, file1, file2):
         self.assertTrue(filecmp.cmp(file1, file2))
 
-    def createfile(self, filename, content=None, size=64*1024, fill='0'):
+    def createfile(self, filename, content=None, size=64 * 1024, fill='0'):
         '''
         Create a temporary file of 'size' filled with 'fill'
         '''

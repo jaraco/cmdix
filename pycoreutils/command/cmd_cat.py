@@ -10,18 +10,15 @@ import fileinput
 
 
 @pycoreutils.addcommand
-def cat(argstr):
-    p = pycoreutils.parseoptions()
+def cat(p):
+    p.set_defaults(func=func)
     p.description = "Concatenate FILE(s), or standard input, " + \
                     "to standard output."
-    p.usage = '%prog [OPTION]... [FILE]...'
     p.epilog = "If the FILE ends with '.bz2' or '.gz', the file will be " + \
                "decompressed automatically."
-    (opts, args) = p.parse_args(argstr.split())
+    p.add_argument('FILE', nargs='*')
 
-    if opts.help:
-        print(p.format_help())
-        return
 
-    for line in fileinput.input(args, openhook=fileinput.hook_compressed):
+def func(args):
+    for line in fileinput.input(args.FILE, openhook=fileinput.hook_compressed):
         print(line, end='')

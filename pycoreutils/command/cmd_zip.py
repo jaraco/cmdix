@@ -12,31 +12,27 @@ import zipfile
 
 
 @pycoreutils.addcommand
-def zip(argstr):
-    '''
-    Overriding a built-in command. Yes, I known :(
-    '''
-    p = pycoreutils.parseoptions()
+def zip(p):
+    p.set_defaults(func=func)
     p.description = "package and compress (archive) files"
-    p.usage = '%prog -l [OPTION]... ZIPFILE...\n' + \
-       '       %prog -t [OPTION]... ZIPFILE...\n' + \
-       '       %prog -e [OPTION]... ZIPFILE TARGET\n' + \
-       '       %prog -c [OPTION]... ZIPFILE SOURCE...\n'
-    p.add_option("-c", "--create", action="store_true", dest="create",
-            help="create zipfile from source.")
-    p.add_option("-e", "--extract", action="store_true", dest="extract",
-            help="extract zipfile into target directory.")
-    p.add_option("-l", "--list", action="store_true", dest="list",
-            help="list files in zipfile.")
-    p.add_option("-t", "--test", action="store_true", dest="test",
-            help="test if a zipfile is valid.")
-    (opts, args) = p.parse_args(argstr.split())
+    p.usage = '%(prog)s -l [OPTION]... ZIPFILE...\n' + \
+       '       %(prog)s -t [OPTION]... ZIPFILE...\n' + \
+       '       %(prog)s -e [OPTION]... ZIPFILE TARGET\n' + \
+       '       %(prog)s -c [OPTION]... ZIPFILE SOURCE...\n'
+    p.add_argument('files', nargs='+')
+    p.add_argument('target', nargs='?')
+    p.add_argument("-c", "--create", action="store_true", dest="create",
+                   help="create zipfile from source.")
+    p.add_argument("-e", "--extract", action="store_true", dest="extract",
+                   help="extract zipfile into target directory.")
+    p.add_argument("-l", "--list", action="store_true", dest="list",
+                   help="list files in zipfile.")
+    p.add_argument("-t", "--test", action="store_true", dest="test",
+                   help="test if a zipfile is valid.")
 
-    if opts.help:
-        print(p.format_help())
-        sys.exit(0)
 
-    if opts.list:
+def func(args):
+    if args.list:
         if len(args) != 1:
             p.print_usage(sys.stderr)
             sys.exit(1)
@@ -44,7 +40,7 @@ def zip(argstr):
         zf.printdir()
         zf.close()
 
-    elif opts.test:
+    elif args.test:
         if len(args) != 1:
             p.print_usage(sys.stderr)
             sys.exit(1)
@@ -57,7 +53,7 @@ def zip(argstr):
             print("{0} tested ok".format(args[0]) + "\n")
             sys.exit(0)
 
-    elif opts.extract:
+    elif args.extract:
         if len(args) != 2:
             p.print_usage(sys.stderr)
             sys.exit(1)
@@ -78,7 +74,7 @@ def zip(argstr):
             fp.close()
         zf.close()
 
-    elif opts.create:
+    elif args.create:
         if len(args) < 2:
             p.print_usage(sys.stderr)
             sys.exit(1)

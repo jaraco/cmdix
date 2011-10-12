@@ -10,18 +10,10 @@ import sys
 
 
 @pycoreutils.addcommand
-def sh(argstr):
-    p = pycoreutils.parseoptions()
+def sh(p):
+    p.set_defaults(func=func)
     p.description = "Start a shell"
-    p.usage = '%prog [OPTION]'
-    (opts, args) = p.parse_args(argstr.split())
-    prog = p.get_prog_name()
 
-    if opts.help:
-        print(p.format_help())
-        sys.exit(0)
 
-    if len(args) > 0:
-        raise pycoreutils.ExtraOperandException(prog, args[0])
-
+def func(args):
     return pycoreutils.PyCoreutils().cmdloop(pycoreutils.showbanner(width=80))

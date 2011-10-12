@@ -11,39 +11,37 @@ import time
 
 
 @pycoreutils.addcommand
-def cal(argstr):
-    now = time.localtime()
-    p = pycoreutils.parseoptions()
+def cal(p):
+    p.set_defaults(func=func)
     p.description = "Displays a calendar"
-    p.usage = '%prog [OPTION]... [[MONTH] YEAR]\n' +\
-       '       %prog -y [OPTION]... [YEAR]...'
-    p.add_option("-M", action="store_const", dest="firstweekday", const=0,
+    p.usage = '%(prog)s [OPTION]... [[MONTH] YEAR]\n' +\
+       '       %(prog)s -y [OPTION]... [YEAR]...'
+    p.add_argument('args', nargs='*')
+    p.add_argument("-M", action="store_const", dest="firstweekday", const=0,
             help="Weeks start on Monday")
-    p.add_option("-S", action="store_const", dest="firstweekday", const=6,
+    p.add_argument("-S", action="store_const", dest="firstweekday", const=6,
             help="Weeks start on Sunday", default=6)
-    p.add_option("-y", action="store_true", dest="year",
+    p.add_argument("-y", action="store_true", dest="year",
             help="Display a calendar for the specified year")
-    (opts, args) = p.parse_args(argstr.split())
-    prog = p.get_prog_name()
 
-    if opts.help:
-        print(p.format_help())
-        return
 
-    cal = calendar.TextCalendar(opts.firstweekday)
+def func(args):
+    now = time.localtime()
+    calen = calendar.TextCalendar(args.firstweekday)
 
-    if opts.year:
+    if args.year:
         if args != []:
             for arg in args:
-                print(cal.formatyear(int(arg)), end='')
+                print(calen.formatyear(int(arg)), end='')
         else:
-            print(cal.formatyear(now.tm_year), end='')
+            print(calen.formatyear(now.tm_year), end='')
     else:
-        if len(args) > 2:
-            raise pycoreutils.ExtraOperandException(prog, args[1])
-        elif len(args) == 2:
-            print(cal.formatmonth(int(args[1]), int(args[0])), end='')
-        elif len(args) == 1:
-            print(cal.formatyear(int(args[0])), end='')
+        if len(args.args) > 2:
+            raise pycoreutils.ExtraOperandException(prog, args.args[1])
+        elif len(args.args) == 2:
+            print(calen.formatmonth(int(args.args[1]), int(args.args[0])),
+                  end='')
+        elif len(args.args) == 1:
+            print(calen.formatyear(int(args.args[0])), end='')
         else:
-            print(cal.formatmonth(now.tm_year, now.tm_mon), end='')
+            print(calen.formatmonth(now.tm_year, now.tm_mon), end='')

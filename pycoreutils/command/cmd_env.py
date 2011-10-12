@@ -10,22 +10,20 @@ import os
 
 
 @pycoreutils.addcommand
-def env(argstr):
+def env(p):
     # TODO: --unset
-    p = pycoreutils.parseoptions()
+    p.set_defaults(func=func)
     p.description = "Set each NAME to VALUE in the environment and run " + \
                     "COMMAND."
-    p.usage = '%prog [OPTION]... [-] [NAME=VALUE]... [COMMAND [ARG]...]'
-    p.add_option("-i", "--ignore-environment", action="store_true",
+    p.usage = '%(prog)s [OPTION]... [-] [NAME=VALUE]... [COMMAND [ARG]...]'
+    p.add_argument('command')
+    p.add_argument("-i", "--ignore-environment", action="store_true",
             dest="ignoreenvironment", help="start with an empty environment")
-    (opts, args) = p.parse_args(argstr.split())
 
-    if opts.help:
-        print(p.format_help())
-        return
 
+def func(args):
     env = {}
-    if not opts.ignoreenvironment:
+    if not args.ignoreenvironment:
         env = os.environ
 
     if len(args) == 0:

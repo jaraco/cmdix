@@ -17,31 +17,24 @@ except ImportError:
 
 @pycoreutils.addcommand
 @pycoreutils.onlyunix
-def chown(argstr):
+def chown(p):
     # TODO: Support for groups and --reference
-    p = pycoreutils.parseoptions()
+    p.set_defaults(func=func)
     p.description = "Change the owner and/or group of each FILE to OWNER " + \
                      "and/or GROUP. With --reference, change the owner and" + \
                      " group of each FILE to those of RFILE."
-    p.usage = '%prog [OWNER] FILE'
-    (opts, args) = p.parse_args(argstr.split())
-    prog = p.get_prog_name()
+    p.add_argument('files', nargs='*')
+    p.add_argument('owner', nargs='?')
 
-    if opts.help:
-        print(p.format_help())
-        sys.exit(0)
 
-    if len(args) == 0:
-        raise pycoreutils.MissingOperandException(prog)
-
-    uid = args.pop(0)
-    if not uid.isdigit():
+def func(args):
+    if not args.owner:
         try:
-            user = pwd.getpwnam(uid)
+            user = pwd.getpwnam(args.owner)
         except KeyError:
             raise pycoreutils.StdErrException(
                                   "{0}: invalid user: '{1}'".format(prog, uid))
         uid = user.pw_uid
 
-    for arg in args:
+    for arg in args.files:
         os.chown(arg, int(uid), -1)

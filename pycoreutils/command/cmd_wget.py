@@ -17,28 +17,26 @@ else:
 
 
 @pycoreutils.addcommand
-def wget(argstr):
+def wget(p):
     # TODO: Fix for Python3, recursion, proxy, progress bar, you name it...
-    p = pycoreutils.parseoptions()
+    p.set_defaults(func=func)
     p.description = "Download of files from the Internet"
-    p.usage = '%prog [OPTION]... [URL]...'
-    p.add_option("-O", "--output-document", dest="outputdocument",
-            help="write documents to FILE.")
-    p.add_option("-u", "--user-agent", dest="useragent",
-            help="identify as AGENT instead of PyCoreutils/VERSION.")
-    (opts, args) = p.parse_args(argstr.split())
+    p.add_argument("url", nargs="+",
+                   help="write documents to FILE.")
+    p.add_argument("-O", "--output-document", dest="outputdocument",
+                   help="write documents to FILE.")
+    p.add_argument("-u", "--user-agent", dest="useragent",
+                   help="identify as AGENT instead of PyCoreutils/VERSION.")
 
-    if opts.help:
-        print(p.format_help())
-        return
 
-    if opts.outputdocument:
-        fdout = open(opts.outputdocument, 'w')
+def func(args):
+    if args.outputdocument:
+        fdout = open(args.outputdocument, 'w')
     else:
         fdout = sys.stdout
 
-    if opts.useragent:
-        useragent = opts.useragent
+    if args.useragent:
+        useragent = args.useragent
     else:
         useragent = 'PyCoreutils/' + pycoreutils.__version__
 
