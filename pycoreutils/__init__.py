@@ -11,7 +11,6 @@ import cmd
 import glob
 import gzip
 import hashlib
-import optparse
 import os
 import platform
 import pprint
@@ -20,12 +19,15 @@ import signal
 import stat
 import sys
 
+try:
+    import argparse
+except ImportError:
+    print("Failed to import argparse.")
+    print("Argparse is included in Python 2.7 and 3.2, or available from PyPi")
+    sys.exit(1)
 
-if sys.version_info[0] == 2 and sys.version_info[1] < 6:
-    raise Exception("Pycoreutils requires Python version 2.6 or greater")
 
-
-__version__ = '0.0.6a'
+__version__ = '0.1.0a'
 __license__ = '''Copyright (c) 2009, 2010, 2011 Hans van Leeuwen
 
 Permission is hereby granted, free of charge, to any person obtaining a
@@ -80,7 +82,8 @@ class PyCoreutils(cmd.Cmd):
     def __init__(self, *args, **kwargs):
         # Copy all commands from _cmds to a 'do_foo' function
         for func in _cmds:
-            x = 'self.do_{0} = func'.format(func.__name__)
+            x = '''self.do_{0} = lambda l:run(["{0}"]+l.split())
+                '''.format(func.__name__)
             exec(x)
         return cmd.Cmd.__init__(self, *args, **kwargs)
 
@@ -142,10 +145,9 @@ class PyCoreutils(cmd.Cmd):
         - hostname
         - username
         '''
-        self.prompt = self.prompttemplate.format(
-                                currentpath=os.getcwd(),
-                                hostname=platform.node(),
-                                username=getcurrentusername())
+        self.prompt = self.prompttemplate.format(currentpath=os.getcwd(),
+                                                 hostname=platform.node(),
+                                                 username=getcurrentusername())
 
 
 ### HELPER FUNCTIONS ########################################################
@@ -159,75 +161,74 @@ def args2fds(args):
     for arg in args:
         for filename in glob.iglob(arg):
             if filename:
-                    yield open(filename)
+                yield open(filename)
             else:
                 print("{0}: cannot access {1}:".format(sys.argv[0], arg) +\
                       "No such file or directory")
 
 
-def compressor(argstr, comptype='gzip', decompress=False):
+def compressor(p, comptype='gzip', decompress=False):
     '''
     Handles compression and decompression as bzip2 and gzip
     '''
-    p = parseoptions()
     p.description = "Compress or uncompress FILEs (by default, compress " + \
                     "FILES in-place)."
-    p.usage = '%prog [OPTION]... [FILE]...'
-    p.add_option("-c", "--stdout", "--as-stdout", action="store_true",
+    p.set_defaults(func=compressorfunc, comptype=comptype,
+                   decompress=decompress)
+    p.add_argument('files', nargs='*')
+    p.add_argument("-c", "--stdout", "--as-stdout", action="store_true",
             dest="stdout",
             help="write on standard output, keep original files unchanged")
-    p.add_option("-C", "--compresslevel", dest="compresslevel", type="int",
+    p.add_argument("-C", "--compresslevel", dest="compresslevel", type=int,
             default=6, help="set file mode (as in chmod), not a=rwx - umask")
-    p.add_option("-d", "--decompress", action="store_true", dest="decompress",
-            help="decompress")
-    p.add_option("-1", "--fast", action="store_const", dest="compresslevel",
+    p.add_argument("-d", "--decompress", action="store_true",
+            dest="decompress", help="decompress")
+    p.add_argument("-1", "--fast", action="store_const", dest="compresslevel",
             const=1, help="Use the fastest type of compression")
-    p.add_option("-2", action="store_const", dest="compresslevel", const=2,
+    p.add_argument("-2", action="store_const", dest="compresslevel", const=2,
             help="Use compression level 2")
-    p.add_option("-3", action="store_const", dest="compresslevel", const=3,
+    p.add_argument("-3", action="store_const", dest="compresslevel", const=3,
             help="Use compression level 3")
-    p.add_option("-4", action="store_const", dest="compresslevel", const=4,
+    p.add_argument("-4", action="store_const", dest="compresslevel", const=4,
             help="Use compression level 4")
-    p.add_option("-5", action="store_const", dest="compresslevel", const=5,
+    p.add_argument("-5", action="store_const", dest="compresslevel", const=5,
             help="Use compression level 5")
-    p.add_option("-6", action="store_const", dest="compresslevel", const=6,
+    p.add_argument("-6", action="store_const", dest="compresslevel", const=6,
             help="Use compression level 6")
-    p.add_option("-7", action="store_const", dest="compresslevel", const=7,
+    p.add_argument("-7", action="store_const", dest="compresslevel", const=7,
             help="Use compression level 7")
-    p.add_option("-8", action="store_const", dest="compresslevel", const=8,
+    p.add_argument("-8", action="store_const", dest="compresslevel", const=8,
             help="Use compression level 8")
-    p.add_option("-9", "--best", action="store_const", dest="compresslevel",
+    p.add_argument("-9", "--best", action="store_const", dest="compresslevel",
             const=9, help="Use the best type of compression")
-    (opts, args) = p.parse_args(argstr.split())
-    prog = p.get_prog_name()
 
-    if opts.help:
-        return p.format_help()
 
-    if comptype == 'gzip':
+def compressorfunc(args):
+    if args.comptype == 'gzip':
         compresstype = gzip.GzipFile
         suffix = '.gz'
-    elif comptype == 'bzip' or comptype == 'bzip2':
+    elif args.comptype == 'bzip' or comptype == 'bzip2':
         compresstype = bz2.BZ2File
         suffix = '.bz2'
 
-    infiles = args
+    infiles = args.files
 
     # Use stdin for input if no file is specified or file is '-'
-    if len(args) == 0 or (len(args) == 1 and args[0] == '-'):
+    if len(args.files) == 0 or (len(args.files) == 1 and args[0] == '-'):
         infiles = [sys.stdin]
 
     for infile in infiles:
-        if opts.decompress or decompress:
+        print(infile)
+        if args.decompress:
             # Decompress
             infile = compresstype(infile, 'rb',
-                                  compresslevel=opts.compresslevel)
-            if len(args) == 0 or opts.stdout:
+                                  compresslevel=args.compresslevel)
+            if len(args) == 0 or args.stdout:
                 outfile = sys.stdout
             else:
                 unzippath = infile.rstrip(suffix)
                 if os.path.exists(unzippath):
-                    q = input("{0}: {1} already ".format(prog, unzippath) + \
+                    q = input("{0}: {1} already ".format(p.prog, unzippath) + \
                               "exists; do you wish to overwrite (y or n)? ")
                     if q.upper() != 'Y':
                         StdOutException("not overwritten", 2)
@@ -237,19 +238,36 @@ def compressor(argstr, comptype='gzip', decompress=False):
             # Compress
             zippath = infile + suffix
             infile = open(infile, 'rb')
-            if len(args) == 0 or opts.stdout:
+            if len(args) == 0 or args.stdout:
                 outfile = sys.stdout
             else:
                 if os.path.exists(zippath):
-                    q = input("{0}: {1} already".format(prog, zippath) + \
+                    q = input("{0}: {1} already".format(p.prog, zippath) + \
                               " exists; do you wish to overwrite (y or n)? ")
                     if q.upper() != 'Y':
                         StdErrException("not overwritten", 2)
 
                 outfile = compresstype(zippath, 'wb',
-                                       compresslevel=opts.compresslevel)
+                                       compresslevel=args.compresslevel)
 
         shutil.copyfileobj(infile, outfile)
+
+
+def coreutils(args):
+    if args.license:
+        print(__license__)
+
+    if args.runtests:
+        try:
+            from pycoreutils import test
+        except ImportError:
+            print("Can't import pycoreutils.test. Please make sure to " +\
+                  "include it in your PYTHONPATH", file=sys.stderr)
+            sys.exit(1)
+        test.runalltests()
+
+    if args.createcommanddirectory:
+        createcommandlinks(p.prog, args.createcommanddirectory)
 
 
 def createcommandlinks(pycorepath, directory):
@@ -275,7 +293,7 @@ def getcommand(commandname):
     Returns the function of the given commandname.
     Raises a CommandNotFoundException if the command is not found
     '''
-    a = [cmd for cmd in _cmds if cmd.__name__ == commandname]
+    a = [command for command in _cmds if command.__name__ == commandname]
     l = len(a)
     if l == 0:
         raise CommandNotFoundException(commandname)
@@ -321,34 +339,29 @@ def getuserhome():
         return os.environ['HOMEPATH']  # Windows
 
 
-def hasher(algorithm, argstr):
-    def myhash(fd):
-        h = hashlib.new(algorithm)
-        with fd as f:
-            h.update(f.read())
-        return h.hexdigest()
+def hasher(algorithm, p):
+    def myhash(args):
+        for fd in args.files:
+            h = hashlib.new(algorithm)
+            with fd as f:
+                h.update(f.read())
+            print(h.hexdigest() + '  ' + fd.name)
 
-    p = parseoptions()
+    p.set_defaults(func=myhash)
     p.description = "Print or check {0} ".format(algorithm.upper()) +\
                     "checksums. With no FILE, or when FILE is -, read " +\
                     "standard input."
-    p.usage = '%prog [OPTION]... FILE...'
-    (opts, args) = p.parse_args(argstr.split())
-
-    if len(args) == 0 or args == ['-']:
-        print(myhash(sys.stdin) + '  -')
-    else:
-        for arg in args:
-            print(myhash(open(arg, 'rb')) + '  ' + arg)
+    p.add_argument('files', nargs='*', type=argparse.FileType('r'),
+                   default='-')
 
 
 def listcommands():
     '''
-    Returns a list of all public commands
+    Returns a list of all available commands
     '''
     l = []
-    for cmd in _cmds:
-        l.append(cmd.__name__)
+    for command in _cmds:
+        l.append(command.__name__.lower())
     return l
 
 
@@ -431,13 +444,6 @@ def mode2string(mode):
     return s
 
 
-def parseoptions():
-    p = optparse.OptionParser(version=__version__, add_help_option=False)
-    p.add_option("-h", "-?", "--help", action="store_true", dest='help',
-                 help="show program's help message and exit")
-    return p
-
-
 def run(argv=sys.argv):
     '''
     Parse commandline arguments and run command.
@@ -446,71 +452,46 @@ def run(argv=sys.argv):
     :param argv:    List of arguments
     :return:        The exit status of the command. None means 0.
     '''
-    commands = listcommands()
-    commands.sort()
+    p = argparse.ArgumentParser(version=__version__,
+                description="Coreutils in Pure Python.",
+                epilog="Available Commands: " + ", ".join(listcommands()))
+
+    subparsers = p.add_subparsers(title='subcommands',
+                                  description='valid subcommands')
+
+    sp = subparsers.add_parser('pycoreutils')
+    sp.set_defaults(func=coreutils)
+    sp.description = "Pycoreutils meta-commands"
+    sp.add_argument("--createcommandlinks", dest="createcommanddirectory",
+                    help="Create a symlink to pycoreutils for every " +\
+                         "available command")
+    sp.add_argument("--helpall", action="store_true",
+                    help="Show help for all commands")
+    sp.add_argument("--license", action="store_true",
+                    help="show program's license and exit")
+    sp.add_argument("--runtests", action="store_true",
+                    help="Run all sort of tests")
+
+    # Register commands with subparser
+    #parsers = []
+    for command in _cmds:
+        s = subparsers.add_parser(command.__name__)
+        command(s)
+        #parsers.append(s)
 
     if os.path.basename(argv[0]) in ['__init__.py', 'coreutils.py']:
         argv = argv[1:]
 
-    p = optparse.OptionParser(version=__version__)
-    p.disable_interspersed_args()  # Important!
-    p.description = "Coreutils in Pure Python."
-    p.usage = "%prog [OPTION]... [COMMAND]..."
-    p.epilog = "Available Commands: " + ", ".join(commands)
-    p.add_option("--createcommandlinks", dest="createcommanddirectory",
-            help="Create a symlink to pycoreutils for every available command")
-    p.add_option("--license", action="store_true", dest="license",
-                 help="show program's license and exit")
-    p.add_option("--runtests", action="store_true", dest="runtests",
-            help="Run all sort of tests")
-    (opts, args) = p.parse_args(argv)
-    prog = p.get_prog_name()
-
-    if argv == []:
-        return p.print_help()
-
-    if opts.license:
-        return print(__license__)
-
-    if opts.runtests:
-        try:
-            from pycoreutils import test
-        except ImportError:
-            print("Can't import pycoreutils.test. Please make sure to " +\
-                  "include it in your PYTHONPATH", file=sys.stderr)
-            sys.exit(1)
-        return test.runalltests()
-
-    if opts.createcommanddirectory:
-        return createcommandlinks(prog, opts.createcommanddirectory)
-
-    # Run the command
-    errno = 0
-    commandline = " ".join(args)
-    try:
-        runcommandline(commandline)
-    except CommandNotFoundException as err:
-        print(err, file=sys.stderr)
-        print("Use {0} --help for a list of valid commands.".format(prog))
-        errno = 2
-    except StdOutException as err:
-        print(err)
-        errno = err.errno
-    except StdErrException as err:
-        print(err, file=sys.stderr)
-        errno = err.errno
-    except IOError as err:
-        print("{0}: {1}: {2}".format(
-              prog, err.filename, err.strerror), file=sys.stderr)
-        errno = err.errno
-    except OSError as err:
-        print("{0}: {1}: {2}".format(
-              prog, err.filename, err.strerror), file=sys.stderr)
-        errno = err.errno
-    except KeyboardInterrupt:
-        errno = 0
-
-    return errno
+    args = p.parse_args(argv)
+    #if args.helpall:
+        #for parser in parsers:
+            #parser.prog = parser.prog.split()[-1]
+            #print("\n" + parser.prog.upper())
+            #print("=" * len(parser.prog), end="\n\n")
+            #parser.print_help()
+            #print()
+    #else:
+    args.func(args)
 
 
 def runcommandline(commandline):
@@ -599,7 +580,7 @@ class ExtraOperandException(StdErrException):
         '''
         :program:   Program that caused the error
         :operand:   Value of the extra operand
-        ;errno: Exit status of program
+        ;errno:     Exit status of program
         '''
         self.program = program
         self.operand = operand
@@ -617,7 +598,7 @@ class MissingOperandException(StdErrException):
     def __init__(self, program, errno=1):
         '''
         :program:   Program that caused the error
-        ;errno: Exit status of program
+        ;errno:     Exit status of program
         '''
         self.program = program
         self.errno = errno
@@ -637,4 +618,5 @@ except ImportError:
 
 
 if __name__ == '__main__':
+    print('HH')
     sys.exit(run())

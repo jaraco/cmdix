@@ -17,19 +17,11 @@ except ImportError as err:
 
 @pycoreutils.addcommand
 @pycoreutils.onlyunix
-def whoami(argstr):
-    p = pycoreutils.parseoptions()
+def whoami(p):
+    p.set_defaults(func=func)
     p.description = "Print the user name associated with the current" + \
                     "effective user ID.\nSame as id -un."
-    p.usage = '%prog [OPTION]...'
-    (opts, args) = p.parse_args(argstr.split())
-    prog = p.get_prog_name()
 
-    if opts.help:
-        print(p.format_help())
-        sys.exit(0)
 
-    if len(args) > 0:
-        raise pycoreutils.ExtraOperandException(prog, args[0])
-
+def func(args):
     print(pwd.getpwuid(os.getuid())[0])

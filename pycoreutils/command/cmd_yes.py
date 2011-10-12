@@ -9,19 +9,17 @@ import pycoreutils
 
 
 @pycoreutils.addcommand
-def yes(argstr):
-    p = pycoreutils.parseoptions()
+def yes(p):
+    p.set_defaults(func=func)
+    p.usage = '%(prog)s [STRING]...\nor:    %(prog)s OPTION'
+    p.add_argument('string', nargs='*')
     p.description = "Repeatedly output a line with all specified " + \
                     "STRING(s), or `y'."
-    p.usage = '%prog [STRING]...\nor:    %prog OPTION'
-    (opts, args) = p.parse_args(argstr.split())
 
-    if opts.help:
-        print(p.format_help())
-        return
 
+def func(args):
     x = ''
-    for arg in args:
+    for arg in args.string:
         x += arg + ' '
     x = x.strip()
 

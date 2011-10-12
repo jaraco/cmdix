@@ -10,28 +10,21 @@ import os
 
 
 @pycoreutils.addcommand
-def mkdir(argstr):
-    p = pycoreutils.parseoptions()
-    p.usage = '%prog [OPTION]... DIRECTORY...'
+def mkdir(p):
+    p.set_defaults(func=func)
     p.description = "Create the DIRECTORY(ies), if they do not already " + \
                     "exist."
-    p.add_option("-p", "--parents", action="store_true", dest="parents",
+    p.add_argument("directory", nargs="+")
+    p.add_argument("-p", "--parents", action="store_true", dest="parents",
             help="no error if existing, make parent directories as needed")
-    p.add_option("-m", "--mode", dest="mode", default=0o777,
+    p.add_argument("-m", "--mode", dest="mode", default=0o777,
             help="set file mode (as in chmod), not a=rwx - umask")
-    p.add_option("-v", "--verbose", action="store_true", dest="verbose",
+    p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
             help="print a message for each created directory")
-    (opts, args) = p.parse_args(argstr.split())
-    prog = p.get_prog_name()
 
-    if opts.help:
-        print(p.format_help())
-        return
 
-    if len(args) == 0:
-        raise pycoreutils.MissingOperandException(prog)
-
-    for arg in args:
+def func(args):
+    for arg in args.directory:
         if opts.parents:
             # Recursively create directories. We can't use os.makedirs
             # because -v won't show all intermediate directories

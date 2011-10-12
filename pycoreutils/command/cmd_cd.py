@@ -11,22 +11,15 @@ import sys
 
 
 @pycoreutils.addcommand
-def cd(argstr):
-    p = pycoreutils.parseoptions()
+def cd(p):
+    p.set_defaults(func=func)
     p.description = "Change the current working directory to HOME or PATH"
-    p.usage = '%prog [PATH]'
-    (opts, args) = p.parse_args(argstr.split())
-    prog = p.get_prog_name()
+    p.add_argument('PATH', nargs='?')
 
-    if opts.help:
-        print(p.format_help())
-        sys.exit(0)
 
-    if len(args) == 0:
+def func(args):
+    if not args.PATH:
         pth = pycoreutils.getuserhome()
-    elif len(args) == 1:
-        pth = os.path.expanduser(args[0])
     else:
-        raise pycoreutils.ExtraOperandException(prog, args[1])
-
+        pth = os.path.expanduser(args.PATH)
     os.chdir(pth)

@@ -11,57 +11,54 @@ import sys
 
 
 @pycoreutils.addcommand
-def shuf(argstr):
-    p = pycoreutils.parseoptions()
-    p.description = "Write a random permutation of the input lines to " + \
+def shuf(p):
+    p.set_defaults(func=func)
+    p.description = "Write a random permutation of the input lines to " +\
                     "standard output."
-    p.usage = '%prog [OPTION]... [FILE]\nor:    %prog -e [OPTION]... ' + \
-              '[ARG]...\nor:    %prog -i LO-HI [OPTION]...'
-    p.add_option("-e", "--echo", action="store_true", dest="echo",
+    p.usage = '%(prog)s [OPTION]... [FILE]\nor:    %(prog)s -e [OPTION]... ' +\
+              '[ARG]...\nor:    %(prog)s -i LO-HI [OPTION]...'
+    p.add_argument('file', nargs='?')
+    p.add_argument("-e", "--echo", action="store_true", dest="echo",
             help="treat each ARG as an input line")
-    p.add_option("-i", "--input-range", dest="inputrange",
+    p.add_argument("-i", "--input-range", dest="inputrange",
             help="treat each number LO through HI as an input line")
-    p.add_option("-n", "--head-count", dest="headcount",
+    p.add_argument("-n", "--head-count", dest="headcount",
             help="output at most HEADCOUNT lines")
-    p.add_option("-o", "--output", dest="output",
+    p.add_argument("-o", "--output", dest="output",
             help="write result to OUTPUT instead of standard output")
-    (opts, args) = p.parse_args(argstr.split())
-    prog = p.get_prog_name()
 
-    if opts.help:
-        print(p.format_help())
-        sys.exit(0)
 
+def func(args):
     lines = ''
     outfd = sys.stdout
 
     # Write to file if -o is specified
-    if opts.output:
-        outfd = open(opts.output, 'w')
+    if args.output:
+        outfd = open(args.output, 'w')
 
-    if opts.echo:
-        if opts.inputrange:
+    if args.echo:
+        if args.inputrange:
             pycoreutils.StdErrException(
                         "{0}: cannot combine -e and -i options".format(prog))
 
-        lines = args
+        lines = args.file
         random.shuffle(lines)
 
-        if opts.headcount:
-            lines = lines[0:int(opts.headcount)]
+        if args.headcount:
+            lines = lines[0:int(args.headcount)]
         for line in lines:
             outfd.write(line + '\n')
 
     elif len(args) > 1:
         raise pycoreutils.ExtraOperandException(prog, args[1])
 
-    elif opts.inputrange:
-        (lo, hi) = opts.inputrange.split('-')
+    elif args.inputrange:
+        (lo, hi) = args.inputrange.split('-')
         lines = list(range(int(lo), int(hi) + 1))
         random.shuffle(lines)
 
-        if opts.headcount:
-            lines = lines[0:int(opts.headcount)]
+        if args.headcount:
+            lines = lines[0:int(args.headcount)]
         for line in lines:
             outfd.write(line + '\n')
 
@@ -75,7 +72,7 @@ def shuf(argstr):
         lines = fd.readlines()
         random.shuffle(lines)
 
-        if opts.headcount:
-            lines = lines[0:int(opts.headcount)]
+        if args.headcount:
+            lines = lines[0:int(args.headcount)]
         for line in lines:
             outfd.write(line)

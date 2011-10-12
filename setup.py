@@ -19,7 +19,7 @@ setup(
         "Development Status :: 3 - Alpha",
         "Environment :: Console",
         "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 2.6",
+        "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 3",
         "Topic :: System :: Shells",
         "Topic :: Utilities",

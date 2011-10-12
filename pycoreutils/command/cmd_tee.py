@@ -11,22 +11,19 @@ import sys
 
 @pycoreutils.addcommand
 @pycoreutils.onlyunix
-def tee(argstr):
-    p = pycoreutils.parseoptions()
+def tee(p):
+    p.set_defaults(func=func)
     p.description = "Copy standard input to each FILE, and also to " + \
                     "standard output."
-    p.usage = "%prog [OPTION]... [FILE]..."
-    p.add_option("-a", "--append", action="store_true", dest="append",
+    p.add_argument('files', nargs='*')
+    p.add_argument("-a", "--append", action="store_true", dest="append",
             help="append to the given FILEs, do not overwrite")
-    (opts, args) = p.parse_args(argstr.split())
 
-    if opts.help:
-        print(p.format_help())
-        sys.exit(0)
 
+def func(args):
     fdlist = []
-    for filename in args:
-        if opts.append:
+    for filename in args.files:
+        if args.append:
             fdlist.append(open(filename, 'a'))
         else:
             fdlist.append(open(filename, 'w'))

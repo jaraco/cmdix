@@ -14,49 +14,46 @@ import sys
 
 
 @pycoreutils.addcommand
-def sendmail(argstr):
-    # TODO: Authentication
-    p = pycoreutils.parseoptions()
+def sendmail(p):
+    p.set_defaults(func=func)
     p.description = "A simple sendmail implementation"
-    p.usage = '%prog [OPTION]... [RECIPIENT]...'
-    p.add_option("-a", "--address", default="localhost", dest="address",
+    p.add_argument('recipient', nargs='*')
+    p.add_argument("-a", "--address", default="localhost", dest="address",
             help="address to send to. default is localhost")
-    p.add_option("-c", "--certfile", dest="certfile",
+    p.add_argument("-c", "--certfile", dest="certfile",
             help="certificate file to use. implies '-s'")
-    p.add_option("-f", "-r", "--sender", dest="sender",
+    p.add_argument("-f", "-r", "--sender", dest="sender",
             default=pycoreutils.getcurrentusername() + "@" + platform.node(),
             help="set the envelope sender address")
-    p.add_option("-k", "--keyfile", dest="keyfile",
+    p.add_argument("-k", "--keyfile", dest="keyfile",
             help="key file to use. implies '-s'")
-    p.add_option("-m", "--messagefile", default=sys.stdin,
+    p.add_argument("-m", "--messagefile", default=sys.stdin,
             dest="messagefile",
             help="read message from file. by default, read from stdin.")
-    p.add_option("-p", "--port", default=25, dest="port", type="int",
+    p.add_argument("-p", "--port", default=25, dest="port", type=int,
             help="port to send to. defaults is 25")
-    p.add_option("-t", "--timeout", default=socket._GLOBAL_DEFAULT_TIMEOUT,
-            help="set timeout in seconds", dest="timeout", type="int")
-    p.add_option("-s", "--ssl", action="store_true", dest="ssl",
+    p.add_argument("-t", "--timeout", default=socket._GLOBAL_DEFAULT_TIMEOUT,
+            help="set timeout in seconds", dest="timeout", type=int)
+    p.add_argument("-s", "--ssl", action="store_true", dest="ssl",
             help="connect using ssl")
-    p.add_option("-v", "--verbose", action="store_true", dest="verbose",
+    p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
             help="show smtp session")
-    (opts, args) = p.parse_args(argstr.split())
 
-    if opts.help:
-        print(p.format_help())
-        sys.exit(0)
 
+def func(args):
+    # TODO: Authentication
     msg = ""
-    for line in fileinput.input(opts.messagefile):
+    for line in fileinput.input(args.messagefile):
         msg += line
 
-    if opts.ssl or opts.certfile or opts.keyfile:
-        smtp = smtplib.SMTP_SSL(opts.address, opts.port,
-                                timeout=opts.timeout,
-                                keyfile=opts.keyfile,
-                                certfile=opts.certfile)
+    if args.ssl or args.certfile or args.keyfile:
+        smtp = smtplib.SMTP_SSL(args.address, args.port,
+                                timeout=args.timeout,
+                                keyfile=args.keyfile,
+                                certfile=args.certfile)
     else:
-        smtp = smtplib.SMTP(opts.address, opts.port, timeout=opts.timeout)
+        smtp = smtplib.SMTP(args.address, args.port, timeout=args.timeout)
 
-    smtp.set_debuglevel(opts.verbose)
-    smtp.sendmail(opts.sender, args, msg)
+    smtp.set_debuglevel(args.verbose)
+    smtp.sendmail(args.sender, args.recipient, msg)
     smtp.quit()

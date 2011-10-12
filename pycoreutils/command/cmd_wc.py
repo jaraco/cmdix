@@ -10,29 +10,26 @@ import fileinput
 
 
 @pycoreutils.addcommand
-def wc(argstr):
-    # TODO: Bytes
-    p = pycoreutils.parseoptions()
+def wc(p):
+    p.set_defaults(func=func)
     p.description = "Print newline, word, and byte counts for each file"
-    p.usage = "%prog [OPTION]... [FILE]..."
     p.epilog = "If the FILE ends with '.bz2' or '.gz', the file will be " +\
                "decompressed automatically."
-    p.add_option("-m", "--chars", action="store_true", dest="chars",
+    p.add_argument('files', nargs='*')
+    p.add_argument("-m", "--chars", action="store_true", dest="chars",
             help="print the character counts")
-    p.add_option("-l", "--lines", action="store_true", dest="lines",
+    p.add_argument("-l", "--lines", action="store_true", dest="lines",
             help="print the newline counts")
-    p.add_option("-w", "--words", action="store_true", dest="words",
+    p.add_argument("-w", "--words", action="store_true", dest="words",
             help="print the word counts")
-    (opts, args) = p.parse_args(argstr.split())
 
-    if opts.help:
-        print(p.format_help())
-        return
 
+def func(args):
+    # TODO: Bytes
     fdict = {}
-    if args == []:
-        args = ['-']
-    for filename in args:
+    if args.files == []:
+        args.files = ['-']
+    for filename in args.files:
         fdict[filename] = {'chars': 0, 'lines': 0, 'words': 0}
         for line in fileinput.input(filename,
                                     openhook=fileinput.hook_compressed):
@@ -47,25 +44,25 @@ def wc(argstr):
         totwords += v['words']
 
     maxlen = len(str(totchars))
-    if not opts.chars and not opts.lines and not opts.words:
-        opts.chars = opts.lines = opts.words = True
+    if not args.chars and not args.lines and not args.words:
+        args.chars = args.lines = args.words = True
 
     for filename, v in fdict.items():
-        if opts.lines:
+        if args.lines:
             print("{0:>{l}} ".format(v['lines'], l=maxlen), end='')
-        if opts.words:
+        if args.words:
             print("{0:>{l}} ".format(v['words'], l=maxlen), end='')
-        if opts.chars:
+        if args.chars:
             print("{0:>{l}} ".format(v['chars'], l=maxlen), end='')
         if filename != '-':
             print(filename, end='')
         print()
 
     if len(fdict) > 1:
-        if opts.lines:
+        if args.lines:
             print("{0:>{l}} ".format(totlines, l=maxlen), end='')
-        if opts.words:
+        if args.words:
             print("{0:>{l}} ".format(totwords, l=maxlen), end='')
-        if opts.chars:
+        if args.chars:
             print("{0:>{l}} ".format(totchars, l=maxlen), end='')
         print('total')

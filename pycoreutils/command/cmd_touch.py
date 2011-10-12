@@ -12,50 +12,43 @@ import time
 
 
 @pycoreutils.addcommand
-def touch(argstr):
+def touch(p):
     # TODO: Implement --date, --time and -t
-    p = pycoreutils.parseoptions()
+    p.set_defaults(func=func)
     p.description = "Update the access and modification times of each " + \
                     "FILE to the current time. A FILE argument that does " + \
                     "not exist is created empty. A FILE argument string " + \
                     "of - is handled specially and causes touch to"
-    p.usage = '%prog [OPTION]... FILE...'
-    p.add_option("-a", action="store_true", dest="accessonly",
+    p.add_argument('files', nargs='*')
+    p.add_argument("-a", action="store_true", dest="accessonly",
             help="change only the access time")
-    p.add_option("-c", "--no-create", action="store_true", dest="nocreate",
+    p.add_argument("-c", "--no-create", action="store_true", dest="nocreate",
             help="do not create any files")
-    p.add_option("-f", action="store_true", dest="thisoptionshouldbeignored",
+    p.add_argument("-f", action="store_true", dest="thisoptionshouldbeignored",
             help="(ignored)")
-    p.add_option("-m", action="store_true", dest="modonly",
+    p.add_argument("-m", action="store_true", dest="modonly",
             help="change only the modification time")
-    p.add_option("-r", "--reference", dest="reference",
+    p.add_argument("-r", "--reference", dest="reference",
             help="use this file's times instead of current time")
-    (opts, args) = p.parse_args(argstr.split())
-    prog = p.get_prog_name()
 
-    if opts.help:
-        print(p.format_help())
-        sys.exit(0)
 
-    if len(args) == 0:
-        raise pycoreutils.MissingOperandException(prog)
-
+def func(args):
     atime = mtime = time.time()
 
-    for arg in args:
+    for arg in args.files:
         if not os.path.exists(arg):
-            if opts.nocreate:
+            if args.nocreate:
                 # Skip file
                 break
             else:
                 # Create empty file
                 open(arg, 'w').close()
 
-        if opts.reference:
-            atime = os.path.getatime(opts.reference)
-            mtime = os.path.getmtime(opts.reference)
-        if opts.accessonly:
+        if args.reference:
+            atime = os.path.getatime(args.reference)
+            mtime = os.path.getmtime(args.reference)
+        if args.accessonly:
             mtime = os.path.getmtime(arg)
-        if opts.modonly:
+        if args.modonly:
             atime = os.path.getatime(arg)
         os.utime(arg, (atime, mtime))

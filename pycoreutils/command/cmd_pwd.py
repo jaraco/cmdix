@@ -11,23 +11,19 @@ import sys
 
 
 @pycoreutils.addcommand
-def pwd(argstr):
-    p = pycoreutils.parseoptions()
+def pwd(p):
+    p.set_defaults(func=func)
     p.description = "print name of current/working directory"
-    p.usage = '%prog [OPTION]...'
-    p.add_option("-L", "--logical", action="store_true", dest="logical",
+    p.add_argument("-L", "--logical", action="store_true", dest="logical",
             help="use PWD from environment, even if it contains symlinks")
-    p.add_option("-P", "--physical", action="store_true", dest="physical",
+    p.add_argument("-P", "--physical", action="store_true", dest="physical",
             help="avoid all symlinks")
-    (opts, args) = p.parse_args(argstr.split())
 
-    if opts.help:
-        print(p.format_help())
-        sys.exit(0)
 
-    if opts.logical:
+def func(args):
+    if args.logical:
         print(os.getenv('PWD'))
-    elif opts.physical:
+    elif args.physical:
         print(os.path.realpath(os.getcwd()))
     else:
         print(os.getcwd())

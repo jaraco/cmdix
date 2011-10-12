@@ -12,22 +12,18 @@ import os.path
 
 @pycoreutils.addcommand
 @pycoreutils.onlyunix
-def ln(argstr):
-    p = pycoreutils.parseoptions()
+def ln(p):
+    p.set_defaults(func=func)
     p.description = ""
-    p.usage = '\n%prog [OPTION]... [-T] TARGET LINK_NAME   (1st form)' + \
-              '\n%prog [OPTION]... TARGET                  (2nd form)'
-    p.add_option("-s", "--symbolic", action="store_true", dest="symbolic",
+    p.usage = '\n%(prog)s [OPTION]... [-T] TARGET LINK_NAME   (1st form)' + \
+              '\n%(prog)s [OPTION]... TARGET                  (2nd form)'
+    p.add_argument("-s", "--symbolic", action="store_true", dest="symbolic",
             help="make symbolic links instead of hard links")
-    p.add_option("-v", "--verbose", action="store_true", dest="verbose",
+    p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
             help="print a message for each created directory")
-    (opts, args) = p.parse_args(argstr.split())
-    prog = p.get_prog_name()
 
-    if opts.help:
-        print(p.format_help())
-        return
 
+def func(args):
     if len(args) == 0:
         raise pycoreutils.MissingOperandException(prog)
     elif len(args) == 1:

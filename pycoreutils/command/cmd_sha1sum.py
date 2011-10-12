@@ -9,5 +9,5 @@ import pycoreutils
 
 
 @pycoreutils.addcommand
-def sha1sum(argstr):
-    return pycoreutils.hasher('sha1', argstr)
+def sha1sum(p):
+    pycoreutils.hasher('sha1', p)

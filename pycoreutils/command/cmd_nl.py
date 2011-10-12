@@ -10,29 +10,24 @@ import fileinput
 
 
 @pycoreutils.addcommand
-def nl(argstr):
-    p = pycoreutils.parseoptions()
+def nl(p):
+    p.set_defaults(func=func)
     p.description = "number lines of files"
-    p.usage = '%prog [OPTION]... [FILE]'
     p.epilog = "If the FILE ends with '.bz2' or '.gz', the file will be " + \
                "decompressed automatically."
-    p.add_option("-s", "--number-separator", dest="separator", default="\t",
-            metavar="STRING",
-            help="add STRING after (possible) line number")
-    p.add_option("-w", "--number-width", dest="width", default=6, type="int",
-            metavar="NUMBER",
-            help="use NUMBER columns for line numbers")
-    (opts, args) = p.parse_args(argstr.split())
+    p.add_argument('files', nargs='*')
+    p.add_argument("-s", "--number-separator", dest="separator", default="\t",
+            metavar="STRING", help="add STRING after (possible) line number")
+    p.add_argument("-w", "--number-width", dest="width", default=6, type=int,
+            metavar="NUMBER", help="use NUMBER columns for line numbers")
 
-    if opts.help:
-        print(p.format_help())
-        return
 
+def func(args):
     linenr = 0
-    for line in fileinput.input(args):
+    for line in fileinput.input(args.files):
         if line == "\n":
-            print(" " * (opts.width + len(opts.separator)) + line, end='')
+            print(" " * (args.width + len(args.separator)) + line, end='')
         else:
             linenr += 1
-            print("{0:>{width}}{1}{2}".format(linenr, opts.separator, line,
-                                              width=opts.width), end='')
+            print("{0:>{width}}{1}{2}".format(linenr, args.separator, line,
+                                              width=args.width), end='')

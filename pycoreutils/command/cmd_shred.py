@@ -13,30 +13,23 @@ import sys
 
 
 @pycoreutils.addcommand
-def shred(argstr):
-    p = pycoreutils.parseoptions()
+def shred(p):
+    p.set_defaults(func=func)
     p.description = "Overwrite the specified FILE(s) repeatedly, in order " + \
                     "to make it harder for even very expensive hardware " + \
                     "probing to recover the data."
-    p.usage = '%prog [OPTION]... FILE...'
     p.epilog = "This program acts as GNU 'shred -x', and doesn't round " + \
                "sizes up to the next full block"
-    p.add_option("-n", "--iterations", dest="iterations", default=3,
+    p.add_argument('files', nargs='*')
+    p.add_argument("-n", "--iterations", dest="iterations", default=3,
             help="overwrite ITERATIONS times instead of the default (3)")
-    p.add_option("-v", "--verbose", action="store_true", dest="verbose",
+    p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
             help="show progress")
-    (opts, args) = p.parse_args(argstr.split())
-    prog = p.get_prog_name()
 
-    if opts.help:
-        print(p.format_help())
-        sys.exit(0)
 
-    if len(args) == 0:
-        raise pycoreutils.MissingOperandException(prog)
-
-    for arg in args:
-        for i in range(opts.iterations):
+def func(args):
+    for arg in args.files:
+        for i in range(args.iterations):
             size = os.stat(arg).st_size
             fd = open(arg, mode='w')
             logging.debug('Size:', size)

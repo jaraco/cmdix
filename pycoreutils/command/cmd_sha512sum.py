@@ -9,5 +9,5 @@ import pycoreutils
 
 
 @pycoreutils.addcommand
-def sha512sum(argstr):
-    pycoreutils.hasher('sha512', argstr)
+def sha512sum(p):
+    pycoreutils.hasher('sha512', p)

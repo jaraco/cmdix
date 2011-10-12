@@ -58,7 +58,7 @@ class WSGIAuth():
         self.realm = realm
 
     def __call__(self, environ, start_response):
-        if environ.has_key('HTTP_AUTHORIZATION'):
+        if 'HTTP_AUTHORIZATION' in environ:
             authtype, authinfo = environ['HTTP_AUTHORIZATION'].split(None, 1)
             if authtype.upper() != 'BASIC':
                 start_response(b'200 ', [(b'Content-Type', b'text/html')])
@@ -66,12 +66,12 @@ class WSGIAuth():
             encodedinfo = bytes(authinfo.encode())
             decodedinfo = base64.b64decode(encodedinfo).decode()
             username, password = decodedinfo.split(':', 1)
-            if self.userdict.has_key(username):
+            if username in self.userdict:
                 if self.userdict[username] == password:
                     return self.app(environ, start_response)
 
         return wsgierror(start_response, 401, "Authentication required",
-                  [(b'WWW-Authenticate', b'Basic realm={0}'.format(self.realm))])
+                [(b'WWW-Authenticate', b'Basic realm={0}'.format(self.realm))])
 
 
 def wsgierror(start_response, code, text, headers=[]):
@@ -83,31 +83,31 @@ def wsgierror(start_response, code, text, headers=[]):
                 </body></html>'''.format(code=code, text=text)]
 
 
-def wsgiserver(app, opts):
+def wsgiserver(app, args):
     '''
     Parse opts and return a WSGIServer running app
     '''
     # Set protocol version
-    if opts.ssl_version:
-        if opts.ssl_version == 'SSLv23':
+    if args.ssl_version:
+        if args.ssl_version == 'SSLv23':
             ssl_version = ssl.PROTOCOL_SSLv23
-        elif opts.ssl_version == 'SSLv3':
+        elif args.ssl_version == 'SSLv3':
             ssl_version = ssl.PROTOCOL_SSLv23
-        elif opts.ssl_version == 'TLSv1':
+        elif args.ssl_version == 'TLSv1':
             ssl_version = ssl.PROTOCOL_TLSv1
 
     # Authentication
-    if opts.userlist:
+    if args.userlist:
         userdict = {}
-        for x in opts.userlist:
+        for x in args.userlist:
             username, password = x.split(':', 1)
             userdict[username] = password
         app = WSGIAuth(app, userdict)
 
-    server = WSGIServer((opts.address, opts.port),
-                         certfile=opts.certfile,
-                         keyfile=opts.keyfile,
-                         ca_certs=opts.cafile,
+    server = WSGIServer((args.address, args.port),
+                         certfile=args.certfile,
+                         keyfile=args.keyfile,
+                         ca_certs=args.cafile,
                          ssl_version=ssl_version)
     server.set_app(app)
     return server
@@ -139,9 +139,9 @@ def wsgishell(environ, start_response):
                 str("<div class='stderr'>{0}</div>").format(stderrstr)]
     else:
         html = template.format(title='PyCoreutils Console',
-                            css=css,
-                            banner=pycoreutils.showbanner(),
-                            javascript=javascript)
+                               css=css,
+                               banner=pycoreutils.showbanner(),
+                               javascript=javascript)
         start_response(b'200 ', [(b'Content-Type', b'text/html')])
         return [html.encode()]
 
@@ -205,49 +205,44 @@ def list_directory(urlpath, filepath):
 
 
 @pycoreutils.addcommand
-def httpd(argstr):
-    p = pycoreutils.parseoptions()
+def httpd(p):
+    p.set_defaults(func=func)
+    p.description = "Start a web server that serves the current directory"
     p.epilog = "To enable https, you must supply a certificate file using " +\
                "'-c' and a key using '-k', both PEM-formatted. If both the " +\
                "certificate and the key are in one file, just use '-c'."
-    p.add_option("-a", "--address", default="", dest="address",
-            help="address to bind to")
-    p.add_option("-c", "--certfile", dest="certfile",
-            help="Use ssl-certificate for https")
-    p.add_option("-p", "--port", default=8000, dest="port", type="int",
-            help="port to listen to")
-    p.add_option("-k", "--keyfile", dest="keyfile",
-            help="Use ssl-certificate for https")
-    p.add_option("-u", "--user", action="append", dest="userlist",
-            help="Add a user for authentication in the form of " +\
-                 "'USER:PASSWORD'. Can be specified multiple times.")
-    p.add_option("-V", "--ssl-version", dest="ssl_version", default="SSLv23",
-            help="Must be either 'SSLv23' (default), 'SSLv3', or 'TLSv1'")
-    p.add_option("--cafile", dest="cafile",
-            help="Authenticate remote certificate using CA certificate " +\
-                 "file. Requires -c")
-    p.description = "Start a web server that serves the current directory"
-    p.add_option("-s", "--shell", action="store_true", dest="shell",
-            help="Start a web shell")
-    p.usage = '%prog [OPTION]...'
+    p.add_argument("-a", "--address", default="", dest="address",
+                   help="address to bind to")
+    p.add_argument("-c", "--certfile", dest="certfile",
+                   help="Use ssl-certificate for https")
+    p.add_argument("-p", "--port", default=8000, dest="port", type=int,
+                   help="port to listen to")
+    p.add_argument("-k", "--keyfile", dest="keyfile",
+                   help="Use ssl-certificate for https")
+    p.add_argument("-u", "--user", action="append", dest="userlist",
+                   help="Add a user for authentication in the form of " +\
+                        "'USER:PASSWORD'. Can be specified multiple times.")
+    p.add_argument("-V", "--ssl-version", dest="ssl_version", default="SSLv23",
+                   help="Must be either SSLv23 (default), SSLv3, or TLSv1")
+    p.add_argument("--cafile", dest="cafile",
+                   help="Authenticate remote certificate using CA " +\
+                        "certificate file. Requires -c")
+    p.add_argument("-s", "--shell", action="store_true", dest="shell",
+                    help="Start a web shell")
 
-    (opts, args) = p.parse_args(argstr.split())
 
-    if opts.help:
-        print(p.format_help())
-        return
-    if opts.shell:
+def func(args):
+    if args.shell:
         app = wsgishell
     else:
         app = wsgistatic
 
-    server = wsgiserver(app, opts)
+    server = wsgiserver(app, args)
 
     try:
         server.serve_forever()
     finally:
         server.server_close()
-
 
 
 template = '''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"

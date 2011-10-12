@@ -12,43 +12,31 @@ import shutil
 
 
 @pycoreutils.addcommand
-def cp(argstr):
-    p = pycoreutils.parseoptions()
+def cp(p):
+    p.set_defaults(func=func)
     p.description = "Copy SOURCE to DEST, or multiple SOURCE(s) to DIRECTORY."
-    p.usage = "%prog [OPTION]... SOURCE... DIRECTORY"
-    p.add_option("-i", "--interactive", action="store_true",
-            dest="interactive", help="prompt before overwrite")
-    p.add_option("-p", "--preserve", action="store_true", dest="preserve",
-            help="preserve as many attributes as possible")
-    p.add_option("-r", "-R", "--recursive", action="store_true",
-            dest="recursive", help="copy directories recursively")
-    p.add_option("-v", "--verbose", action="store_true", dest="verbose",
-            help="print a message for each created directory")
-    (opts, args) = p.parse_args(argstr.split())
-    prog = p.get_prog_name()
+    p.add_argument('SOURCE', nargs='+')
+    p.add_argument('DIRECTORY', nargs=1)
+    p.add_argument("-i", "--interactive", action="store_true",
+                   dest="interactive", help="prompt before overwrite")
+    p.add_argument("-p", "--preserve", action="store_true", dest="preserve",
+                   help="preserve as many attributes as possible")
+    p.add_argument("-r", "-R", "--recursive", action="store_true",
+                   dest="recursive", help="copy directories recursively")
+    p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
+                   help="print a message for each created directory")
 
-    if opts.help:
-        print(p.format_help())
-        return
 
-    if len(args) == 0:
-        raise pycoreutils.MissingOperandException(prog)
-
-    if len(args) == 1:
-        raise pycoreutils.StdErrException(
-                "{0}: missing destination file operand ".format(prog) +\
-                "after `{1}'. ".format(args[0]) +\
-                "Try {0} --help' for more information.".format(prog))
-
+def func(args):
     # Set the _copy function
-    if opts.preserve:
+    if args.preserve:
         _copy = shutil.copy2
     else:
         _copy = shutil.copy
 
     dstbase = args.pop()
-    for src in args:
-        if opts.recursive:
+    for src in args.SOURCE:
+        if args.recursive:
             # Create the base destination directory if it does not exists
             if not os.path.exists(dstbase):
                 os.mkdir(dstbase)
@@ -65,26 +53,26 @@ def cp(argstr):
                     dstdir = os.path.join(dstbase, dstmid, subdir)
                     if not os.path.exists(dstbase):
                         os.mkdir(dstdir)
-                    if opts.verbose:
+                    if args.verbose:
                         print("`{0}' -> `{1}'".format(root, dstdir))
 
                 # Copy file
                 for filename in filenames:
                     dstfile = os.path.join(dstbase, dstmid, filename)
                     srcfile = os.path.join(root, filename)
-                    if opts.interactive and os.path.exists(dstfile):
+                    if args.interactive and os.path.exists(dstfile):
                         q = input("{0}: {1} already ".format(prog, dstfile) +\
                                   "exists; do you wish to overwrite (y or n)?")
                         if q.upper() != 'Y':
                             pycoreutils.StdOutException("not overwritten", 2)
                             continue
                     _copy(srcfile, dstfile)
-                    if opts.verbose:
+                    if args.verbose:
                         print("`{0}' -> `{1}'".format(srcfile, dstfile))
         else:
             dstfile = dstbase
             if os.path.isdir(dstbase):
                 dstfile = os.path.join(dstbase, src)
             _copy(src, dstfile)
-            if opts.verbose:
+            if args.verbose:
                 print("`{0}' -> `{1}'".format(src, dstfile))

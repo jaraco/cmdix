@@ -11,25 +11,19 @@ import sys
 
 
 @pycoreutils.addcommand
-def rmdir(argstr):
-    p = pycoreutils.parseoptions()
+def rmdir(p):
+    p.set_defaults(func=func)
     p.description = "Remove the DIRECTORY(ies), if they are empty."
-    p.usage = '%prog [OPTION]... DIRECTORY...'
-    p.add_option("-p", "--parent", action="store_true", dest="parent",
+    p.usage = '%(prog)s [OPTION]... DIRECTORY...'
+    p.add_argument('directory', nargs='+')
+    p.add_argument("-p", "--parent", action="store_true", dest="parent",
             help="remove DIRECTORY and its ancestors; e.g., " +
                  "`rmdir -p a/b/c' is similar to `rmdir a/b/c a/b a'")
-    (opts, args) = p.parse_args(argstr.split())
-    prog = p.get_prog_name()
 
-    if opts.help:
-        print(p.format_help())
-        sys.exit(0)
 
-    if len(args) == 0:
-        raise pycoreutils.MissingOperandException(prog)
-
-    for arg in args:
-        if opts.parent:
+def func(args):
+    for arg in args.directory:
+        if args.parent:
             os.removedirs(arg)
         else:
             os.rmdir(arg)

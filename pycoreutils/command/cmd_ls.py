@@ -12,25 +12,23 @@ import time
 
 
 @pycoreutils.addcommand
-def ls(argstr):
+def ls(p):
     # TODO: Show user and group names in ls -l, correctly format dates in ls -l
-    p = pycoreutils.parseoptions()
+    p.set_defaults(func=func)
     p.description = "List information about the FILEs (the current " + \
                     "directory by default). Sort entries " + \
                     "alphabetically if none of -cftuvSUX nor --sort."
-    p.usage = '%prog [OPTION]... [FILE]...'
-    p.add_option("-l", action="store_true", dest="longlist",
-                 help="use a long listing format")
-    (opts, args) = p.parse_args(argstr.split())
+    p.add_argument("files", nargs="*")
+    p.add_argument("-l", "--longlist", action="store_true",
+                   help="use a long listing format")
 
-    if opts.help:
-        print(p.format_help())
-        return
 
-    if len(args) < 1:
-        args = '.'
+def func(args):
+    filelist = args.files
+    if not args.files:
+        filelist = ['.']
 
-    for arg in args:
+    for arg in filelist:
         dirlist = os.listdir(arg)
         dirlist.sort()
         l = []
@@ -38,7 +36,7 @@ def ls(argstr):
         nlinklen = 0    # Length of the largest nlink integer
         for f in dirlist:
             path = os.path.join(arg, f)
-            if not opts.longlist:
+            if not args.longlist:
                 print(f)
             else:
                 st = os.lstat(path)

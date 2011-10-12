@@ -12,37 +12,34 @@ import textwrap
 
 
 @pycoreutils.addcommand
-def base64(argstr):
-    p = pycoreutils.parseoptions()
+def base64(p):
+    p.set_defaults(func=func)
     p.description = "Base64 encode or decode FILE, or standard input, " + \
                     "to standard output."
-    p.usage = '%prog [OPTION]... [FILE]'
-    p.add_option("-d", action="store_true", dest="decode",
+    p.add_argument('file', nargs=1)
+    p.add_argument("-d", action="store_true", dest="decode",
             help="decode data")
-    p.add_option("-w", dest="wrap", default=76, type="int",
+    p.add_argument("-w", dest="wrap", default=76, type=int,
             help="wrap encoded lines after COLS character (default 76). " + \
                  "Use 0 to disable line wrapping")
-    (opts, args) = p.parse_args(argstr.split())
 
-    if opts.help:
-        print(p.format_help())
-        return
 
+def func(args):
     s = ''
-    for line in fileinput.input(args):
+    for line in fileinput.input(args.file):
         s += line
 
-    if opts.decode:
+    if args.decode:
         out = _base64.b64decode(s)
-        if opts.wrap == 0:
+        if args.wrap == 0:
             print(out)
         else:
-            for line in textwrap.wrap(out, opts.wrap):
+            for line in textwrap.wrap(out, args.wrap):
                 print(line)
     else:
         out = _base64.b64encode(s)
-        if opts.wrap == 0:
+        if args.wrap == 0:
             print(out)
         else:
-            for line in textwrap.wrap(out, opts.wrap):
+            for line in textwrap.wrap(out, args.wrap):
                 print(line)

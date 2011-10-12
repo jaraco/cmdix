@@ -13,21 +13,14 @@ import sys
 
 @pycoreutils.addcommand
 @pycoreutils.onlyunix
-def chroot(argstr):
+def chroot(p):
     # TODO: Testing!!!
-    p = pycoreutils.parseoptions()
+    p.set_defaults(func=func)
     p.description = "Run COMMAND with root directory set to NEWROOT."
-    p.usage = "%prog NEWROOT [COMMAND [ARG]...]\nor:    %prog [OPTION]"
-    (opts, args) = p.parse_args(argstr.split())
-    prog = p.get_prog_name()
+    p.usage = "%(prog)s NEWROOT [COMMAND [ARG]...]\nor:    %(prog)s [OPTION]"
 
-    if opts.help:
-        print(p.format_help())
-        sys.exit(0)
 
-    if len(args) == 0:
-        raise pycoreutils.MissingOperandException(prog)
-
+def func(args):
     # If no command is given, run ''${SHELL} -i''
     if len(args) == 1:
         args.append(os.environ['SHELL'])
