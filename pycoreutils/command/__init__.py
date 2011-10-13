@@ -49,6 +49,7 @@ __all__ = [
     'cmd_tar',
     'cmd_tee',
     'cmd_touch',
+    'cmd_uuidgen',
     'cmd_uname',
     'cmd_wc',
     'cmd_wget',
