@@ -12,7 +12,7 @@ import time
 
 @pycoreutils.addcommand
 def cal(p):
-    p.set_defaults(func=func)
+    p.set_defaults(func=func, firstweekday=6)
     p.description = "Displays a calendar"
     p.usage = '%(prog)s [OPTION]... [[MONTH] YEAR]\n' +\
        '       %(prog)s -y [OPTION]... [YEAR]...'
@@ -20,7 +20,7 @@ def cal(p):
     p.add_argument("-M", action="store_const", dest="firstweekday", const=0,
             help="Weeks start on Monday")
     p.add_argument("-S", action="store_const", dest="firstweekday", const=6,
-            help="Weeks start on Sunday", default=6)
+            help="Weeks start on Sunday")
     p.add_argument("-y", action="store_true", dest="year",
             help="Display a calendar for the specified year")
 
