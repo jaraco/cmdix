@@ -30,8 +30,8 @@ def func(args):
     calen = calendar.TextCalendar(args.firstweekday)
 
     if args.year:
-        if args != []:
-            for arg in args:
+        if args.args != []:
+            for arg in args.args:
                 print(calen.formatyear(int(arg)), end='')
         else:
             print(calen.formatyear(now.tm_year), end='')
