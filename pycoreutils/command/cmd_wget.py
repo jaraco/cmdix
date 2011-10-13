@@ -43,7 +43,7 @@ def func(args):
     opener = build_opener()
     opener.addheaders = [('User-agent', useragent)]
 
-    for url in args:
+    for url in args.url:
         try:
             fdin = opener.open(url)
         except HTTPError as e:
