@@ -6,7 +6,6 @@
 
 from __future__ import unicode_literals
 
-import bz2
 import gzip
 import unittest
 from pycoreutils.test import BaseTestCase

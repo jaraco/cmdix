@@ -8,7 +8,6 @@ from __future__ import print_function, unicode_literals
 import pycoreutils
 import asyncore
 import smtpd as _smtpd
-import sys
 
 
 @pycoreutils.addcommand

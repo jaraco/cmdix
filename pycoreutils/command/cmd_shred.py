@@ -9,7 +9,6 @@ import pycoreutils
 import logging
 import os
 import random
-import sys
 
 
 @pycoreutils.addcommand

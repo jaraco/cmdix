@@ -10,7 +10,6 @@ import pycoreutils
 import base64
 import mimetypes
 import os
-import posixpath
 import ssl
 import sys
 
