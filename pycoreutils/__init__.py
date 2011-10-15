@@ -473,24 +473,17 @@ def run(argv=sys.argv):
                     help="Run all sort of tests")
 
     # Register commands with subparser
-    #parsers = []
     for command in _cmds:
         s = subparsers.add_parser(command.__name__)
         command(s)
-        #parsers.append(s)
 
+    # Strip sys.argv
+    argv[0] = os.path.basename(argv[0])
     if os.path.basename(argv[0]) in ['__init__.py', 'coreutils.py']:
         argv = argv[1:]
 
+    # Run the subcommand
     args = p.parse_args(argv)
-    #if args.helpall:
-        #for parser in parsers:
-            #parser.prog = parser.prog.split()[-1]
-            #print("\n" + parser.prog.upper())
-            #print("=" * len(parser.prog), end="\n\n")
-            #parser.print_help()
-            #print()
-    #else:
     args.func(args)
 
 
