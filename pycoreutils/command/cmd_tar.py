@@ -19,7 +19,7 @@ def tar(p):
        '       %(prog)s -c [OPTION]... TARFILE SOURCE...\n'
     p.epilog = "Files that end with '.bz2' or '.gz' are decompressed " +\
                "automatically."
-    p.add_argument("files", nargs="*")
+    p.add_argument('FILE', nargs="*")
     p.add_argument("-c", "--create", action="store_true", dest="create",
             help="create zipfile from source.")
     p.add_argument("-t", "--list", action="store_true", dest="list",
@@ -77,7 +77,7 @@ def func(args):
         else:
             mode = 'w'
         tar = tarfile.open(fileobj=outfile, mode=mode)
-        for arg in args.files:
+        for arg in args.FILE:
             tar.add(arg)
         tar.close()
     else:

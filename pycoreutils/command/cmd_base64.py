@@ -6,7 +6,6 @@
 from __future__ import print_function, unicode_literals
 import pycoreutils
 import base64 as _base64
-import fileinput
 import textwrap
 
 
@@ -25,7 +24,7 @@ def base64(p):
 
 def func(args):
     s = ''
-    for line in fileinput.input(args.file):
+    for line, filename in pycoreutils.parsefilelist(args.FILE):
         s += line
 
     if args.decode:

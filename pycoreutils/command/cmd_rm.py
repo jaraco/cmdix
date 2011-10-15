@@ -12,7 +12,7 @@ import os.path
 @pycoreutils.addcommand
 def rm(p):
     p.description = "print name of current/working directory"
-    p.add_argument('files', nargs='+')
+    p.add_argument('FILE', nargs='+')
     p.add_argument("-f", "--force", action="store_true", dest="force",
                    help="ignore nonexistent files, never prompt")
     p.add_argument("-r", "-R", "--recursive", action="store_true",
@@ -27,7 +27,7 @@ def func(args):
         if not args.force:
             raise err
 
-    for arg in args.files:
+    for arg in args.FILE:
         if args.recursive and os.path.isdir(arg):
             # Remove directory recursively
             for root, dirs, files in os.walk(arg, topdown=False,

@@ -17,14 +17,14 @@ def ls(p):
     p.description = "List information about the FILEs (the current " + \
                     "directory by default). Sort entries " + \
                     "alphabetically if none of -cftuvSUX nor --sort."
-    p.add_argument("files", nargs="*")
+    p.add_argument('FILE', nargs="*")
     p.add_argument("-l", "--longlist", action="store_true",
                    help="use a long listing format")
 
 
 def func(args):
-    filelist = args.files
-    if not args.files:
+    filelist = args.FILE
+    if not args.FILE:
         filelist = ['.']
 
     for arg in filelist:

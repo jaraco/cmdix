@@ -8,6 +8,7 @@ from __future__ import print_function, unicode_literals
 import base64
 import bz2
 import cmd
+import fileinput
 import glob
 import gzip
 import hashlib
@@ -442,6 +443,28 @@ def mode2string(mode):
         s += '-'
 
     return s
+
+
+def parsefilelist(filelist=['-'], decompress=False):
+    '''
+    Takes a list of files, and generates tuple containing a line and the
+    filename.
+    Files called '-' will be replaced with stdin.
+    If decompress is defined, a file ending with '.gz' or '.bz2' is
+    decompressed automatically.
+    '''
+    if decompress:
+        openhook = fileinput.hook_compressed
+    else:
+        openhook = None
+
+    # Use stdin if filelist is empty
+    if filelist == []:
+        filelist = ['-']
+
+    for filename in filelist:
+        for line in fileinput.input(filename, openhook=openhook):
+            yield (line, filename)
 
 
 def run(argv=sys.argv):

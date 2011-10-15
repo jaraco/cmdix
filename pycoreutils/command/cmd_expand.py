@@ -12,7 +12,7 @@ import fileinput
 def expand(p):
     p.set_defaults(func=func)
     p.description = "Convert tabs in each FILE to spaces"
-    p.add_argument('files', nargs='*')
+    p.add_argument('FILE', nargs='*')
     p.epilog = "If the FILE ends with '.bz2' or '.gz', the file will be " +\
                "decompressed automatically."
     p.add_argument("-t", "--tabs", type=int, default=8,
@@ -20,6 +20,5 @@ def expand(p):
 
 
 def func(args):
-    for f in args.files:
-        for line in fileinput.input(f, openhook=fileinput.hook_compressed):
-            print(line.expandtabs(args.tabs), end='')
+    for line, filename in pycoreutils.parsefilelist(args.FILE, True):
+        print(line.expandtabs(args.tabs), end='')

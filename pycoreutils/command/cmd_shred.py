@@ -18,7 +18,7 @@ def shred(p):
                     "probing to recover the data."
     p.epilog = "This program acts as GNU 'shred -x', and doesn't round " + \
                "sizes up to the next full block"
-    p.add_argument('files', nargs='*')
+    p.add_argument('FILE', nargs='*')
     p.add_argument("-n", "--iterations", dest="iterations", default=3,
             help="overwrite ITERATIONS times instead of the default (3)")
     p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
@@ -26,7 +26,7 @@ def shred(p):
 
 
 def func(args):
-    for arg in args.files:
+    for arg in args.FILE:
         for i in range(args.iterations):
             size = os.stat(arg).st_size
             fd = open(arg, mode='w')

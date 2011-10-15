@@ -6,6 +6,7 @@
 
 from __future__ import unicode_literals
 
+import fileinput
 import unittest
 
 import pycoreutils
@@ -13,6 +14,18 @@ from pycoreutils.test import BaseTestCase
 
 
 class TestCase(BaseTestCase):
+    def test_parsefilelist(self):
+        self.createfile('foo', size=999, fill='X')
+        self.createfile('bar', size=100, fill='\n')
+        l = ''
+        for line, filename in pycoreutils.parsefilelist(['foo']):
+            self.assertEqual(filename, 'foo')
+            l += line
+        for line, filename in pycoreutils.parsefilelist(['bar']):
+            self.assertEqual(filename, 'bar')
+            l += line
+        self.assertEqual(l, 'X' * 999 + '\n' * 100)
+
     def test_mode2string(self):
         self.assertEqual(pycoreutils.mode2string(33261), '-rwxr-xr-x')
 

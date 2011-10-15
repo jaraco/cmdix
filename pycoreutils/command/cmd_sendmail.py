@@ -5,11 +5,9 @@
 
 from __future__ import print_function, unicode_literals
 import pycoreutils
-import fileinput
 import platform
 import smtplib
 import socket
-import sys
 
 
 @pycoreutils.addcommand
@@ -26,8 +24,7 @@ def sendmail(p):
             help="set the envelope sender address")
     p.add_argument("-k", "--keyfile", dest="keyfile",
             help="key file to use. implies '-s'")
-    p.add_argument("-m", "--messagefile", default=sys.stdin,
-            dest="messagefile",
+    p.add_argument("-m", "--messagefile", default='-', dest="messagefile",
             help="read message from file. by default, read from stdin.")
     p.add_argument("-p", "--port", default=25, dest="port", type=int,
             help="port to send to. defaults is 25")
@@ -42,7 +39,7 @@ def sendmail(p):
 def func(args):
     # TODO: Authentication
     msg = ""
-    for line in fileinput.input(args.messagefile):
+    for line, filename in pycoreutils.parsefilelist(args.FILE):
         msg += line
 
     if args.ssl or args.certfile or args.keyfile:

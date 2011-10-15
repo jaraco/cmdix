@@ -17,7 +17,7 @@ def touch(p):
                     "FILE to the current time. A FILE argument that does " + \
                     "not exist is created empty. A FILE argument string " + \
                     "of - is handled specially and causes touch to"
-    p.add_argument('files', nargs='*')
+    p.add_argument('FILE', nargs='*')
     p.add_argument("-a", action="store_true", dest="accessonly",
             help="change only the access time")
     p.add_argument("-c", "--no-create", action="store_true", dest="nocreate",
@@ -33,7 +33,7 @@ def touch(p):
 def func(args):
     atime = mtime = time.time()
 
-    for arg in args.files:
+    for arg in args.FILE:
         if not os.path.exists(arg):
             if args.nocreate:
                 # Skip file

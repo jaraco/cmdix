@@ -14,7 +14,7 @@ def wc(p):
     p.description = "Print newline, word, and byte counts for each file"
     p.epilog = "If the FILE ends with '.bz2' or '.gz', the file will be " +\
                "decompressed automatically."
-    p.add_argument('files', nargs='*')
+    p.add_argument('FILE', nargs='*')
     p.add_argument("-m", "--chars", action="store_true", dest="chars",
             help="print the character counts")
     p.add_argument("-l", "--lines", action="store_true", dest="lines",
@@ -26,9 +26,9 @@ def wc(p):
 def func(args):
     # TODO: Bytes
     fdict = {}
-    if args.files == []:
-        args.files = ['-']
-    for filename in args.files:
+    if args.FILE == []:
+        args.FILE = ['-']
+    for filename in args.FILE:
         fdict[filename] = {'chars': 0, 'lines': 0, 'words': 0}
         for line in fileinput.input(filename,
                                     openhook=fileinput.hook_compressed):

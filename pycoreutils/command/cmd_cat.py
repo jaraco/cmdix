@@ -5,7 +5,6 @@
 
 from __future__ import print_function, unicode_literals
 import pycoreutils
-import fileinput
 
 
 @pycoreutils.addcommand
@@ -19,5 +18,5 @@ def cat(p):
 
 
 def func(args):
-    for line in fileinput.input(args.FILE, openhook=fileinput.hook_compressed):
+    for line, filename in pycoreutils.parsefilelist(args.FILE, True):
         print(line, end='')

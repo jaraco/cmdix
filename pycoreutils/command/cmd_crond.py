@@ -6,7 +6,6 @@
 from __future__ import print_function, unicode_literals
 import pycoreutils
 import collections
-import fileinput
 import logging
 import sched
 import subprocess
@@ -21,6 +20,7 @@ def crond(p):
     p.description = "Very simple cron daemon"
     p.epilog = "If CRONFILE ends with '.bz2' or '.gz', the file will be " + \
                "decompressed automatically."
+    p.add_argument("filelist", nargs='+')
     p.add_argument("-l", "--logfile", dest="logfile", help="log to file")
     p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
                    help="show debug info")
@@ -48,7 +48,7 @@ def func(args):
     logger.addHandler(handler)
 
     # Read crontab and load jobs
-    for line in fileinput.input(args.cronfile):
+    for line, filename in pycoreutils.parsefilelist(args.FILE):
         # Strip comments and split the string
         split = line.strip().partition('#')[0].split(None, 6)
         if len(split) == 7:

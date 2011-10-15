@@ -18,7 +18,7 @@ def zip(p):
        '       %(prog)s -t [OPTION]... ZIPFILE...\n' + \
        '       %(prog)s -e [OPTION]... ZIPFILE TARGET\n' + \
        '       %(prog)s -c [OPTION]... ZIPFILE SOURCE...\n'
-    p.add_argument('files', nargs='+')
+    p.add_argument('FILE', nargs='+')
     p.add_argument('target', nargs='?')
     p.add_argument("-c", "--create", action="store_true", dest="create",
                    help="create zipfile from source.")

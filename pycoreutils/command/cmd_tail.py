@@ -16,7 +16,7 @@ def tail(p):
                     "output. With more than one FILE, precede each with a " + \
                     "header giving the file name. With no FILE, or when " + \
                     "FILE is -, read standard input."
-    p.add_argument("files", nargs="*")
+    p.add_argument('FILE', nargs="*")
     p.add_argument("-f", "--follow", action="store_true",
             help="output appended data as the file grows")
     p.add_argument("-i", "--interval", default=1, type=float,
@@ -27,7 +27,7 @@ def tail(p):
 
 def func(args):
     if args.follow:
-        fds = pycoreutils.args2fds(args.files)
+        fds = pycoreutils.args2fds(args.FILE)
         while True:
             time.sleep(args.interval)
             for fd in fds:
@@ -38,7 +38,7 @@ def func(args):
                 else:
                     print(line, end='')
     else:
-        for fd in pycoreutils.args2fds(args.files):
+        for fd in pycoreutils.args2fds(args.FILE):
             pos, lines = args.lines + 1, []
             while len(lines) <= args.lines:
                 try:

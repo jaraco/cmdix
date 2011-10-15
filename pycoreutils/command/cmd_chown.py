@@ -21,7 +21,7 @@ def chown(p):
     p.description = "Change the owner and/or group of each FILE to OWNER " + \
                      "and/or GROUP. With --reference, change the owner and" + \
                      " group of each FILE to those of RFILE."
-    p.add_argument('files', nargs='*')
+    p.add_argument('FILE', nargs='*')
     p.add_argument('owner', nargs='?')
 
 
@@ -34,5 +34,5 @@ def func(args):
                                   "{0}: invalid user: '{1}'".format(prog, uid))
         uid = user.pw_uid
 
-    for arg in args.files:
+    for arg in args.FILE:
         os.chown(arg, int(uid), -1)

@@ -5,7 +5,6 @@
 
 from __future__ import print_function, unicode_literals
 import pycoreutils
-import fileinput
 
 
 @pycoreutils.addcommand
@@ -14,7 +13,7 @@ def nl(p):
     p.description = "number lines of files"
     p.epilog = "If the FILE ends with '.bz2' or '.gz', the file will be " + \
                "decompressed automatically."
-    p.add_argument('files', nargs='*')
+    p.add_argument('FILE', nargs='*')
     p.add_argument("-s", "--number-separator", dest="separator", default="\t",
             metavar="STRING", help="add STRING after (possible) line number")
     p.add_argument("-w", "--number-width", dest="width", default=6, type=int,
@@ -23,7 +22,7 @@ def nl(p):
 
 def func(args):
     linenr = 0
-    for line in fileinput.input(args.files):
+    for line, filename in pycoreutils.parsefilelist(args.FILE):
         if line == "\n":
             print(" " * (args.width + len(args.separator)) + line, end='')
         else:
