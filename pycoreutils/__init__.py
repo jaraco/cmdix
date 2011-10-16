@@ -634,5 +634,4 @@ except ImportError:
 
 
 if __name__ == '__main__':
-    print('HH')
     sys.exit(run())
