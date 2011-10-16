@@ -6,7 +6,6 @@
 
 from __future__ import unicode_literals
 
-import fileinput
 import unittest
 
 import pycoreutils
