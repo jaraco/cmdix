@@ -7,14 +7,13 @@
 from __future__ import print_function, unicode_literals
 import base64
 import bz2
-import cmd
 import fileinput
 import glob
 import gzip
 import hashlib
 import os
 import platform
-import pprint
+import shlex
 import shutil
 import signal
 import stat
@@ -70,85 +69,6 @@ def onlyunix(f):
     '''
     f._onlyunix = True
     return f
-
-
-### CLASSES #################################################################
-
-
-class PyCoreutils(cmd.Cmd):
-
-    exitstatus = 0
-    prompttemplate = '{username}@{hostname}:{currentpath}$ '
-
-    def __init__(self, *args, **kwargs):
-        # Copy all commands from _cmds to a 'do_foo' function
-        for func in _cmds:
-            x = '''self.do_{0} = lambda l:run(["{0}"]+l.split())
-                '''.format(func.__name__)
-            exec(x)
-        return cmd.Cmd.__init__(self, *args, **kwargs)
-
-    def default(self, line):
-        '''
-        Called on an input line when the command prefix is not recognized.
-        '''
-        self.exitstatus = 127
-        return "{0}: Command not found\n".format(line.split(None, 1)[0])
-
-    def do_exit(self, n=None):
-        '''
-        Exit the shell.
-
-        Exits the shell with a status of N.  If N is omitted, the exit status
-        is that of the last command executed.
-        '''
-        sys.exit(n or self.exitstatus)
-
-    def do_help(self, arg):
-        return "Use 'COMMAND --help' for help\n" +\
-               "Available commands:\n" +\
-               ", ".join(listcommands()) + "\n"
-
-    def do_shell(self, line):
-        '''
-        Run when them command is '!' or 'shell'.
-        Execute the line using the Python interpreter.
-        i.e. "!dir()"
-        '''
-        try:
-            exec("r = {0}".format(line))
-        except Exception as err:
-            return pprint.pformat(err) + '\n'
-        else:
-            return pprint.pformat(r) + '\n'
-
-    def emptyline(self):
-        '''
-        Called when an empty line is entered in response to the prompt.
-        '''
-        print()
-
-    def postcmd(self, stop, line):
-        self.updateprompt()
-        if stop:
-            for l in stop:
-                print(l, end='')
-
-    def preloop(self):
-        self.updateprompt()
-
-    def updateprompt(self):
-        '''
-        Update the prompt using format() on the template in self.prompttemplate
-
-        You can use the following keywords:
-        - currentpath
-        - hostname
-        - username
-        '''
-        self.prompt = self.prompttemplate.format(currentpath=os.getcwd(),
-                                                 hostname=platform.node(),
-                                                 username=getcurrentusername())
 
 
 ### HELPER FUNCTIONS ########################################################
@@ -506,6 +426,7 @@ def run(argv=sys.argv):
         argv = argv[1:]
 
     # Run the subcommand
+    #print(argv)
     args = p.parse_args(argv)
     args.func(args)
 
@@ -516,7 +437,7 @@ def runcommandline(commandline):
 
     :param commandline: String representing the commandline, i.e. "ls -l /tmp"
     '''
-    return PyCoreutils().onecmd(commandline)
+    return run(shlex.split(str(commandline)))
 
 
 def showbanner(width=None):
