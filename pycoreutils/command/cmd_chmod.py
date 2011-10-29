@@ -11,7 +11,7 @@ import subprocess
 
 @pycoreutils.addcommand
 @pycoreutils.onlyunix
-def chroot(p):
+def chmod(p):
     # TODO: Testing!!!
     p.set_defaults(func=func)
     p.description = "Run COMMAND with root directory set to NEWROOT."
