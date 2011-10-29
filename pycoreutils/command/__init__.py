@@ -20,6 +20,7 @@ __all__ = [
     'cmd_gzip',
     'cmd_httpd',
     'cmd_id',
+    'cmd_init',
     'cmd_kill',
     'cmd_ln',
     'cmd_logger',
