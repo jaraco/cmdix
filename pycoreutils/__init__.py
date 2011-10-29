@@ -188,15 +188,15 @@ def coreutils(args):
         test.runalltests()
 
     if args.createcommanddirectory:
-        createcommandlinks(p.prog, args.createcommanddirectory)
+        createcommandlinks(args.createcommanddirectory)
 
 
-def createcommandlinks(pycorepath, directory):
+def createcommandlinks(directory, pycorepath='/usr/bin/coreutils.py'):
     '''
     Create a symlink to pycoreutils for every available command
 
-    :param pycorepath:  Path to link to
     :param directory:   Directory where to store the links
+    :param pycorepath:  Path to link to
     '''
     l = []
     for command in listcommands():
