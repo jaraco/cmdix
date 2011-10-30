@@ -3,12 +3,7 @@ from distutils.core import setup
 import pycoreutils
 
 # Use README.txt + a list of available commands as long_description
-long_description = ''.join(open("README.txt").readlines()) + '''
-
-List of available commands
---------------------------
-
-- ''' + "\n- ".join(pycoreutils.listcommands())
+long_description = ''.join(open("README.txt").readlines())
 
 setup(
     name = "pycoreutils",
