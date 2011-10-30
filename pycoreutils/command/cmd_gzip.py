@@ -5,8 +5,9 @@
 
 from __future__ import print_function, unicode_literals
 import pycoreutils
+from pycoreutils.compressor import compressor
 
 
 @pycoreutils.addcommand
 def gzip(p):
-    pycoreutils.compressor(p, 'gzip')
+    compressor(p, 'gzip')
