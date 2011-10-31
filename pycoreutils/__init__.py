@@ -114,7 +114,8 @@ def createcommandlinks(directory, pycorepath='/usr/bin/coreutils.py'):
     for command in listcommands():
         linkname = os.path.join(directory, command)
         if os.path.exists(linkname):
-            raise StdErrException("{0} already exists. Not doing anything.")
+            raise StdErrException("{0} already exists. ".format(linkname) +\
+                                  "Not doing anything.")
         l.append(linkname)
 
     for linkname in l:
