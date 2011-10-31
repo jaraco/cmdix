@@ -16,6 +16,7 @@ foo bar
 biz
  '''
 
+
 class TestCase(BaseTestCase):
     def test_nl(self):
         self.createfile('foo', content=testdata)
