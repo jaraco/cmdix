@@ -24,6 +24,7 @@ __all__ = [
     'cmd_kill',
     'cmd_ln',
     'cmd_logger',
+    'cmd_login',
     'cmd_ls',
     'cmd_md5sum',
     'cmd_mkdir',
