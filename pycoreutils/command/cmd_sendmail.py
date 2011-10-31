@@ -20,8 +20,8 @@ def sendmail(p):
     p.add_argument("-c", "--certfile", dest="certfile",
             help="certificate file to use. implies '-s'")
     p.add_argument("-f", "-r", "--sender", dest="sender",
-            default=pycoreutils.getcurrentusername() + "@" + platform.node(),
-            help="set the envelope sender address")
+            default="{0}@{1}".format(pycoreutils.getcurrentusername(),
+                    platform.node()), help="set the envelope sender address")
     p.add_argument("-k", "--keyfile", dest="keyfile",
             help="key file to use. implies '-s'")
     p.add_argument("-m", "--messagefile", default='-', dest="messagefile",
