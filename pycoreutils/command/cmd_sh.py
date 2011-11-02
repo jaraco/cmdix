@@ -9,6 +9,8 @@ import cmd
 import os
 import platform
 import pprint
+import shlex
+import subprocess
 import sys
 
 
@@ -16,10 +18,13 @@ import sys
 def sh(p):
     p.set_defaults(func=func)
     p.description = "Start a shell"
+    p.add_argument("--nocoreutils", action="store_true",
+            help="Do not load pycoreutils")
 
 
 def func(args):
-    return Sh().cmdloop(pycoreutils.showbanner(width=80))
+    sh = Sh(nocoreutils=args.nocoreutils)
+    return sh.cmdloop(pycoreutils.showbanner(width=80))
 
 
 class Sh(cmd.Cmd):
@@ -29,20 +34,33 @@ class Sh(cmd.Cmd):
     exitstatus = 0
     prompttemplate = '{username}@{hostname}:{currentpath}$ '
 
-    def __init__(self, *args, **kwargs):
-        # Copy all commands from pycoreutils to 'do_foo' functions
-        for command in pycoreutils.listcommands():
-            x = '''self.do_{0} = lambda l:pycoreutils.runcommandline('{0} '+ l)
-                '''.format(command)
-            exec(x)
+    def __init__(self, nocoreutils=False, *args, **kwargs):
+        if not nocoreutils:
+            # Copy all commands from pycoreutils to 'do_foo' functions
+            for command in pycoreutils.listcommands():
+                x = """self.do_{0} = lambda l: \
+                       pycoreutils.runcommandline('{0} '+ l)""".format(command)
+                exec(x)
         return cmd.Cmd.__init__(self, *args, **kwargs)
 
     def default(self, line):
         '''
         Called on an input line when the command prefix is not recognized.
         '''
-        self.exitstatus = 127
-        return "{0}: Command not found\n".format(line.split(None, 1)[0])
+        l = shlex.split(line)
+        try:
+            subprocess.call(l)
+        except OSError as err:
+            if not os.path.dirname(l[0]):
+                # Scan $PATH
+                for path in os.getenv('PATH').split(':'):
+                    cmd = [os.path.join(path, l[0])] + l[1:]
+                    try:
+                        subprocess.call(cmd)
+                    except Exception:
+                        pass
+
+            print(err.strerror, file=sys.stderr)
 
     def do_exit(self, n=None):
         '''
