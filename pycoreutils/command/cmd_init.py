@@ -5,6 +5,7 @@
 
 from __future__ import print_function, unicode_literals
 import pycoreutils
+import subprocess
 
 
 @pycoreutils.addcommand
@@ -15,4 +16,15 @@ def init(p):
 
 def func(args):
     # TODO: Create a real init-system
+    mount()
+    setHostname()
     pycoreutils.runcommandline('sh')
+
+
+def mount():
+    subprocess.call(['/bin/mount', '-a'])
+
+
+def setHostname():
+    hostname = open('/etc/hostname').readline()
+    open('/proc/sys/kernel/hostname', 'w').write(hostname)
