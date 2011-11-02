@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PYCOREUTILS
+	bool "pycoreutils"
+	depends on BR2_PACKAGE_PYTHON
+	help
+	  coreutils in pure python
+
