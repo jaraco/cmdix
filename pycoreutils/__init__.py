@@ -24,6 +24,7 @@ except ImportError:
     print("Argparse is included in Python 2.7 and 3.2, or available from PyPi")
     sys.exit(1)
 
+import command
 
 __version__ = '0.1.0a'
 __license__ = '''Copyright (c) 2009, 2010, 2011 Hans van Leeuwen
@@ -193,10 +194,9 @@ def listcommands():
     '''
     Returns a list of all available commands
     '''
-    l = []
-    for command in _cmds:
-        l.append(command.__name__.lower())
-    return l
+    for cmd in command.__all__:
+        if cmd.startswith('cmd_'):
+            yield cmd[4:]
 
 
 def mode2string(mode):
@@ -328,18 +328,25 @@ def run(argv=sys.argv):
     sp.add_argument("--runtests", action="store_true",
                     help="Run all sort of tests")
 
-    # Register commands with subparser
-    for command in _cmds:
-        s = subparsers.add_parser(command.__name__)
-        command(s)
-
     # Strip sys.argv
     argv[0] = os.path.basename(argv[0])
     if os.path.basename(argv[0]) in ['__init__.py', 'coreutils.py']:
         argv = argv[1:]
+    if not argv:
+        argv = ['pycoreutils']
+
+    # Try to import the command module
+    cmdname = argv[0]
+    ex = "from pycoreutils.command.cmd_{0} import {0} as cmd".format(cmdname)
+    try:
+        exec(ex)
+    except ImportError:
+        print("usage: coreutils.py [-h] [-v] command\n")
+        print("Available Commands:\n" + ", ".join(listcommands()))
+        return
 
     # Run the subcommand
-    #print(argv)
+    cmd(subparsers.add_parser(cmdname))
     args = p.parse_args(argv)
     args.func(args)
 
@@ -456,15 +463,6 @@ class MissingOperandException(StdErrException):
     def __str__(self):
         return "{0}: missing operand. Try `{0} --help'".format(self.program) +\
                " for more information."
-
-
-# Finally import all commands so addcommand() will register them
-try:
-    from pycoreutils.command import *
-except ImportError:
-    print("Can't import pycoreutils.command. Please make sure to " +\
-          "include it in your PYTHONPATH", file=sys.stderr)
-    #sys.exit(1)
 
 
 if __name__ == '__main__':
