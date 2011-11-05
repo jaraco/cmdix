@@ -7,6 +7,5 @@ from __future__ import print_function, unicode_literals
 import pycoreutils
 
 
-@pycoreutils.addcommand
 def md5sum(p):
-    pycoreutils.hasher('md5', p)
+    return pycoreutils.hasher('md5', p)

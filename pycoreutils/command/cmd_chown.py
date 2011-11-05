@@ -13,7 +13,6 @@ except ImportError:
     pass
 
 
-@pycoreutils.addcommand
 @pycoreutils.onlyunix
 def chown(p):
     # TODO: Support for groups and --reference
@@ -23,6 +22,7 @@ def chown(p):
                      " group of each FILE to those of RFILE."
     p.add_argument('FILE', nargs='*')
     p.add_argument('owner', nargs='?')
+    return p
 
 
 def func(args):

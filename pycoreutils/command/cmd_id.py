@@ -14,7 +14,6 @@ except ImportError as err:
     pass
 
 
-@pycoreutils.addcommand
 @pycoreutils.onlyunix
 def id(p):
     # TODO: List all groups a user belongs to
@@ -32,6 +31,7 @@ def id(p):
             help="print a name instead of a number, for -ug")
     p.add_argument("-u", "--user", action="store_true", dest="user",
             help="print only the effective group ID")
+    return p
 
 
 def func(args):

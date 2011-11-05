@@ -13,12 +13,12 @@ import spwd
 import subprocess
 
 
-@pycoreutils.addcommand
 @pycoreutils.onlyunix
 def login(p):
     p.set_defaults(func=func)
     p.description = "Begin session on the system"
     p.add_argument("username", nargs="?")
+    return p
 
 
 def func(args):

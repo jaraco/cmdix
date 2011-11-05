@@ -7,6 +7,5 @@ from __future__ import print_function, unicode_literals
 import pycoreutils
 
 
-@pycoreutils.addcommand
 def sha1sum(p):
-    pycoreutils.hasher('sha1', p)
+    return pycoreutils.hasher('sha1', p)

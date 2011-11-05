@@ -6,14 +6,12 @@
 # Based on the example in difflib documentation
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
 import difflib
 import os
 import sys
 import time
 
 
-@pycoreutils.addcommand
 def diff(p):
     p.set_defaults(func=func)
     p.description = "Compare files line by line"
@@ -31,6 +29,7 @@ def diff(p):
                    help="Print context-diff in html")
     g.add_argument("-n", "--ndiff", action="store_true",
                    help='Produce a ndiff format diff')
+    return p
 
 
 def func(args):

@@ -4,13 +4,11 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
 import logging
 import os
 import random
 
 
-@pycoreutils.addcommand
 def shred(p):
     p.set_defaults(func=func)
     p.description = "Overwrite the specified FILE(s) repeatedly, in order " + \
@@ -23,6 +21,7 @@ def shred(p):
             help="overwrite ITERATIONS times instead of the default (3)")
     p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
             help="show progress")
+    return p
 
 
 def func(args):

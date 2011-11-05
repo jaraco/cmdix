@@ -9,13 +9,13 @@ import os
 import subprocess
 
 
-@pycoreutils.addcommand
 @pycoreutils.onlyunix
 def chmod(p):
     # TODO: Testing!!!
     p.set_defaults(func=func)
     p.description = "Run COMMAND with root directory set to NEWROOT."
     p.usage = "%(prog)s NEWROOT [COMMAND [ARG]...]\nor:    %(prog)s [OPTION]"
+    return p
 
 
 def func(args):

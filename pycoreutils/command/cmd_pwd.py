@@ -4,11 +4,9 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
 import os
 
 
-@pycoreutils.addcommand
 def pwd(p):
     p.set_defaults(func=func)
     p.description = "print name of current/working directory"
@@ -16,6 +14,7 @@ def pwd(p):
             help="use PWD from environment, even if it contains symlinks")
     p.add_argument("-P", "--physical", action="store_true", dest="physical",
             help="avoid all symlinks")
+    return p
 
 
 def func(args):

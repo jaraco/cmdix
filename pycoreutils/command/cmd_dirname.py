@@ -4,17 +4,16 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
 import os.path
 
 
-@pycoreutils.addcommand
 def dirname(p):
     p.set_defaults(func=func)
     p.description = "Print NAME with its trailing /component removed; if " + \
                     "NAME contains no /'s, output `.' (meaning the current" + \
                     " directory)."
     p.add_argument('path')
+    return p
 
 
 def func(args):

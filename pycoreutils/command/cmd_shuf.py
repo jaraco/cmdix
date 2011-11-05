@@ -9,7 +9,6 @@ import random
 import sys
 
 
-@pycoreutils.addcommand
 def shuf(p):
     p.set_defaults(func=func)
     p.description = "Write a random permutation of the input lines to " +\
@@ -25,6 +24,7 @@ def shuf(p):
             help="output at most HEADCOUNT lines")
     p.add_argument("-o", "--output", dest="output",
             help="write result to OUTPUT instead of standard output")
+    return p
 
 
 def func(args):

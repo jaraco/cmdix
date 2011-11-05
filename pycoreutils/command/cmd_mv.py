@@ -4,11 +4,9 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
 import shutil
 
 
-@pycoreutils.addcommand
 def mv(p):
     p.set_defaults(func=func)
     p.description = "Rename SOURCE to DEST, or move SOURCE(s) to DIRECTORY."
@@ -17,6 +15,7 @@ def mv(p):
               "%(prog)s [OPTION]... -t DIRECTORY SOURCE..."
     p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
             help="explain what is being done")
+    return p
 
 
 def func(args):

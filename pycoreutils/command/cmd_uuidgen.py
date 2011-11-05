@@ -8,7 +8,6 @@ import pycoreutils
 import uuid
 
 
-@pycoreutils.addcommand
 def uuidgen(p):
     p.set_defaults(func=func)
     p.description = "print a universally unique identifier (UUID)"
@@ -17,6 +16,7 @@ def uuidgen(p):
     p.add_argument("-t", "--time", action="store_const", dest="uuidtype",
                    const='TIME', help="Generate a UUID from a host ID, " +\
                                       "sequence number, and the current time.")
+    return p
 
 
 def func(args):

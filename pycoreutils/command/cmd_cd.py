@@ -8,11 +8,11 @@ import pycoreutils
 import os.path
 
 
-@pycoreutils.addcommand
 def cd(p):
     p.set_defaults(func=func)
     p.description = "Change the current working directory to HOME or PATH"
     p.add_argument('PATH', nargs='?')
+    return p
 
 
 def func(args):

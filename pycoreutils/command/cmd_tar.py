@@ -9,7 +9,6 @@ import sys
 import tarfile
 
 
-@pycoreutils.addcommand
 def tar(p):
     p.set_defaults(func=func)
     p.description = "saves many files together into a single tape or disk " +\
@@ -32,6 +31,7 @@ def tar(p):
             help="use archive file or device ARCHIVE")
     p.add_argument("-z", "--gzip", action="store_true", dest="gzip",
             help="(de)compress using gzip")
+    return p
 
 
 def func(args):

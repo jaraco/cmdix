@@ -7,6 +7,5 @@ from __future__ import print_function, unicode_literals
 import pycoreutils
 
 
-@pycoreutils.addcommand
 def sha224sum(p):
-    pycoreutils.hasher('sha224', p)
+    return pycoreutils.hasher('sha224', p)

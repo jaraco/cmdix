@@ -8,7 +8,6 @@ import pycoreutils
 import os
 
 
-@pycoreutils.addcommand
 def env(p):
     # TODO: --unset
     p.set_defaults(func=func)
@@ -18,6 +17,7 @@ def env(p):
     p.add_argument('command')
     p.add_argument("-i", "--ignore-environment", action="store_true",
             dest="ignoreenvironment", help="start with an empty environment")
+    return p
 
 
 def func(args):

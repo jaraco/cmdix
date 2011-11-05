@@ -15,7 +15,6 @@ else:
     from urllib.request import build_opener
 
 
-@pycoreutils.addcommand
 def wget(p):
     # TODO: Fix for Python3, recursion, proxy, progress bar, you name it...
     p.set_defaults(func=func)
@@ -26,6 +25,7 @@ def wget(p):
                    help="write documents to FILE.")
     p.add_argument("-u", "--user-agent", dest="useragent",
                    help="identify as AGENT instead of PyCoreutils/VERSION.")
+    return p
 
 
 def func(args):

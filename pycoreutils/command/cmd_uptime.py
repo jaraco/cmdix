@@ -8,7 +8,6 @@ import pycoreutils
 import datetime
 
 
-@pycoreutils.addcommand
 @pycoreutils.onlyunix
 def uptime(p):
     # TODO: List number of users
@@ -16,6 +15,7 @@ def uptime(p):
     p.description = "Tell how long the system has been running"
     p.epilog = "System load averages is the average number of processes " +\
                "that are either in a runnable or uninterruptable state."
+    return p
 
 
 def func(args):

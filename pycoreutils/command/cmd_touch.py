@@ -4,12 +4,10 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
 import os.path
 import time
 
 
-@pycoreutils.addcommand
 def touch(p):
     # TODO: Implement --date, --time and -t
     p.set_defaults(func=func)
@@ -28,6 +26,7 @@ def touch(p):
             help="change only the modification time")
     p.add_argument("-r", "--reference", dest="reference",
             help="use this file's times instead of current time")
+    return p
 
 
 def func(args):

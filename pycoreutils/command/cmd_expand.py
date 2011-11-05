@@ -7,7 +7,6 @@ from __future__ import print_function, unicode_literals
 import pycoreutils
 
 
-@pycoreutils.addcommand
 def expand(p):
     p.set_defaults(func=func)
     p.description = "Convert tabs in each FILE to spaces"
@@ -16,6 +15,7 @@ def expand(p):
                "decompressed automatically."
     p.add_argument("-t", "--tabs", type=int, default=8,
                    help="have tabs NUMBER characters apart, not 8")
+    return p
 
 
 def func(args):

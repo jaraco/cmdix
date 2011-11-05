@@ -4,11 +4,9 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
 import os
 
 
-@pycoreutils.addcommand
 def mkdir(p):
     p.set_defaults(func=func)
     p.description = "Create the DIRECTORY(ies), if they do not already " + \
@@ -20,6 +18,7 @@ def mkdir(p):
             help="set file mode (as in chmod), not a=rwx - umask")
     p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
             help="print a message for each created directory")
+    return p
 
 
 def func(args):

@@ -4,12 +4,10 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
 import sys
 import tempfile
 
 
-@pycoreutils.addcommand
 def mktemp(p):
     # TODO: Templates, most of the options
     p.set_defaults(func=func)
@@ -18,6 +16,7 @@ def mktemp(p):
     p.usage = '%(prog)s [OPTION]... [TEMPLATE]'
     p.add_argument("-d", "--directory", action="store_true", dest="directory",
             help="create a directory, not a file")
+    return p
 
 
 def func(args):

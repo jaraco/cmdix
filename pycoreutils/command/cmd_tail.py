@@ -8,7 +8,6 @@ import pycoreutils
 import time
 
 
-@pycoreutils.addcommand
 def tail(p):
     # TODO: Everything!!!!!!!!
     p.set_defaults(func=func)
@@ -23,6 +22,7 @@ def tail(p):
             help="When using 'follow', check the file every INTERVAL seconds")
     p.add_argument("-n", "--lines", default=10, metavar="N",
             help="output the last N lines, instead of the last 10", type=int)
+    return p
 
 
 def func(args):

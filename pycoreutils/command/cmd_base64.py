@@ -9,7 +9,6 @@ import base64 as _base64
 import textwrap
 
 
-@pycoreutils.addcommand
 def base64(p):
     p.set_defaults(func=func)
     p.description = "Base64 encode or decode FILE, or standard input, " + \
@@ -20,6 +19,7 @@ def base64(p):
     p.add_argument("-w", dest="wrap", default=76, type=int,
             help="wrap encoded lines after COLS character (default 76). " + \
                  "Use 0 to disable line wrapping")
+    return p
 
 
 def func(args):

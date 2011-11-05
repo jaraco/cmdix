@@ -9,7 +9,6 @@ import os
 import os.path
 
 
-@pycoreutils.addcommand
 @pycoreutils.onlyunix
 def ln(p):
     p.set_defaults(func=func)
@@ -20,6 +19,7 @@ def ln(p):
             help="make symbolic links instead of hard links")
     p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
             help="print a message for each created directory")
+    return p
 
 
 def func(args):

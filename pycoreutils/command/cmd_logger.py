@@ -8,7 +8,6 @@ import pycoreutils
 import logging
 
 
-@pycoreutils.addcommand
 def logger(p):
     # TODO: -i, -f, t
     p.set_defaults(func=func)
@@ -28,6 +27,7 @@ def logger(p):
     p.add_argument("-s", action="store_true", dest="stderr",
             help="Log the message to standard error, as well as the " +\
                  "system log.")
+    return p
 
 
 def func(args):

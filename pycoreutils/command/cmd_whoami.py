@@ -13,12 +13,12 @@ except ImportError as err:
     pass
 
 
-@pycoreutils.addcommand
 @pycoreutils.onlyunix
 def whoami(p):
     p.set_defaults(func=func)
     p.description = "Print the user name associated with the current" + \
                     "effective user ID.\nSame as id -un."
+    return p
 
 
 def func(args):

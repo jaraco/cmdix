@@ -7,7 +7,6 @@ from __future__ import print_function, unicode_literals
 import pycoreutils
 
 
-@pycoreutils.addcommand
 def nl(p):
     p.set_defaults(func=func)
     p.description = "number lines of files"
@@ -18,6 +17,7 @@ def nl(p):
             metavar="STRING", help="add STRING after (possible) line number")
     p.add_argument("-w", "--number-width", dest="width", default=6, type=int,
             metavar="NUMBER", help="use NUMBER columns for line numbers")
+    return p
 
 
 def func(args):

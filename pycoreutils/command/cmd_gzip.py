@@ -4,10 +4,8 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
 from pycoreutils.compressor import compressor
 
 
-@pycoreutils.addcommand
 def gzip(p):
     compressor(p, 'gzip')

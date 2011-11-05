@@ -23,7 +23,7 @@ setup(
     url = "http://pypi.python.org/pypi/pycoreutils",
     author = "Hans van Leeuwen",
     author_email = "hansvl@gmail.com",
-    scripts = ["coreutils.py"],
+    scripts = ["scripts/pycoreutils"],
     packages = [
         "pycoreutils",
         "pycoreutils.command",

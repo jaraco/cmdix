@@ -10,7 +10,6 @@ import stat
 import time
 
 
-@pycoreutils.addcommand
 def ls(p):
     # TODO: Show user and group names in ls -l, correctly format dates in ls -l
     p.set_defaults(func=func)
@@ -20,6 +19,7 @@ def ls(p):
     p.add_argument('FILE', nargs="*")
     p.add_argument("-l", "--longlist", action="store_true",
                    help="use a long listing format")
+    return p
 
 
 def func(args):

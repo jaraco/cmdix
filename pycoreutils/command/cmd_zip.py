@@ -10,7 +10,6 @@ import sys
 import zipfile
 
 
-@pycoreutils.addcommand
 def zip(p):
     p.set_defaults(func=func)
     p.description = "package and compress (archive) files"
@@ -28,6 +27,7 @@ def zip(p):
                    help="list files in zipfile.")
     p.add_argument("-t", "--test", action="store_true", dest="test",
                    help="test if a zipfile is valid.")
+    return p
 
 
 def func(args):

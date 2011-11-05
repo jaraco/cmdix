@@ -10,7 +10,6 @@ import smtplib
 import socket
 
 
-@pycoreutils.addcommand
 def sendmail(p):
     p.set_defaults(func=func)
     p.description = "A simple sendmail implementation"
@@ -34,6 +33,7 @@ def sendmail(p):
             help="connect using ssl")
     p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
             help="show smtp session")
+    return p
 
 
 def func(args):

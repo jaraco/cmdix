@@ -87,24 +87,7 @@ def args2fds(args):
                       "No such file or directory")
 
 
-def coreutils(args):
-    if args.license:
-        print(__license__)
-
-    if args.runtests:
-        try:
-            from pycoreutils import test
-        except ImportError:
-            print("Can't import pycoreutils.test. Please make sure to " +\
-                  "include it in your PYTHONPATH", file=sys.stderr)
-            sys.exit(1)
-        test.runalltests()
-
-    if args.createcommanddirectory:
-        createcommandlinks(args.createcommanddirectory)
-
-
-def createcommandlinks(directory, pycorepath='/usr/bin/coreutils.py'):
+def createlinks(directory, pycorepath='/usr/bin/coreutils.py'):
     '''
     Create a symlink to pycoreutils for every available command
 
@@ -188,6 +171,7 @@ def hasher(algorithm, p):
                     "standard input."
     p.add_argument('files', nargs='*', type=argparse.FileType('r'),
                    default='-')
+    return p
 
 
 def listcommands():
@@ -308,45 +292,59 @@ def run(argv=sys.argv):
     :param argv:    List of arguments
     :return:        The exit status of the command. None means 0.
     '''
-    p = argparse.ArgumentParser(version=__version__,
-                description="Coreutils in Pure Python.",
-                epilog="Available Commands: " + ", ".join(listcommands()))
+    cmdname = os.path.basename(argv.pop(0))
+    parser = argparse.ArgumentParser(version=__version__, add_help=False,
+                    description="Coreutils in Pure Python.", prog=cmdname,
+                    epilog="Available Commands: " + ", ".join(listcommands()))
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("command", nargs="?")
+    group.add_argument("--license", action="store_true",
+                help="show program's license and exit")
+    group.add_argument("--runtests", action="store_true",
+                help="Run all sort of tests")
+    group.add_argument("--createlinks", dest="directory",
+                help="Create a symlink to pycoreutils for every command")
 
-    subparsers = p.add_subparsers(title='subcommands',
-                                  description='valid subcommands')
+    if cmdname == 'pycoreutils':
+        args, argv = parser.parse_known_args(argv)
 
-    sp = subparsers.add_parser('pycoreutils')
-    sp.set_defaults(func=coreutils)
-    sp.description = "Pycoreutils meta-commands"
-    sp.add_argument("--createcommandlinks", dest="createcommanddirectory",
-                    help="Create a symlink to pycoreutils for every " +\
-                         "available command")
-    sp.add_argument("--helpall", action="store_true",
-                    help="Show help for all commands")
-    sp.add_argument("--license", action="store_true",
-                    help="show program's license and exit")
-    sp.add_argument("--runtests", action="store_true",
-                    help="Run all sort of tests")
+        if args.license:
+            print(__license__)
+            return
 
-    # Strip sys.argv
-    argv[0] = os.path.basename(argv[0])
-    if os.path.basename(argv[0]) in ['__init__.py', 'coreutils.py']:
-        argv = argv[1:]
-    if not argv:
-        argv = ['pycoreutils']
+        elif args.runtests:
+            try:
+                from pycoreutils import test
+            except ImportError:
+                print("Can't import pycoreutils.test. Please make sure to " +\
+                    "include it in your PYTHONPATH", file=sys.stderr)
+                sys.exit(1)
+            test.runalltests()
+            return
+
+        elif args.directory:
+            createlinks(args.directory)
+            return
+
+        elif not args.command and not argv:
+            parser.print_help()
+            return
+
+        cmdname = args.command
 
     # Try to import the command module
-    cmdname = argv[0]
     ex = "from pycoreutils.command.cmd_{0} import {0} as cmd".format(cmdname)
     try:
         exec(ex)
     except ImportError:
-        print("usage: coreutils.py [-h] [-v] command\n")
-        print("Available Commands:\n" + ", ".join(listcommands()))
+        parser.print_help()
+        return
+    except SyntaxError:
+        parser.print_help()
         return
 
     # Run the subcommand
-    cmd(subparsers.add_parser(cmdname))
+    p = cmd(argparse.ArgumentParser(prog=cmdname))
     args = p.parse_args(argv)
     args.func(args)
 

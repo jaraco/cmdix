@@ -9,7 +9,6 @@ import os
 import signal
 
 
-@pycoreutils.addcommand
 def kill(p):
     p.set_defaults(func=func)
     p.description = ""
@@ -18,6 +17,7 @@ def kill(p):
     p.add_argument("-s", "--signal",  action="store", dest="signal",
             default=signal.SIGTERM,
             help="send signal")
+    return p
 
 
 def func(args):

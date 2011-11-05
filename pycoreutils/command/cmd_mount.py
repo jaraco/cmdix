@@ -9,7 +9,6 @@ import ctypes
 import sys
 
 
-@pycoreutils.addcommand
 @pycoreutils.onlyunix
 def mount(p):
     available_filesystems = get_available_filesystems()
@@ -26,6 +25,7 @@ def mount(p):
     p.add_argument("-t", "--types", default="ext2",
             help="Filesystem type. Supported types: " +\
                  ", ".join(available_filesystems))
+    return p
 
 
 def func(args):

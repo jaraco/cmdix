@@ -4,11 +4,9 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
 import fileinput
 
 
-@pycoreutils.addcommand
 def wc(p):
     p.set_defaults(func=func)
     p.description = "Print newline, word, and byte counts for each file"
@@ -21,6 +19,7 @@ def wc(p):
             help="print the newline counts")
     p.add_argument("-w", "--words", action="store_true", dest="words",
             help="print the word counts")
+    return p
 
 
 def func(args):

@@ -4,12 +4,10 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
 import os
 import os.path
 
 
-@pycoreutils.addcommand
 def rm(p):
     p.description = "print name of current/working directory"
     p.add_argument('FILE', nargs='+')
@@ -20,6 +18,7 @@ def rm(p):
                    help="remove directories and their contents recursively")
     p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
                    help="explain what is being done")
+    return p
 
 
 def func(args):

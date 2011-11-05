@@ -8,10 +8,10 @@ import pycoreutils
 import subprocess
 
 
-@pycoreutils.addcommand
 def init(p):
     p.set_defaults(func=func)
     p.description = "Process control initialization"
+    return p
 
 
 def func(args):

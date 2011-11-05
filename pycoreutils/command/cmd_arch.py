@@ -4,14 +4,13 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
 import platform
 
 
-@pycoreutils.addcommand
 def arch(p):
     p.set_defaults(func=func)
     p.description = "Print machine architecture."
+    return p
 
 
 def func(args):

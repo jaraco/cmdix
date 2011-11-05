@@ -4,12 +4,10 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
 import asyncore
 import smtpd as _smtpd
 
 
-@pycoreutils.addcommand
 def smtpd(p):
     p.set_defaults(func=func)
     p.description = "An RFC 2821 smtp proxy."
@@ -21,6 +19,7 @@ def smtpd(p):
                    help="local address to bind to")
     p.add_argument("-P", "--localport", default=25, type=int,
                    help="local port to listen to")
+    return p
 
 
 def func(args):

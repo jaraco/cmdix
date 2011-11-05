@@ -4,11 +4,9 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
 import platform
 
 
-@pycoreutils.addcommand
 def uname(p):
     p.set_defaults(func=func)
     p.description = "Print certain system information.  With no OPTION, " + \
@@ -35,6 +33,7 @@ def uname(p):
             dest="operatingsystem", help="print the operating system")
     p.add_argument("-A", "--architecture", action="store_true",
             dest="architecture", help="print the systems architecture")
+    return p
 
 
 def func(args):

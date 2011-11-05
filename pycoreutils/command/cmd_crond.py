@@ -13,7 +13,6 @@ import sys
 import time
 
 
-@pycoreutils.addcommand
 def crond(p):
     # TODO: Environment variables, different users and daemonize
     p.set_defaults(func=func)
@@ -26,6 +25,7 @@ def crond(p):
                    help="show debug info")
     p.add_argument("--dryrun", action="store_true", dest="dryrun",
                    help="don't actually do anything")
+    return p
 
 
 def func(args):

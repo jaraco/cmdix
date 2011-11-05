@@ -7,7 +7,6 @@ from __future__ import print_function, unicode_literals
 import pycoreutils
 
 
-@pycoreutils.addcommand
 def sort(p):
     # TODO: GNU's sort doesn't count '/'.
     # Sorting /etc/fstab has different outcomes.
@@ -16,6 +15,7 @@ def sort(p):
     p.add_argument('FILE', nargs='*')
     p.add_argument("-r", "--reverse", action="store_true", dest="reverse",
             help="reverse the result of comparisons")
+    return p
 
 
 def func(args):

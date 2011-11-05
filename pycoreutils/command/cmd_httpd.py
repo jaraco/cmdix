@@ -202,7 +202,6 @@ def list_directory(urlpath, filepath):
     return str(res)
 
 
-@pycoreutils.addcommand
 def httpd(p):
     p.set_defaults(func=func)
     p.description = "Start a web server that serves the current directory"
@@ -227,6 +226,7 @@ def httpd(p):
                         "certificate file. Requires -c")
     p.add_argument("-s", "--shell", action="store_true", dest="shell",
                     help="Start a web shell")
+    return p
 
 
 def func(args):

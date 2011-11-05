@@ -9,7 +9,6 @@ import calendar
 import time
 
 
-@pycoreutils.addcommand
 def cal(p):
     p.set_defaults(func=func, firstweekday=6)
     p.description = "Displays a calendar"
@@ -22,6 +21,7 @@ def cal(p):
             help="Weeks start on Sunday")
     p.add_argument("-y", action="store_true", dest="year",
             help="Display a calendar for the specified year")
+    return p
 
 
 def func(args):

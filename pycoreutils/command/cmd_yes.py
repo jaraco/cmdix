@@ -4,16 +4,15 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
 
 
-@pycoreutils.addcommand
 def yes(p):
     p.set_defaults(func=func)
     p.usage = '%(prog)s [STRING]...\nor:    %(prog)s OPTION'
     p.add_argument('string', nargs='*')
     p.description = "Repeatedly output a line with all specified " + \
                     "STRING(s), or `y'."
+    return p
 
 
 def func(args):

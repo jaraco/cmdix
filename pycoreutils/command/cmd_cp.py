@@ -10,7 +10,6 @@ import os.path
 import shutil
 
 
-@pycoreutils.addcommand
 def cp(p):
     p.set_defaults(func=func)
     p.description = "Copy SOURCE to DEST, or multiple SOURCE(s) to DIRECTORY."
@@ -24,6 +23,7 @@ def cp(p):
                    dest="recursive", help="copy directories recursively")
     p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
                    help="print a message for each created directory")
+    return p
 
 
 def func(args):

@@ -7,7 +7,6 @@ from __future__ import print_function, unicode_literals
 import pycoreutils
 
 
-@pycoreutils.addcommand
 def cat(p):
     p.set_defaults(func=func)
     p.description = "Concatenate FILE(s), or standard input, " + \
@@ -15,6 +14,7 @@ def cat(p):
     p.epilog = "If the FILE ends with '.bz2' or '.gz', the file will be " + \
                "decompressed automatically."
     p.add_argument('FILE', nargs='*')
+    return p
 
 
 def func(args):

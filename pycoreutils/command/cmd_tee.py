@@ -8,7 +8,6 @@ import pycoreutils
 import sys
 
 
-@pycoreutils.addcommand
 @pycoreutils.onlyunix
 def tee(p):
     p.set_defaults(func=func)
@@ -17,6 +16,7 @@ def tee(p):
     p.add_argument('FILE', nargs='*')
     p.add_argument("-a", "--append", action="store_true", dest="append",
             help="append to the given FILEs, do not overwrite")
+    return p
 
 
 def func(args):

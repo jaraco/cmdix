@@ -14,12 +14,12 @@ import subprocess
 import sys
 
 
-@pycoreutils.addcommand
 def sh(p):
     p.set_defaults(func=func)
     p.description = "Start a shell"
     p.add_argument("--nocoreutils", action="store_true",
             help="Do not load pycoreutils")
+    return p
 
 
 def func(args):

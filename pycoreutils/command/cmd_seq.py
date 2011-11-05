@@ -4,10 +4,8 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
 
 
-@pycoreutils.addcommand
 def seq(p):
     p.set_defaults(func=func)
     p.description = "Print numbers from FIRST to LAST, in steps of " +\
@@ -16,6 +14,7 @@ def seq(p):
               " LAST\nor:    %(prog)s [OPTION]... FIRST INCREMENT LAST"
     p.add_argument("-s", "--seperator", dest="seperator",
             help="use SEPERATOR to separate numbers (default: \\n)")
+    return p
 
 
 def func(args):

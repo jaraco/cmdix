@@ -4,16 +4,15 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
 import os.path
 
 
-@pycoreutils.addcommand
 def basename(p):
     p.set_defaults(func=func)
     p.description = "Print NAME with any leading directory components " + \
                     "removed. If specified, also remove a trailing SUFFIX."
     p.add_argument('name', nargs='+')
+    return p
 
 
 def func(args):

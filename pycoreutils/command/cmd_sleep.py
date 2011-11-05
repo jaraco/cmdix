@@ -9,7 +9,6 @@ import time
 import sys
 
 
-@pycoreutils.addcommand
 def sleep(p):
     p.set_defaults(func=func)
     p.description = "Pause for NUMBER seconds. SUFFIX may be `s' for " + \
@@ -19,6 +18,7 @@ def sleep(p):
                     "be an arbitrary floating point number. Given two or " + \
                     "more arguments, pause for the amount of time"
     p.add_argument('number', nargs='+')
+    return p
 
 
 def func(args):
