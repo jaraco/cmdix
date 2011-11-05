@@ -36,7 +36,7 @@ def func(args):
             with open('/etc/fstab') as fd:
                 lines = fd.readlines()
         except IOError:
-            print("Error: Couldn't read /etc/ftab", file=sys.strerr)
+            print("Error: Couldn't read /etc/ftab", file=sys.stderr)
             return
         for line in lines:
             source, dest, fstype, options, freq, passno = line.split()
@@ -49,7 +49,7 @@ def func(args):
         try:
             print(open('/etc/mtab').read().strip())
         except IOError:
-            print("Error: Couldn't read /etc/mtab", file=sys.strerr)
+            print("Error: Couldn't read /etc/mtab", file=sys.stderr)
 
 
 def _mount(source, dest, fstype, options=0, data=''):
@@ -57,7 +57,7 @@ def _mount(source, dest, fstype, options=0, data=''):
     res = libc.mount(str(source), str(dest), str(fstype), options, str(data))
     if res < 0:
         print("Error: Mounting {0} on {1} failed!".format(source, dest),
-              file=sys.strerr)
+              file=sys.stderr)
 
 
 def get_available_filesystems():
@@ -68,6 +68,6 @@ def get_available_filesystems():
                 l.append(line.split()[-1])
     except IOError:
         print("Error reading supported filesystems from /proc/filesystems",
-              file=sys.strerr)
-        return
+              file=sys.stderr)
+        return l
     return l
