@@ -7,7 +7,6 @@
 from __future__ import unicode_literals
 
 import unittest
-import spwd
 
 from pycoreutils.test import BaseTestCase
 from pycoreutils.command import cmd_login
