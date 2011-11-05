@@ -29,6 +29,7 @@ __all__ = [
     'cmd_md5sum',
     'cmd_mkdir',
     'cmd_mktemp',
+    'cmd_mount',
     'cmd_mv',
     'cmd_nl',
     'cmd_pwd',
