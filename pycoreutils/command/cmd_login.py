@@ -44,7 +44,7 @@ def func(args):
             pw = pwd.getpwnam(username)
 
             # Set UID of user
-            os.setuid(pw.uid)
+            os.setuid(pw.pw_uid)
 
             # Change to homedir
             os.chdir(pw.pw_dir)
