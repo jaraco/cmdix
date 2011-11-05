@@ -13,7 +13,6 @@ def uname(p):
     p.set_defaults(func=func)
     p.description = "Print certain system information.  With no OPTION, " + \
                     "same as -s."
-    p.usage = '%(prog)s [OPTION]...'
     p.add_argument("-a", "--all", action="store_true", dest="all",
             help="print all information, in the following order, except " + \
                   "omit -p and -i if unknown")
