@@ -13,6 +13,7 @@ __all__ = [
     'cmd_chroot',
     'cmd_cp',
     'cmd_crond',
+    'cmd_diff',
     'cmd_dirname',
     'cmd_env',
     'cmd_expand',
