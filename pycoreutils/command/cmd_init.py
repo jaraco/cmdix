@@ -18,7 +18,7 @@ def func(args):
     # TODO: Create a real init-system
     mount()
     setHostname()
-    pycoreutils.runcommandline('sh')
+    pycoreutils.runcommandline('login')
 
 
 def mount():
