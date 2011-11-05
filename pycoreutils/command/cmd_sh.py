@@ -53,12 +53,13 @@ class Sh(cmd.Cmd):
         except OSError as err:
             if not os.path.dirname(l[0]):
                 # Scan $PATH
-                for path in os.getenv('PATH').split(':'):
-                    cmd = [os.path.join(path, l[0])] + l[1:]
-                    try:
-                        subprocess.call(cmd)
-                    except Exception:
-                        pass
+                if os.getenv('PATH'):
+                    for path in os.getenv('PATH').split(':'):
+                        cmd = [os.path.join(path, l[0])] + l[1:]
+                        try:
+                            subprocess.call(cmd)
+                        except Exception:
+                            pass
 
             print(err.strerror, file=sys.stderr)
 
