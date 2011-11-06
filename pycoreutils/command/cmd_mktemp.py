@@ -13,20 +13,13 @@ def mktemp(p):
     p.set_defaults(func=func)
     p.description = "Create a temporary file or directory, safely, and " + \
                     "print its name."
-    p.usage = '%(prog)s [OPTION]... [TEMPLATE]'
     p.add_argument("-d", "--directory", action="store_true", dest="directory",
-            help="create a directory, not a file")
+                   help="create a directory, not a file")
     return p
 
 
 def func(args):
-    if len(args) == 0:
-        if opts.directory:
-            print(tempfile.mkdtemp(prefix='tmp.'))
-        else:
-            print(tempfile.mkstemp(prefix='tmp.')[1])
-    elif len(args) == 1:
-        raise NotImplementedError("Templates are not yet implemented")
+    if args.directory:
+        print(tempfile.mkdtemp(prefix='tmp.'))
     else:
-        print("mktemp: too many templates. Try `mktemp --help' for more " +\
-              "information.", file=sys.stderr)
+        print(tempfile.mkstemp(prefix='tmp.')[1])

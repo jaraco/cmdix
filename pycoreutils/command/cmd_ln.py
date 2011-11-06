@@ -12,9 +12,9 @@ import os.path
 @pycoreutils.onlyunix
 def ln(p):
     p.set_defaults(func=func)
-    p.description = ""
-    p.usage = '\n%(prog)s [OPTION]... [-T] TARGET LINK_NAME   (1st form)' + \
-              '\n%(prog)s [OPTION]... TARGET                  (2nd form)'
+    p.description = "Create symbolic or hard links"
+    p.add_argument("TARGET", nargs=1)
+    p.add_argument("LINK_NAME", nargs='?')
     p.add_argument("-s", "--symbolic", action="store_true", dest="symbolic",
             help="make symbolic links instead of hard links")
     p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
@@ -23,16 +23,13 @@ def ln(p):
 
 
 def func(args):
-    if len(args) == 0:
-        raise pycoreutils.MissingOperandException(prog)
-    elif len(args) == 1:
-        src = args[0]
-        dst = os.path.basename(src)
-    elif len(args) == 2:
-        src = args[0]
+    src = args.TARGET
+    if args.LINK_NAME:
         dst = args[1]
+    else:
+        dst = os.path.basename(src)
 
-    if opts.symbolic:
+    if args.symbolic:
         f = os.symlink
         linktype = 'soft'
     else:
@@ -40,7 +37,7 @@ def func(args):
         linktype = 'hard'
 
     for src in args:
-        if opts.verbose:
+        if args.verbose:
             print("`{0}' -> `{1}'".format(src, dst))
         try:
             f(src, dst)

@@ -12,25 +12,32 @@ def seq(p):
                     "INCREMENT."
     p.usage = "%(prog)s [OPTION]... LAST\nor:    %(prog)s [OPTION]... FIRST" +\
               " LAST\nor:    %(prog)s [OPTION]... FIRST INCREMENT LAST"
+    p.add_argument("ar", nargs='+')
     p.add_argument("-s", "--seperator", dest="seperator",
             help="use SEPERATOR to separate numbers (default: \\n)")
     return p
 
 
 def func(args):
-    if len(args) == 1:
-        a = list(range(1, int(args[0]) + 1))
-    elif len(args) == 2:
-        a = list(range(int(args[0]), int(args[1]) + 1))
-    elif len(args) == 3:
-        a = list(range(int(args[0]), int(args[2]) + 1, int(args[1])))
+    if len(args.ar) == 1:
+        a = list(range(1, int(args.ar[0]) + 1))
+    elif len(args.ar) == 2:
+        a = list(range(int(args.ar[0]),
+                       int(args.ar[1]) + 1))
+    elif len(args.ar) == 3:
+        a = list(range(int(args.ar[0]),
+                       int(args.ar[2]) + 1,
+                       int(args.ar[1])))
+    else:
+        print("seq: error: too few arguments")
+        return
 
-    if opts.seperator == None:
+    if args.seperator == None:
         for x in a:
             print(str(x))
     else:
         for x in range(len(a) - 1, 0, -1):
-            a.insert(x, opts.seperator)
+            a.insert(x, args.seperator)
         for x in a:
             print(str(x), end='')
         print()

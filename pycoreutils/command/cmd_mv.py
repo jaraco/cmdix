@@ -9,20 +9,17 @@ import shutil
 
 def mv(p):
     p.set_defaults(func=func)
-    p.description = "Rename SOURCE to DEST, or move SOURCE(s) to DIRECTORY."
-    p.usage = "%(prog)s [OPTION]... [-T] SOURCE DEST\nor:    " + \
-              "%(prog)s [OPTION]... SOURCE... DIRECTORY\nor:    " + \
-              "%(prog)s [OPTION]... -t DIRECTORY SOURCE..."
-    p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
+    p.description = "Move SOURCE to DEST"
+    p.add_argument("SOURCE", nargs='+')
+    p.add_argument("DEST", nargs=1)
+    p.add_argument("-v", "--verbose", action="store_true",
             help="explain what is being done")
     return p
 
 
 def func(args):
-    dest = args.pop()
+    for args.SOURCE in args:
+        if args.verbose:
+            print("'{0}' -> '{1}'".format(args.SOURCE, args.DESTINATION))
 
-    for src in args:
-        if opts.verbose:
-            print("'{0}' -> '{1}'".format(src, dest))
-
-        shutil.move(src, dest)
+        shutil.move(args.SOURCE, args.DESTINATION)

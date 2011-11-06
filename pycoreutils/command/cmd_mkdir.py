@@ -23,7 +23,7 @@ def mkdir(p):
 
 def func(args):
     for arg in args.directory:
-        if opts.parents:
+        if args.parents:
             # Recursively create directories. We can't use os.makedirs
             # because -v won't show all intermediate directories
             path = arg
@@ -36,10 +36,10 @@ def func(args):
 
             # Create all directories in pathlist
             for path in pathlist:
-                os.mkdir(path, int(opts.mode))
-                if opts.verbose:
+                os.mkdir(path, int(args.mode))
+                if args.verbose:
                     print("mkdir: created directory `{0}'".format(path))
         else:
-            os.mkdir(arg, int(opts.mode))
-            if opts.verbose:
+            os.mkdir(arg, int(args.mode))
+            if args.verbose:
                 print("mkdir: created directory `{0}'".format(arg))
