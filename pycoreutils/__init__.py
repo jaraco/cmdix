@@ -87,7 +87,7 @@ def args2fds(args):
                       "No such file or directory")
 
 
-def createlinks(directory, pycorepath='/usr/bin/coreutils.py'):
+def createlinks(directory, pycorepath='/usr/bin/pycoreutils'):
     '''
     Create a symlink to pycoreutils for every available command
 
@@ -102,8 +102,14 @@ def createlinks(directory, pycorepath='/usr/bin/coreutils.py'):
                                   "Not doing anything.")
         l.append(linkname)
 
+    path = os.path.abspath(pycorepath)
     for linkname in l:
-        os.symlink(os.path.abspath(pycorepath), linkname)
+        try:
+            os.symlink(path, linkname)
+        except OSError:
+            print("{0} already exists. Skipping.".format(path))
+        else:
+            print("Linked {0} to {1}".format(linkname, path))
 
 
 def getcommand(commandname):
