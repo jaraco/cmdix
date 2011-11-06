@@ -44,6 +44,7 @@ def compressor(p, comptype='gzip', decompress=False):
             help="Use compression level 8")
     p.add_argument("-9", "--best", action="store_const", dest="compresslevel",
             const=9, help="Use the best type of compression")
+    return p
 
 
 def compressorfunc(args):

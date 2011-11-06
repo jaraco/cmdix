@@ -8,4 +8,4 @@ from pycoreutils.compressor import compressor
 
 
 def bzip2(p):
-    compressor(p, 'bzip2')
+    return compressor(p, 'bzip2')

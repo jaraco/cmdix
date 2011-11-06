@@ -8,4 +8,4 @@ from pycoreutils.compressor import compressor
 
 
 def gzip(p):
-    compressor(p, 'gzip')
+    return compressor(p, 'gzip')

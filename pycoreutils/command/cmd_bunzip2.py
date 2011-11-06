@@ -8,4 +8,4 @@ from pycoreutils.compressor import compressor
 
 
 def bunzip2(p):
-    compressor(p, 'bzip2', True)
+    return compressor(p, 'bzip2', True)
