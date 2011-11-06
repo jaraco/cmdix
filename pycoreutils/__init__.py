@@ -24,7 +24,7 @@ except ImportError:
     print("Argparse is included in Python 2.7 and 3.2, or available from PyPi")
     sys.exit(1)
 
-import command
+from . import command
 
 __version__ = '0.1.0a'
 __license__ = '''Copyright (c) 2009, 2010, 2011 Hans van Leeuwen
@@ -320,7 +320,7 @@ def run(argv=sys.argv):
 
         elif args.runtests:
             try:
-                from pycoreutils import test
+                from . import test
             except ImportError:
                 print("Can't import pycoreutils.test. Please make sure to " +\
                     "include it in your PYTHONPATH", file=sys.stderr)
