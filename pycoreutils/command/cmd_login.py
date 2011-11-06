@@ -60,10 +60,11 @@ def func(args):
 
                     # Start user shell
                     if pw.pw_shell == 'sh':
-                        subprocess.call([pw.pw_shell])
-                    else:
                         p = Process(target=pycoreutils.run, args=[['sh']])
                         p.start()
+                    else:
+                        subprocess.call([pw.pw_shell])
+
                 else:
                     print("Invalid username or password\n")
         except BaseException:
