@@ -4,14 +4,14 @@ PYCOREUTILS_SITE_METHOD = bzr
 PYCOREUTILS_DEPENDENCIES = python
 
 define PYCOREUTILS_BUILD_CMDS
-	(cd $(@D) && $(HOST_DIR)/usr/bin/python setup.py build)
+	(cd $(@D) && $(HOST_DIR)/usr/bin/python setup.py build -e /usr/bin/python)
 endef
 
 define PYCOREUTILS_INSTALL_TARGET_CMDS
 	(cd $(@D) && $(HOST_DIR)/usr/bin/python setup.py install --prefix=$(TARGET_DIR)/usr)
-	(cd $(TARGET_DIR) && ln -fs usr/bin/coreutils.py init)
-	(cd $(TARGET_DIR)/sbin && ln -fs ../usr/bin/coreutils.py init)
-        sed -i "s/#\!.*python/#\!\/usr\/bin\/python/g" $(TARGET_DIR)/usr/bin/coreutils.py 
+	(cd $(TARGET_DIR) && ln -fs usr/bin/pycoreutils init)
+	(cd $(TARGET_DIR)/sbin && ln -fs ../usr/bin/pycoreutils init)
+        $(HOST_DIR)/usr/bin/python $(TARGET_DIR)/usr/bin/pycoreutils --createlinks $(TARGET_DIR)/usr/bin
 endef
 
 $(eval $(call GENTARGETS,package,pycoreutils))
