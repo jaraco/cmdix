@@ -8,21 +8,12 @@ from __future__ import print_function, unicode_literals
 
 def yes(p):
     p.set_defaults(func=func)
-    p.usage = '%(prog)s [STRING]...\nor:    %(prog)s OPTION'
-    p.add_argument('string', nargs='*')
-    p.description = "Repeatedly output a line with all specified " + \
-                    "STRING(s), or `y'."
+    p.add_argument('string', nargs='*', default=['y'])
+    p.description = "Repeatedly output STRING"
     return p
 
 
 def func(args):
-    x = ''
-    for arg in args.string:
-        x += arg + ' '
-    x = x.strip()
-
-    if x == '':
-        x = 'y'
-
+    output = ' '.join(args.string)
     while 1:
-        print(x)
+        print(output)
