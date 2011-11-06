@@ -38,8 +38,8 @@ def func(args):
             for path in pathlist:
                 os.mkdir(path, int(args.mode))
                 if args.verbose:
-                    print("mkdir: created directory `{0}'".format(path))
+                    print("mkdir: created directory '{0}'".format(path))
         else:
             os.mkdir(arg, int(args.mode))
             if args.verbose:
-                print("mkdir: created directory `{0}'".format(arg))
+                print("mkdir: created directory '{0}'".format(arg))

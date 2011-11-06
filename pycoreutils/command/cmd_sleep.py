@@ -11,12 +11,13 @@ import sys
 
 def sleep(p):
     p.set_defaults(func=func)
-    p.description = "Pause for NUMBER seconds. SUFFIX may be `s' for " + \
-                    "seconds (the default), `m' for minutes, `h' for " + \
-                    "hours or `d' for days. Unlike most implementations " + \
-                    "that require NUMBER be an integer, here NUMBER may " + \
-                    "be an arbitrary floating point number. Given two or " + \
-                    "more arguments, pause for the amount of time"
+    p.description = "delay for a specified amount of time"
+    p.epilog = "Pause for NUMBER seconds. SUFFIX may be 's' for " + \
+               "seconds (the default), 'm' for minutes, 'h' for " + \
+               "hours or 'd' for days. Unlike most implementations " + \
+               "that require NUMBER be an integer, here NUMBER may " + \
+               "be an arbitrary floating point number. Given two or " + \
+               "more arguments, pause for the amount of time"
     p.add_argument('number', nargs='+')
     return p
 
@@ -37,7 +38,7 @@ def func(args):
                 a.append(float(arg))
     except ValueError:
         pycoreutils.StdErrException("sleep: invalid time interval " +\
-        "`{0}'. Try sleep --help' for more information.".format(arg))
+        "'{0}'. Try sleep --help' for more information.".format(arg))
         sys.exit(1)
 
     time.sleep(sum(a))

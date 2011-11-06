@@ -15,13 +15,13 @@ def logger(p):
                     "module"
     p.add_argument("message", nargs='?')
     p.add_argument("--host", dest="host",
-            help="Address of the syslog daemon. The default is `localhost'")
+            help="Address of the syslog daemon. The default is 'localhost'")
     p.add_argument("-p", dest="priority",
             help="Enter the message with the specified priority. The " +\
-                 "priority may as a ``facility.level'' pair. For example, " +\
-                 "``-p local3.info'' logs the message(s) as informational " +\
+                 "priority may as a ''facility.level'' pair. For example, " +\
+                 "''-p local3.info'' logs the message(s) as informational " +\
                  "level in the local3 facility. " +\
-                 "The default is ``user.notice.''")
+                 "The default is ''user.notice.''")
     p.add_argument("--port", dest="port",
             help="Port of the syslog daemon. The default is 514'.'")
     p.add_argument("-s", action="store_true", dest="stderr",

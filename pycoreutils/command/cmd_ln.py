@@ -38,9 +38,9 @@ def func(args):
 
     for src in args:
         if args.verbose:
-            print("`{0}' -> `{1}'".format(src, dst))
+            print("'{0}' -> '{1}'".format(src, dst))
         try:
             f(src, dst)
         except Exception as err:
-            print("ln: creating {0} link `{1}' => `{2}': {3}\n".format(
+            print("ln: creating {0} link '{1}' => '{2}': {3}\n".format(
                    linktype, dst, src, err.strerror))

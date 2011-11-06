@@ -14,7 +14,7 @@ def rmdir(p):
     p.add_argument('directory', nargs='+')
     p.add_argument("-p", "--parent", action="store_true", dest="parent",
             help="remove DIRECTORY and its ancestors; e.g., " +
-                 "`rmdir -p a/b/c' is similar to `rmdir a/b/c a/b a'")
+                 "'rmdir -p a/b/c' is similar to 'rmdir a/b/c a/b a'")
     return p
 
 

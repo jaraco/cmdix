@@ -53,7 +53,7 @@ def func(args):
                     if not os.path.exists(dstbase):
                         os.mkdir(dstdir)
                     if args.verbose:
-                        print("`{0}' -> `{1}'".format(root, dstdir))
+                        print("'{0}' -> '{1}'".format(root, dstdir))
 
                 # Copy file
                 for filename in filenames:
@@ -67,11 +67,11 @@ def func(args):
                             continue
                     _copy(srcfile, dstfile)
                     if args.verbose:
-                        print("`{0}' -> `{1}'".format(srcfile, dstfile))
+                        print("'{0}' -> '{1}'".format(srcfile, dstfile))
         else:
             dstfile = dstbase
             if os.path.isdir(dstbase):
                 dstfile = os.path.join(dstbase, src)
             _copy(src, dstfile)
             if args.verbose:
-                print("`{0}' -> `{1}'".format(src, dstfile))
+                print("'{0}' -> '{1}'".format(src, dstfile))
