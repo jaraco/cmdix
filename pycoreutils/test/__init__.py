@@ -1,9 +1,11 @@
-#!/usr/bin/env python
+
 # -*- coding: utf-8 -*-
 
 # Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
 # See LICENSE.txt for details.
 
+from __future__ import print_function, unicode_literals
+import doctest
 import filecmp
 import os
 import os.path
@@ -119,13 +121,15 @@ class BaseTestCase(unittest.TestCase):
 
 def getalltests():
     '''
-    Returns a testsuite containing all tests in test_*.py
+    Return a testsuite containing all tests in unittests and doctests
     '''
-    testcaselist = []
-    for filename in os.listdir(os.path.abspath(os.path.dirname(__file__))):
-        if filename.startswith('test_') and filename.endswith('.py'):
-            testcaselist.append("pycoreutils.test." + filename.rstrip('.py'))
-    return unittest.TestLoader().loadTestsFromNames(testcaselist)
+    # Create testsuite containing all tests in pycoreutils.test
+    testsuite = unittest.TestLoader().discover('pycoreutils.test')
+
+    # Add pycoreutils doctests to testsuite
+    testsuite.addTests(doctest.DocTestSuite(pycoreutils))
+
+    return testsuite
 
 
 def runalltests(verbosity=2):
@@ -133,7 +137,3 @@ def runalltests(verbosity=2):
     Run all test found by getalltests()
     '''
     unittest.TextTestRunner(verbosity=verbosity).run(getalltests())
-
-
-if __name__ == '__main__':
-    runalltests()
