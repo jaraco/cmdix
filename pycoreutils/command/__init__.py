@@ -56,6 +56,7 @@ __all__ = [
     'cmd_uname',
     'cmd_uptime',
     'cmd_uuidgen',
+    'cmd_watch',
     'cmd_wc',
     'cmd_wget',
     'cmd_whoami',
