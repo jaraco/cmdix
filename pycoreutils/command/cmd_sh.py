@@ -102,6 +102,19 @@ class Sh(cmd.Cmd):
             for l in stop:
                 print(l, end='')
 
+    def onecmd(self, line):
+        try:
+            cmd.Cmd.onecmd(self, line)
+        except SystemExit, exitstatus:
+            try:
+                self.exitstatus = int(exitstatus)
+            except ValueError:
+                self.exitstatus = 1
+            except TypeError:
+                self.exitstatus = 0
+            else:
+                self.exitstatus = 0
+
     def preloop(self):
         self.updateprompt()
 
