@@ -111,7 +111,7 @@ class Sh(cmd.Cmd):
     def onecmd(self, line):
         try:
             cmd.Cmd.onecmd(self, line)
-        except SystemExit, exitstatus:
+        except SystemExit as exitstatus:
             try:
                 self.exitstatus = int(exitstatus)
             except ValueError:
