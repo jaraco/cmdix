@@ -12,6 +12,15 @@ command-prompt.
 '''
 
 from __future__ import print_function, unicode_literals
+import sys
+
+if sys.version_info[0] < 2 \
+or sys.version_info[0] == 2 and sys.version_info[1] < 7 \
+or sys.version_info[0] == 3 and sys.version_info[1] < 2:
+    print("Minimal required python version is 2.7 or 3.2", file=sys.stderr)
+    sys.exit(1)
+
+import argparse
 import base64
 import fileinput
 import glob
@@ -22,18 +31,9 @@ import shlex
 import shutil
 import signal
 import stat
-import sys
-
-try:
-    import argparse
-except ImportError:
-    print("Failed to import argparse.")
-    print("Argparse is included in Python starting 2.7 and 3.2, or " +\
-          "available from PyPi")
-    sys.exit(1)
 
 import pycoreutils.command
-from pycoreutils.exception import CommandNotFoundException, StdErrException    
+from pycoreutils.exception import CommandNotFoundException, StdErrException
 
 
 __version__ = '0.1.0a'
