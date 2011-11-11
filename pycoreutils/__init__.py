@@ -329,8 +329,8 @@ def run(argv=None):
             return
 
         elif args.allhelp:
-            for line in format_all_help():
-                print(line)
+            for commandname, commandhelp in format_all_help():
+                print("\n" + commandname + "\n\n" + commandhelp)
             return
 
         elif args.runtests:
