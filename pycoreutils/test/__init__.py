@@ -29,13 +29,14 @@ class BaseTestCase(unittest.TestCase):
 
     def createfile(self, filename, content=None, size=64 * 1024, fill='0'):
         '''
-        Create a temporary file of 'size' filled with 'fill'
+        Create a temporary file containing `content`. If `content` is not
+        defined, fill file with `size` times `fill`.
         '''
         with open(os.path.join(self.workdir, filename), 'w') as fd:
             if content:
                 fd.write(content)
             else:
-                fd.write(size / len(fill) * fill)
+                fd.write(size * fill)
 
     def runcommandline(self, commandline, stdin=None):
         '''
