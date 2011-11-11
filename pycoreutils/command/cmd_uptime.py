@@ -9,7 +9,13 @@ import datetime
 
 
 @pycoreutils.onlyunix
-def uptime(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     # TODO: List number of users
     p.set_defaults(func=func)
     p.description = "Tell how long the system has been running"

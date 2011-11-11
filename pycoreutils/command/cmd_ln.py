@@ -10,7 +10,13 @@ import os.path
 
 
 @pycoreutils.onlyunix
-def ln(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     p.set_defaults(func=func)
     p.description = "Create symbolic or hard links"
     p.add_argument("TARGET", nargs=1)

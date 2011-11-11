@@ -8,7 +8,13 @@ import pycoreutils
 import time
 
 
-def tail(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     # TODO: Everything!!!!!!!!
     p.set_defaults(func=func)
     p.description = "Print the last 10 lines of each FILE to standard " + \

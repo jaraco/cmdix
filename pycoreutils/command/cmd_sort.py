@@ -7,7 +7,13 @@ from __future__ import print_function, unicode_literals
 import pycoreutils
 
 
-def sort(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     # TODO: GNU's sort doesn't count '/'.
     # Sorting /etc/fstab has different outcomes.
     p.set_defaults(func=func)

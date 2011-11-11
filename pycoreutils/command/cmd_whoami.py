@@ -14,7 +14,13 @@ except ImportError as err:
 
 
 @pycoreutils.onlyunix
-def whoami(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     p.set_defaults(func=func)
     p.description = "Print the user name associated with the current" + \
                     "effective user ID.\nSame as id -un."

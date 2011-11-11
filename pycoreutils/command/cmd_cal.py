@@ -9,7 +9,13 @@ import calendar
 import time
 
 
-def cal(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     p.set_defaults(func=func, firstweekday=6)
     p.description = "Displays a calendar"
     p.usage = '%(prog)s [OPTION]... [[MONTH] YEAR]\n' +\

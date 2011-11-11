@@ -13,7 +13,13 @@ import sys
 import time
 
 
-def crond(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     # TODO: Environment variables, different users and daemonize
     p.set_defaults(func=func)
     p.description = "Very simple cron daemon"

@@ -202,7 +202,13 @@ def list_directory(urlpath, filepath):
     return str(res)
 
 
-def httpd(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     p.set_defaults(func=func)
     p.description = "Start a web server that serves the current directory"
     p.epilog = "To enable https, you must supply a certificate file using " +\

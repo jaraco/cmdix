@@ -10,7 +10,13 @@ import smtplib
 import socket
 
 
-def sendmail(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     p.set_defaults(func=func)
     p.description = "A simple sendmail implementation"
     p.add_argument('recipient', nargs='*')

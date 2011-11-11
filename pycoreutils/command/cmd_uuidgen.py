@@ -8,7 +8,13 @@ import pycoreutils
 import uuid
 
 
-def uuidgen(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     p.set_defaults(func=func)
     p.description = "print a universally unique identifier (UUID)"
     p.add_argument("-r", "--random", action="store_const", dest="uuidtype",

@@ -14,7 +14,13 @@ import subprocess
 import sys
 
 
-def sh(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     p.set_defaults(func=func)
     p.description = "Start a shell"
     p.add_argument("--nocoreutils", action="store_true",

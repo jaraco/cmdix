@@ -14,7 +14,13 @@ except ImportError:
 
 
 @pycoreutils.onlyunix
-def chown(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     # TODO: Support for groups and --reference
     p.set_defaults(func=func)
     p.description = "Change the owner and/or group of each FILE to OWNER " + \

@@ -7,7 +7,13 @@ from __future__ import print_function, unicode_literals
 import os.path
 
 
-def dirname(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     p.set_defaults(func=func)
     p.description = "Print NAME with its trailing /component removed; if " + \
                     "NAME contains no /'s, output '.' (meaning the current" + \

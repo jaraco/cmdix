@@ -7,5 +7,11 @@ from __future__ import print_function, unicode_literals
 import pycoreutils
 
 
-def sha224sum(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     return pycoreutils.hasher('sha224', p)

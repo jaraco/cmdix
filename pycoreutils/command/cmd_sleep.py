@@ -9,7 +9,13 @@ import time
 import sys
 
 
-def sleep(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     p.set_defaults(func=func)
     p.description = "delay for a specified amount of time"
     p.epilog = "Pause for NUMBER seconds. SUFFIX may be 's' for " + \

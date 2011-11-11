@@ -10,7 +10,13 @@ import sys
 
 
 @pycoreutils.onlyunix
-def mount(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     available_filesystems = get_available_filesystems()
     available_filesystems.sort()
 

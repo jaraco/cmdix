@@ -108,25 +108,23 @@ def format_all_help():
     '''
     Yields (commandname, commandhelp) for all available commands.
     '''
-    for c in listcommands():
-        exec("from pycoreutils.command.cmd_{0} import {0} as cmd".format(c))
-        p = cmd(argparse.ArgumentParser(prog=c))
-        yield (c, p.format_help())
+    for commandname in listcommands():
+        cmd = getcommand(commandname)
+        p = cmd(argparse.ArgumentParser(prog=commandname))
+        yield (commandname, p.format_help())
 
 
 def getcommand(commandname):
     '''
-    Returns the function of the given commandname.
+    Returns the `parseargs`-function of the given commandname.
     Raises a CommandNotFoundException if the command is not found
     '''
-    a = [command for command in _cmds if command.__name__ == commandname]
-    l = len(a)
-    if l == 0:
+    # Try to import the command module
+    f = 'pycoreutils.command.cmd_{0}'.format(commandname)
+    try:
+        return __import__(f, fromlist=1).parseargs
+    except ImportError:
         raise CommandNotFoundException(commandname)
-    if l > 1:
-        raise "Command `{0}' has multiple functions ".format(commandname) +\
-              "associated with it! This should never happen!"
-    return a[0]
 
 
 def getcurrentusername():
@@ -307,9 +305,9 @@ def run(argv=None):
     :return:        The exit status of the command. None means 0.
     '''
     argv = argv or sys.argv
-    cmdname = os.path.basename(argv.pop(0))
+    commandname = os.path.basename(argv.pop(0))
     parser = argparse.ArgumentParser(version=__version__, add_help=False,
-                    description="Coreutils in Pure Python.", prog=cmdname,
+                    description="Coreutils in Pure Python.", prog=commandname,
                     epilog="Available Commands: " + ", ".join(listcommands()))
     group = parser.add_mutually_exclusive_group()
     group.add_argument("command", nargs="?")
@@ -323,7 +321,7 @@ def run(argv=None):
                 help="For every command, create a symlink to " +\
                      "/usr/bin/pycoreutils in 'directory'")
 
-    if cmdname == 'pycoreutils':
+    if commandname == 'pycoreutils':
         args, argv = parser.parse_known_args(argv)
 
         if args.license:
@@ -353,21 +351,15 @@ def run(argv=None):
             parser.print_help()
             return
 
-        cmdname = args.command
-
-    # Try to import the command module
-    ex = "from pycoreutils.command.cmd_{0} import {0} as cmd".format(cmdname)
-    try:
-        exec(ex)
-    except ImportError:
-        parser.print_help()
-        return
-    #except SyntaxError:
-        #parser.print_help()
-        #return
+        commandname = args.command
 
     # Run the subcommand
-    p = cmd(argparse.ArgumentParser(prog=cmdname))
+    try:
+        cmd = getcommand(commandname)
+    except CommandNotFoundException:
+        print("Command `{0}` not found.".format(commandname), file=sys.stderr)
+        return
+    p = cmd(argparse.ArgumentParser(prog=commandname))
     args = p.parse_args(argv)
     args.func(args)
 

@@ -12,7 +12,13 @@ import sys
 import time
 
 
-def diff(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     p.set_defaults(func=func)
     p.description = "Compare files line by line"
     p.add_argument('FILE1')

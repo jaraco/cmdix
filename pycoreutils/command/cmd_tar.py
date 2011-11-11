@@ -9,7 +9,13 @@ import sys
 import tarfile
 
 
-def tar(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     p.set_defaults(func=func)
     p.description = "saves many files together into a single tape or disk " +\
                    "archive, and can restore individual files from the archive"

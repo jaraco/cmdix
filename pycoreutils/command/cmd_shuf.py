@@ -9,7 +9,13 @@ import random
 import sys
 
 
-def shuf(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     p.set_defaults(func=func)
     p.description = "Write a random permutation of the input lines to " +\
                     "standard output."

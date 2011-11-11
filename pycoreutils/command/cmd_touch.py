@@ -8,7 +8,13 @@ import os.path
 import time
 
 
-def touch(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     # TODO: Implement --date, --time and -t
     p.set_defaults(func=func)
     p.description = "Update the access and modification times of each " + \

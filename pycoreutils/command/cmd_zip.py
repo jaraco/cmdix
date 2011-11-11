@@ -10,7 +10,13 @@ import sys
 import zipfile
 
 
-def zip(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     p.set_defaults(func=func)
     p.description = "package and compress (archive) files"
     p.usage = '%(prog)s -l [OPTION]... ZIPFILE...\n' + \

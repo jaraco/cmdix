@@ -10,7 +10,13 @@ import stat
 import time
 
 
-def ls(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     # TODO: Show user and group names in ls -l, correctly format dates in ls -l
     p.set_defaults(func=func)
     p.description = "List information about the FILEs (the current " + \

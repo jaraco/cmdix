@@ -6,7 +6,13 @@
 from __future__ import print_function, unicode_literals
 
 
-def seq(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     p.set_defaults(func=func)
     p.description = "Print numbers from FIRST to LAST, in steps of " +\
                     "INCREMENT."

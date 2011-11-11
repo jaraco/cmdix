@@ -15,7 +15,13 @@ else:
     from urllib.request import build_opener
 
 
-def wget(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     # TODO: Fix for Python3, recursion, proxy, progress bar, you name it...
     p.set_defaults(func=func)
     p.description = "Download of files from the Internet"

@@ -7,7 +7,13 @@ from __future__ import print_function, unicode_literals
 import os
 
 
-def mkdir(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     p.set_defaults(func=func)
     p.description = "Create the DIRECTORY(ies), if they do not already " + \
                     "exist."

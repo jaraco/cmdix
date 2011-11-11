@@ -8,7 +8,13 @@ import pycoreutils
 import os
 
 
-def env(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     # TODO: --unset
     p.set_defaults(func=func)
     p.description = "Set each NAME to VALUE in the environment and run " + \

@@ -7,7 +7,13 @@ from __future__ import print_function, unicode_literals
 import os.path
 
 
-def basename(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     p.set_defaults(func=func)
     p.description = "Print NAME with any leading directory components " + \
                     "removed. If specified, also remove a trailing SUFFIX."

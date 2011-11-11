@@ -15,7 +15,13 @@ except ImportError as err:
 
 
 @pycoreutils.onlyunix
-def id(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     # TODO: List all groups a user belongs to
     p.set_defaults(func=func)
     p.description = "Print user and group information for the specified " + \

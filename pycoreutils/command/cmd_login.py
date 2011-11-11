@@ -15,7 +15,13 @@ from multiprocessing import Process
 
 
 @pycoreutils.onlyunix
-def login(p):
+def parseargs(p):
+    '''
+    Add arguments and `func` to `p`.
+
+    :param p: ArgumentParser
+    :return:  ArgumentParser
+    '''
     p.set_defaults(func=func)
     p.description = "Begin session on the system"
     p.add_argument("username", nargs="?")
