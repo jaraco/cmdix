@@ -337,7 +337,7 @@ def run(argv=None):
                 help="For every command, create a symlink to " +\
                      "/usr/bin/pycoreutils in 'directory'")
 
-    if commandname == 'pycoreutils':
+    if commandname in ('pycoreutils', '__main__.py'):
         args, argv = parser.parse_known_args(argv)
 
         if args.license:

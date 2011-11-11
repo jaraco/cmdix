@@ -18,6 +18,26 @@ The source code and bugtracker can be found at
 https://launchpad.net/pycoreutils.
 
 
+Using PyCoreutils on the commandline
+------------------------------------
+
+There are three ways to invoke PyCoreutils on the commandline.
+
+The package comes with a script called `pycoreutils`. On Unix-like systems
+it is installed in `/usr/bin` by default::
+
+   $ /usr/bin/pycoreutils ls
+
+You can also create a symlink to `/usr/bin/pycoreutils`::
+
+   $ ln -s /usr/bin/pycoreutils ls
+   $ ./ls
+
+The module can also be run using directly from python::
+
+   $ python -m pycoreutils ls
+
+
 Download
 --------
 
