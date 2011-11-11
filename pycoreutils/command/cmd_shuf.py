@@ -4,6 +4,7 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
+from pycoreutils.exception import ExtraOperandException
 import pycoreutils
 import random
 import sys
@@ -55,7 +56,7 @@ def func(args):
             outfd.write(line + '\n')
 
     elif len(args) > 1:
-        raise pycoreutils.ExtraOperandException(prog, args[1])
+        raise ExtraOperandException(prog, args[1])
 
     elif args.inputrange:
         (lo, hi) = args.inputrange.split('-')

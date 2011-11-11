@@ -4,6 +4,7 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
+from pycoreutils.exception import StdErrException
 import pycoreutils
 import sys
 import tarfile
@@ -53,7 +54,7 @@ def func(args):
         try:
             tar = tarfile.open(fileobj=infile)
         except tarfile.TarError as err:
-            raise pycoreutils.StdErrException("Could not parse file " +\
+            raise StdErrException("Could not parse file " +\
                 "{0}. Are you sure it is a tar-archive?".format(infile.name))
 
     if args.extract:

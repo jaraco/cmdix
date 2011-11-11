@@ -4,6 +4,7 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
+from pycoreutils.exception import ExtraOperandException
 import pycoreutils
 import calendar
 import time
@@ -42,7 +43,7 @@ def func(args):
             print(calen.formatyear(now.tm_year), end='')
     else:
         if len(args.args) > 2:
-            raise pycoreutils.ExtraOperandException(prog, args.args[1])
+            raise ExtraOperandException(prog, args.args[1])
         elif len(args.args) == 2:
             print(calen.formatmonth(int(args.args[1]), int(args.args[0])),
                   end='')

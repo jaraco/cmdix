@@ -4,6 +4,7 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
+from pycoreutils.exception import StdErrException
 import pycoreutils
 import logging
 
@@ -59,7 +60,7 @@ def func(args):
         for f in facilitylist:
             err += f + ", "
 
-        raise pycoreutils.StdErrException(err)
+        raise StdErrException(err)
 
     msg = ' '.join(args.message)
     levelint = 90 - 10 * handler.priority_names.get(level, 0)
@@ -69,4 +70,4 @@ def func(args):
     logger.log(levelint, msg)
 
     if args.stderr:
-        raise pycoreutils.StdErrException(msg)
+        raise StdErrException(msg)

@@ -4,6 +4,7 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
+from pycoreutils import exception
 import pycoreutils
 import os
 import signal
@@ -43,7 +44,7 @@ def func(args):
                 const=sigint, help="send signal {0}".format(sigint))
 
     if len(args) == 0:
-        raise pycoreutils.MissingOperandException(prog)
+        raise MissingOperandException(prog)
 
     try:
         sig = int(args.signal)
@@ -57,14 +58,14 @@ def func(args):
     elif sig.lstrip('SIG') in signals:
         sigint = signals[sig.lstrip('SIG')]
     else:
-        raise pycoreutils.StdErrException("kill: {0}: ".format(sig) +\
+        raise StdErrException("kill: {0}: ".format(sig) +\
                               "invalid signal specification")
 
     for pid in args.pid:
         try:
             pid = int(pid)
         except ValueError:
-            raise pycoreutils.StdErrException("kill: {0}: ".format(pid) +\
+            raise StdErrException("kill: {0}: ".format(pid) +\
                                   "arguments must be process or job IDs")
 
         os.kill(pid, sigint)

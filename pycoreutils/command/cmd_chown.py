@@ -4,6 +4,7 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
+from pycoreutils import StdErrException
 import pycoreutils
 import os
 
@@ -36,8 +37,7 @@ def func(args):
         try:
             user = pwd.getpwnam(args.owner)
         except KeyError:
-            raise pycoreutils.StdErrException(
-                                  "{0}: invalid user: '{1}'".format(prog, uid))
+            raise StdErrException("{0}: invalid user: '{1}'".format(prog, uid))
         uid = user.pw_uid
 
     for arg in args.FILE:
