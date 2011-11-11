@@ -349,12 +349,11 @@ def run(argv=None):
 
         elif args.runtests:
             try:
-                from . import test
+                import pycoreutils.test
             except ImportError:
-                print("Can't import pycoreutils.test. Please make sure to " +\
-                    "include it in your PYTHONPATH", file=sys.stderr)
+                print("Can't import pycoreutils.test", file=sys.stderr)
                 sys.exit(1)
-            test.runalltests()
+            pycoreutils.test.runalltests()
             return
 
         elif args.directory:
