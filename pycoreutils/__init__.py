@@ -4,6 +4,13 @@
 # Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
 # See LICENSE.txt for details.
 
+'''
+PyCoreutils is a pure Python implementation of various standard
+UNIX commands, like `ls`, `cp` and `sleep`. It also contains a shell-like
+environment which will make Unix-users feel right at home on the Windows
+command-prompt.
+'''
+
 from __future__ import print_function, unicode_literals
 import base64
 import fileinput
@@ -21,10 +28,11 @@ try:
     import argparse
 except ImportError:
     print("Failed to import argparse.")
-    print("Argparse is included in Python 2.7 and 3.2, or available from PyPi")
+    print("Argparse is included in Python starting 2.7 and 3.2, or " +\
+          "available from PyPi")
     sys.exit(1)
 
-from . import command
+import pycoreutils.command
 
 __version__ = '0.1.0a'
 __license__ = '''Copyright (c) 2009, 2010, 2011 Hans van Leeuwen
@@ -48,19 +56,6 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 '''
 
-_cmds = []  # Commands will be added to this list
-
-
-### DECORATORS ##############################################################
-
-
-def addcommand(f):
-    '''
-    Register a command with pycoreutils
-    '''
-    _cmds.append(f)
-    return f
-
 
 def onlyunix(f):
     '''
@@ -68,9 +63,6 @@ def onlyunix(f):
     '''
     f._onlyunix = True
     return f
-
-
-### HELPER FUNCTIONS ########################################################
 
 
 def args2fds(args):
@@ -110,6 +102,16 @@ def createlinks(directory, pycorepath='/usr/bin/pycoreutils'):
             print("{0} already exists. Skipping.".format(path))
         else:
             print("Linked {0} to {1}".format(linkname, path))
+
+
+def format_all_help():
+    '''
+    Yields (commandname, commandhelp) for all available commands.
+    '''
+    for c in listcommands():
+        exec("from pycoreutils.command.cmd_{0} import {0} as cmd".format(c))
+        p = cmd(argparse.ArgumentParser(prog=c))
+        yield (c, p.format_help())
 
 
 def getcommand(commandname):
@@ -184,7 +186,7 @@ def listcommands():
     '''
     Returns a list of all available commands
     '''
-    for cmd in command.__all__:
+    for cmd in pycoreutils.command.__all__:
         if cmd.startswith('cmd_'):
             yield cmd[4:]
 
@@ -290,32 +292,47 @@ def parsefilelist(filelist=['-'], decompress=False):
             yield (line, filename)
 
 
-def run(argv=sys.argv):
+def run(argv=None):
     '''
     Parse commandline arguments and run command.
-    This is where the magic happens :-)
+    If argv is None, read from sys.argv.
+
+    For example:
+
+    >>> import pycoreutils
+    >>> pycoreutils.run(['seq', '-s', ' to the ', '1', '4'])
+    1 to the 2 to the 3 to the 4
 
     :param argv:    List of arguments
     :return:        The exit status of the command. None means 0.
     '''
+    argv = argv or sys.argv
     cmdname = os.path.basename(argv.pop(0))
     parser = argparse.ArgumentParser(version=__version__, add_help=False,
                     description="Coreutils in Pure Python.", prog=cmdname,
                     epilog="Available Commands: " + ", ".join(listcommands()))
     group = parser.add_mutually_exclusive_group()
     group.add_argument("command", nargs="?")
+    group.add_argument("--allhelp", action="store_true",
+                help="Show the help pages off all commands")
     group.add_argument("--license", action="store_true",
-                help="show program's license and exit")
+                help="Show program's license and exit")
     group.add_argument("--runtests", action="store_true",
                 help="Run all sort of tests")
     group.add_argument("--createlinks", dest="directory",
-                help="Create a symlink to pycoreutils for every command")
+                help="For every command, create a symlink to " +\
+                     "/usr/bin/pycoreutils in 'directory'")
 
     if cmdname == 'pycoreutils':
         args, argv = parser.parse_known_args(argv)
 
         if args.license:
             print(__license__)
+            return
+
+        elif args.allhelp:
+            for line in format_all_help():
+                print(line)
             return
 
         elif args.runtests:
@@ -345,9 +362,9 @@ def run(argv=sys.argv):
     except ImportError:
         parser.print_help()
         return
-    except SyntaxError:
-        parser.print_help()
-        return
+    #except SyntaxError:
+        #parser.print_help()
+        #return
 
     # Run the subcommand
     p = cmd(argparse.ArgumentParser(prog=cmdname))
@@ -357,7 +374,22 @@ def run(argv=sys.argv):
 
 def runcommandline(commandline):
     '''
-    Process a commandline
+    Process a commandline.
+    This is main entry-point to PyCoreutils.
+
+    Examples:
+
+    >>> import pycoreutils
+    >>> pycoreutils.runcommandline('basename /foo/bar/')
+    bar
+    >>> pycoreutils.runcommandline('cal 2 2000')
+       February 2000
+    Su Mo Tu We Th Fr Sa
+           1  2  3  4  5
+     6  7  8  9 10 11 12
+    13 14 15 16 17 18 19
+    20 21 22 23 24 25 26
+    27 28 29
 
     :param commandline: String representing the commandline, i.e. "ls -l /tmp"
     '''
