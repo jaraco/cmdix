@@ -1,7 +1,6 @@
 
-PyCoreutils Documentation
-#########################
-
+Contents
+********
 
 .. toctree::
    :maxdepth: 1
@@ -11,8 +10,4 @@ PyCoreutils Documentation
    api
    commands
 
-
 .. automodule:: pycoreutils
-
-
-This is a list of :doc:`included commands <commands>`.
