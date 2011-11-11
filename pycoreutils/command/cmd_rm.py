@@ -15,6 +15,7 @@ def parseargs(p):
     :param p: ArgumentParser
     :return:  ArgumentParser
     '''
+    p.set_defaults(func=func)
     p.description = "print name of current/working directory"
     p.add_argument('FILE', nargs='+')
     p.add_argument("-f", "--force", action="store_true", dest="force",
