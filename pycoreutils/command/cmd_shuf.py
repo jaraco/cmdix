@@ -4,7 +4,6 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-from pycoreutils.exception import ExtraOperandException
 import pycoreutils
 import random
 import sys
@@ -55,9 +54,6 @@ def func(args):
         for line in lines:
             outfd.write(line + '\n')
 
-    elif len(args) > 1:
-        raise ExtraOperandException(prog, args[1])
-
     elif args.inputrange:
         (lo, hi) = args.inputrange.split('-')
         lines = list(range(int(lo), int(hi) + 1))
@@ -70,10 +66,10 @@ def func(args):
 
     else:
         # Use stdin for input if no file is specified
-        if len(args) == 0:
+        if not args.file:
             fd = sys.stdin
         else:
-            fd = open(args[0])
+            fd = open(args.file)
 
         lines = fd.readlines()
         random.shuffle(lines)
