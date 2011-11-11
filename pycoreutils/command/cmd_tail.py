@@ -32,8 +32,8 @@ def parseargs(p):
 
 
 def func(args):
+    fds = pycoreutils.filelist2fds(args.FILE)
     if args.follow:
-        fds = pycoreutils.args2fds(args.FILE)
         while True:
             time.sleep(args.interval)
             for fd in fds:
@@ -44,7 +44,7 @@ def func(args):
                 else:
                     print(line, end='')
     else:
-        for fd in pycoreutils.args2fds(args.FILE):
+        for fd in fds:
             pos, lines = args.lines + 1, []
             while len(lines) <= args.lines:
                 try:

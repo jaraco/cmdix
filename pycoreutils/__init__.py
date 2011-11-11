@@ -65,20 +65,6 @@ def onlyunix(f):
     return f
 
 
-def args2fds(args):
-    '''
-
-    '''
-    fdlist = []
-    for arg in args:
-        for filename in glob.iglob(arg):
-            if filename:
-                yield open(filename)
-            else:
-                print("{0}: cannot access {1}:".format(sys.argv[0], arg) +\
-                      "No such file or directory")
-
-
 def createlinks(directory, pycorepath='/usr/bin/pycoreutils'):
     '''
     Create a symlink to pycoreutils for every available command
@@ -102,6 +88,34 @@ def createlinks(directory, pycorepath='/usr/bin/pycoreutils'):
             print("{0} already exists. Skipping.".format(path))
         else:
             print("Linked {0} to {1}".format(linkname, path))
+
+
+def filelist2fds(filelist):
+    '''
+    Take a list of files and yield the file descriptor.
+    Yield sys.stdin if the filename is `-`, or the filelist is empty.
+    Unix-style patterns will be parsed.
+
+    So for example:::
+
+       filelist2fds(["README.txt", "*.py", "-"])
+
+    could yield:::
+
+       <_io.TextIOWrapper name='README.txt' mode='r' encoding='UTF-8'>
+       <_io.TextIOWrapper name='setup.py' mode='r' encoding='UTF-8'>
+       <_io.TextIOWrapper name='<stdin>' mode='r' encoding='UTF-8'>
+    '''
+    filelist = filelist or ['-']
+    for f in filelist:
+        if f == '-':
+            yield sys.stdin
+        for filename in glob.iglob(f):
+            if filename:
+                yield open(filename)
+            else:
+                print("{0}: cannot access {1}:".format(sys.argv[0], arg) +\
+                      "No such file or directory")
 
 
 def format_all_help():
