@@ -30,7 +30,7 @@ def parseargs(p):
 
 def func(args):
     s = ''
-    for line, filename in pycoreutils.parsefilelist(args.FILE):
+    for line, filename in pycoreutils.lib.parsefilelist(args.FILE):
         s += line
 
     if args.decode:

@@ -4,7 +4,7 @@
 # See LICENSE.txt for details.
 
 import hashlib
-import pycoreutils
+import pycoreutils.lib
 
 
 def hasher(algorithm, p):
@@ -13,7 +13,7 @@ def hasher(algorithm, p):
     :param p: ArgumentParser
     '''
     def myhash(args):
-        for fd in pycoreutils.filelist2fds(args.FILE):
+        for fd in pycoreutils.lib.filelist2fds(args.FILE):
             h = hashlib.new(algorithm)
             with fd as f:
                 h.update(f.read())

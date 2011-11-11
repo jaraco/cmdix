@@ -4,7 +4,7 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
+import pycoreutils.lib
 import time
 
 
@@ -32,7 +32,7 @@ def parseargs(p):
 
 
 def func(args):
-    fds = pycoreutils.filelist2fds(args.FILE)
+    fds = pycoreutils.lib.filelist2fds(args.FILE)
     if args.follow:
         while True:
             time.sleep(args.interval)

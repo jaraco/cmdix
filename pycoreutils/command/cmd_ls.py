@@ -5,6 +5,7 @@
 
 from __future__ import print_function, unicode_literals
 import pycoreutils
+import pycoreutils.lib
 import os
 import stat
 import time
@@ -45,7 +46,7 @@ def func(args):
                 print(f)
             else:
                 st = os.lstat(path)
-                mode = pycoreutils.mode2string(st.st_mode)
+                mode = pycoreutils.lib.mode2string(st.st_mode)
                 nlink = st.st_nlink
                 uid = st.st_uid
                 gid = st.st_gid

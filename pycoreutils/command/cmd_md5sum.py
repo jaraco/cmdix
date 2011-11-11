@@ -14,4 +14,4 @@ def parseargs(p):
     :param p: ArgumentParser
     :return:  ArgumentParser
     '''
-    return hasher('md5sum', p)
+    return hasher('md5', p)

@@ -4,13 +4,15 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
 import collections
 import logging
 import sched
 import subprocess
 import sys
 import time
+
+import pycoreutils
+import pycoreutils.lib
 
 
 def parseargs(p):
@@ -54,7 +56,7 @@ def func(args):
     logger.addHandler(handler)
 
     # Read crontab and load jobs
-    for line, filename in pycoreutils.parsefilelist(args.FILE):
+    for line, filename in pycoreutils.lib.parsefilelist(args.FILE):
         # Strip comments and split the string
         split = line.strip().partition('#')[0].split(None, 6)
         if len(split) == 7:

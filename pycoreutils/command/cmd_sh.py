@@ -30,7 +30,7 @@ def parseargs(p):
 
 def func(args):
     sh = Sh(nocoreutils=args.nocoreutils)
-    return sh.cmdloop(pycoreutils.showbanner(width=80))
+    return sh.cmdloop(pycoreutils.lib.showbanner(width=80))
 
 
 class Sh(cmd.Cmd):
@@ -134,4 +134,4 @@ class Sh(cmd.Cmd):
         - username
         '''
         self.prompt = self.prompttemplate.format(currentpath=os.getcwd(),
-           hostname=platform.node(), username=pycoreutils.getcurrentusername())
+           hostname=platform.node(), username=pycoreutils.lib.getcurrentusername())

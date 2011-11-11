@@ -9,6 +9,7 @@ from __future__ import unicode_literals
 import unittest
 
 import pycoreutils
+import pycoreutils.lib
 from pycoreutils.test import BaseTestCase
 
 
@@ -17,22 +18,22 @@ class TestCase(BaseTestCase):
         self.createfile('foo', size=999, fill='X')
         self.createfile('bar', size=100, fill='\n')
         l = ''
-        for line, filename in pycoreutils.parsefilelist(['foo']):
+        for line, filename in pycoreutils.lib.parsefilelist(['foo']):
             self.assertEqual(filename, 'foo')
             l += line
-        for line, filename in pycoreutils.parsefilelist(['bar']):
+        for line, filename in pycoreutils.lib.parsefilelist(['bar']):
             self.assertEqual(filename, 'bar')
             l += line
         self.assertEqual(l, 'X' * 999 + '\n' * 100)
 
     def test_mode2string(self):
-        self.assertEqual(pycoreutils.mode2string(33261), '-rwxr-xr-x')
+        self.assertEqual(pycoreutils.lib.mode2string(33261), '-rwxr-xr-x')
 
     def test_runcommandline(self):
         self.assertEqual(self.runcommandline('basename foo')[0], 'foo\n')
 
     def test_showbanner(self):
-        self.assertEqual(pycoreutils.showbanner(width=70),
+        self.assertEqual(pycoreutils.lib.showbanner(width=70),
 "  ____  _  _  ___  _____  ____  ____  __  __  ____  ____  __    ___   \n" +\
 " (  _ \( \/ )/ __)(  _  )(  _ \( ___)(  )(  )(_  _)(_  _)(  )  / __)  \n" +\
 "  )___/ \  /( (__  )(_)(  )   / )__)  )(__)(   )(   _)(_  )(__ \__ \  \n" +\
