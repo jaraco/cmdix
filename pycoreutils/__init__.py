@@ -24,7 +24,6 @@ import argparse
 import base64
 import fileinput
 import glob
-import hashlib
 import os
 import platform
 import shlex
@@ -177,23 +176,6 @@ def getuserhome():
         return os.environ['HOME']      # Unix
     if 'HOMEPATH' in os.environ:
         return os.environ['HOMEPATH']  # Windows
-
-
-def hasher(algorithm, p):
-    def myhash(args):
-        for fd in args.files:
-            h = hashlib.new(algorithm)
-            with fd as f:
-                h.update(f.read())
-            print(h.hexdigest() + '  ' + fd.name)
-
-    p.set_defaults(func=myhash)
-    p.description = "Print or check {0} ".format(algorithm.upper()) +\
-                    "checksums. With no FILE, or when FILE is -, read " +\
-                    "standard input."
-    p.add_argument('files', nargs='*', type=argparse.FileType('r'),
-                   default='-')
-    return p
 
 
 def listcommands():

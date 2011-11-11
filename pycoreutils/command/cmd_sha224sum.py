@@ -4,7 +4,7 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
+from pycoreutils.hasher import hasher
 
 
 def parseargs(p):
@@ -14,4 +14,4 @@ def parseargs(p):
     :param p: ArgumentParser
     :return:  ArgumentParser
     '''
-    return pycoreutils.hasher('sha224', p)
+    return hasher('sha224', p)
