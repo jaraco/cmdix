@@ -3,6 +3,7 @@
 # Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
 # See LICENSE.txt for details.
 
+from pycoreutils.exception import StdOutException, StdErrException
 import bz2
 import gzip
 import os
@@ -14,11 +15,11 @@ def compressor(p, comptype='gzip', decompress=False):
     '''
     Handles compression and decompression as bzip2 and gzip
     '''
-    p.description = "Compress or uncompress FILEs (by default, compress " + \
-                    "FILES in-place)."
+    p.description = "Compress or uncompress FILE (by default, compress " + \
+                    "FILE in-place)."
     p.set_defaults(func=compressorfunc, comptype=comptype,
                    decompress=decompress)
-    p.add_argument('files', nargs='*')
+    p.add_argument('FILE', nargs='*')
     p.add_argument("-c", "--stdout", "--as-stdout", action="store_true",
             dest="stdout",
             help="write on standard output, keep original files unchanged")
@@ -51,29 +52,28 @@ def compressorfunc(args):
     if args.comptype == 'gzip':
         compresstype = gzip.GzipFile
         suffix = '.gz'
-    elif args.comptype == 'bzip' or comptype == 'bzip2':
+    elif args.comptype == 'bzip2':
         compresstype = bz2.BZ2File
         suffix = '.bz2'
 
-    infiles = args.files
+    infiles = args.FILE
 
     # Use stdin for input if no file is specified or file is '-'
-    if len(args.files) == 0 or args.files == ['-']:
+    if len(args.FILE) == 0 or args.FILE == ['-']:
         infiles = [sys.stdin]
 
     for infile in infiles:
-        print(infile)
         if args.decompress:
             # Decompress
             infile = compresstype(infile, 'rb',
                                   compresslevel=args.compresslevel)
-            if len(args.files) == 0 or args.stdout:
+            if len(args.FILE) == 0 or args.stdout:
                 outfile = sys.stdout
             else:
                 unzippath = infile.rstrip(suffix)
                 if os.path.exists(unzippath):
-                    q = input("{0}: {1} already ".format(p.prog, unzippath) + \
-                              "exists; do you wish to overwrite (y or n)? ")
+                    q = input("{0}: {1} ".format(args.prog, unzippath) + \
+                         "already exists; do you wish to overwrite (y or n)? ")
                     if q.upper() != 'Y':
                         StdOutException("not overwritten", 2)
 
@@ -82,12 +82,12 @@ def compressorfunc(args):
             # Compress
             zippath = infile + suffix
             infile = open(infile, 'rb')
-            if len(args) == 0 or args.stdout:
+            if len(args.FILE) == 0 or args.stdout:
                 outfile = sys.stdout
             else:
                 if os.path.exists(zippath):
-                    q = input("{0}: {1} already".format(p.prog, zippath) + \
-                              " exists; do you wish to overwrite (y or n)? ")
+                    q = input("{0}: {1} ".format(args.prog, zippath) + \
+                         "already exists; do you wish to overwrite (y or n)? ")
                     if q.upper() != 'Y':
                         StdErrException("not overwritten", 2)
 

@@ -38,6 +38,13 @@ class BaseTestCase(unittest.TestCase):
             else:
                 fd.write(size * fill)
 
+    def createrandomfile(self, filename, size):
+        '''
+        Create a temporary file containing random data
+        '''
+        with open(os.path.join(self.workdir, filename), 'w') as fd:
+            fd.write(os.urandom(size))
+
     def runcommandline(self, commandline, stdin=None):
         '''
         Run commandline as a subprocess.
