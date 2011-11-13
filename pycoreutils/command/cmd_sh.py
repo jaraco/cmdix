@@ -5,6 +5,7 @@
 
 from __future__ import print_function, unicode_literals
 import pycoreutils
+import pycoreutils.lib
 import cmd
 import os
 import platform
