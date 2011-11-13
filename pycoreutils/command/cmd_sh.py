@@ -7,6 +7,7 @@ from __future__ import print_function, unicode_literals
 import pycoreutils
 import pycoreutils.lib
 import cmd
+import glob
 import os
 import platform
 import pprint
@@ -24,14 +25,19 @@ def parseargs(p):
     '''
     p.set_defaults(func=func)
     p.description = "Start a shell"
+    p.add_argument("-c", "--command",
+            help="Read command from string")
     p.add_argument("--nocoreutils", action="store_true",
             help="Do not load pycoreutils")
     return p
 
 
 def func(args):
-    sh = Sh(nocoreutils=args.nocoreutils)
-    return sh.cmdloop(pycoreutils.lib.showbanner(width=80))
+    if args.command:
+        return pycoreutils.runcommandline(args.command)
+    else:
+        sh = Sh(nocoreutils=args.nocoreutils)
+        return sh.cmdloop(pycoreutils.lib.showbanner(width=80))
 
 
 class Sh(cmd.Cmd):
@@ -69,6 +75,17 @@ class Sh(cmd.Cmd):
                             pass
 
             print(err.strerror, file=sys.stderr)
+
+    def do_cd(self, path):
+        '''
+        Change directory
+        '''
+        if not path:
+            pth = pycoreutils.lib.getuserhome()
+        else:
+            p = glob.glob(path)
+            pth = os.path.expanduser(p)
+        os.chdir(pth)
 
     def do_exit(self, n=None):
         '''
