@@ -81,11 +81,10 @@ class Sh(cmd.Cmd):
         Change directory
         '''
         if not path:
-            pth = pycoreutils.lib.getuserhome()
+            p = pycoreutils.lib.getuserhome()
         else:
-            p = glob.glob(path)
-            pth = os.path.expanduser(p)
-        os.chdir(pth)
+            p = os.path.expanduser(path)
+        os.chdir(p)
 
     def do_exit(self, n=None):
         '''
