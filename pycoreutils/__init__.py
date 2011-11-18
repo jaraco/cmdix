@@ -107,11 +107,22 @@ def getcommand(commandname):
     Raises a CommandNotFoundException if the command is not found
     '''
     # Try to import the command module
-    f = 'pycoreutils.command.cmd_{0}'.format(commandname)
+    importstring = 'pycoreutils.command.cmd_{0}'.format(commandname)
     try:
-        return __import__(f, fromlist=1).parseargs
+        parseargs = __import__(importstring, fromlist=1).parseargs
     except ImportError:
         raise CommandNotFoundException(commandname)
+
+    # Check if the command is available on Windows
+    if os.name == 'nt':
+        try:
+            parseargs._onlyunix
+        except AttributeError:
+            pass
+        else:
+            raise CommandNotFoundException(commandname)
+
+    return parseargs
 
 
 def listcommands():
