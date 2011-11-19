@@ -16,7 +16,7 @@ import stat
 import sys
 
 
-def filelist2fds(filelist):
+def filelist2fds(filelist, mode='r'):
     '''
     Take a list of files and yield the file descriptor.
     Yield sys.stdin if the filename is `-`, or the filelist is empty.
@@ -32,6 +32,9 @@ def filelist2fds(filelist):
        <_io.TextIOWrapper name='setup.py' mode='r' encoding='UTF-8'>
        <_io.TextIOWrapper name='test.py' mode='r' encoding='UTF-8'>
        <_io.TextIOWrapper name='<stdin>' mode='r' encoding='UTF-8'>
+
+    :param filelist: A list for files
+    :param mode:     Mode in which the file is opened
     '''
     filelist = filelist or ['-']
     for f in filelist:
@@ -39,7 +42,8 @@ def filelist2fds(filelist):
             yield sys.stdin
         for filename in glob.iglob(f):
             if filename:
-                yield open(filename)
+                with open(filename, mode) as fd:
+                    yield fd
             else:
                 print("Cannot access {1}:".format(filename) +\
                       "No such file or directory")
