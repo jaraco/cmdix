@@ -4,6 +4,7 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
+import functools
 import hashlib
 import pycoreutils.lib
 
@@ -14,11 +15,11 @@ def hasher(algorithm, p):
     :param p: ArgumentParser
     '''
     def myhash(args):
-        for fd in pycoreutils.lib.filelist2fds(args.FILE):
-            h = hashlib.new(algorithm)
-            with fd as f:
-                h.update(f.read())
-            print(h.hexdigest() + '  ' + fd.name)
+        for fd in pycoreutils.lib.filelist2fds(args.FILE, 'rb'):
+            hasj = hashlib.new(algorithm)
+            for data in iter(functools.partial(fd.read, 128), b''):
+                hasj.update(data)
+            print(hasj.hexdigest() + '  ' + fd.name)
 
     p.set_defaults(func=myhash)
     p.description = "Print or check {0} ".format(algorithm.upper()) +\
