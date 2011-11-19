@@ -7,7 +7,6 @@ __all__ = [
     'cmd_bzip2',
     'cmd_cal',
     'cmd_cat',
-    'cmd_cd',
     'cmd_chmod',
     'cmd_chown',
     'cmd_chroot',
