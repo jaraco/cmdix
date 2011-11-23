@@ -10,6 +10,7 @@ __all__ = [
     'cmd_chmod',
     'cmd_chown',
     'cmd_chroot',
+    'cmd_clear',
     'cmd_cp',
     'cmd_crond',
     'cmd_diff',
