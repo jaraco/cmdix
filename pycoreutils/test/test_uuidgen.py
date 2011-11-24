@@ -28,7 +28,7 @@ class TestCase(BaseTestCase):
             # Check if every character is hex
             for x in l:
                 for c in x:
-                    0 <= int(c, 16) <= 15
+                    self.assertTrue(0 <= int(c, 16) <= 15)
 
 
 if __name__ == '__main__':
