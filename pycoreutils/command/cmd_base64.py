@@ -4,7 +4,7 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
+import pycoreutils.lib
 import base64 as _base64
 import textwrap
 
@@ -19,7 +19,7 @@ def parseargs(p):
     p.set_defaults(func=func)
     p.description = "Base64 encode or decode FILE, or standard input, " + \
                     "to standard output."
-    p.add_argument('file', nargs=1)
+    p.add_argument('FILE', nargs=1)
     p.add_argument("-d", action="store_true", dest="decode",
             help="decode data")
     p.add_argument("-w", dest="wrap", default=76, type=int,
@@ -30,18 +30,19 @@ def parseargs(p):
 
 def func(args):
     s = ''
-    for line, filename in pycoreutils.lib.parsefilelist(args.FILE):
-        s += line
+    for _file in pycoreutils.lib.parsefilelist(args.FILE):
+        for line in _file:
+            s += line
 
     if args.decode:
-        out = _base64.b64decode(s)
+        out = _base64.b64decode(s.encode('ascii'))
         if args.wrap == 0:
             print(out)
         else:
             for line in textwrap.wrap(out, args.wrap):
                 print(line)
     else:
-        out = _base64.b64encode(s)
+        out = _base64.b64encode(s.encode('ascii')).decode('ascii')
         if args.wrap == 0:
             print(out)
         else:
