@@ -90,7 +90,12 @@ def getuserhome():
 def mode2string(mode):
     '''
     Convert mode-integer to string
-    Example: 33261 becomes "-rwxr-xr-x"
+
+    >>> from pycoreutils.lib import mode2string
+    >>> mode2string(33261)
+    '-rwxr-xr-x'
+    >>> mode2string(33024)
+    '-r--------'
     '''
     if stat.S_ISREG(mode):
         s = '-'
