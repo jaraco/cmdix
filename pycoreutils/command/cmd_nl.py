@@ -29,10 +29,11 @@ def parseargs(p):
 
 def func(args):
     linenr = 0
-    for line, filename in pycoreutils.lib.parsefilelist(args.FILE):
-        if line == "\n":
-            print(" " * (args.width + len(args.separator)) + line, end='')
-        else:
-            linenr += 1
-            print("{0:>{width}}{1}{2}".format(linenr, args.separator, line,
-                                              width=args.width), end='')
+    for filename in pycoreutils.lib.parsefilelist(args.FILE):
+        for line in filename:
+            if line == "\n":
+                print(" " * (args.width + len(args.separator)) + line, end='')
+            else:
+                linenr += 1
+                print("{0:>{width}}{1}{2}".format(linenr, args.separator, line,
+                                                width=args.width), end='')

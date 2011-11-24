@@ -56,7 +56,7 @@ def func(args):
     logger.addHandler(handler)
 
     # Read crontab and load jobs
-    for line, filename in pycoreutils.lib.parsefilelist(args.FILE):
+    for line in pycoreutils.lib.parsefilelist(args.FILE):
         # Strip comments and split the string
         split = line.strip().partition('#')[0].split(None, 6)
         if len(split) == 7:

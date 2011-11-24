@@ -26,5 +26,6 @@ def parseargs(p):
 
 
 def func(args):
-    for line, filename in pycoreutils.lib.parsefilelist(args.FILE, True):
-        print(line.expandtabs(args.tabs), end='')
+    for filename in pycoreutils.lib.parsefilelist(args.FILE, True):
+        for line in filename:
+            print(line.expandtabs(args.tabs), end='')

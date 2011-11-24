@@ -4,8 +4,6 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function, unicode_literals
-import pycoreutils
-import pycoreutils
 import pycoreutils.lib
 
 
@@ -26,5 +24,6 @@ def parseargs(p):
 
 
 def func(args):
-    for line, filename in pycoreutils.lib.parsefilelist(args.FILE, True):
-        print(line, end='')
+    for f in pycoreutils.lib.parsefilelist(args.FILE, True):
+        for line in f:
+            print(line.decode('utf-8'), end='')
