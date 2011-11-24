@@ -168,8 +168,26 @@ def mode2string(mode):
 
 def parsefilelist(filelist=None, decompress=False):
     '''
-    Takes a list of files, and generates tuple containing a line and the
-    filename.
+    Takes a list of files, and generates a list of generators generating the
+    content of the file, line by line. Get it? ;-)
+
+    >>> from pycoreutils.lib import parsefilelist
+    >>> import tempfile
+    >>> f = tempfile.NamedTemporaryFile(suffix='.bz2')
+    >>> text = b"""Foo
+    ... Bar
+    ... Biz"""
+    >>> encodedtext = text.encode('bz2')
+    >>> x = f.file.write(encodedtext)
+    >>> f.file.flush()
+    >>> for filename in parsefilelist([f.name], decompress=True):
+    ...     for line in filename:
+    ...         print(line.strip())
+    ...
+    Foo
+    Bar
+    Biz
+
     Files called `-` will be replaced with stdin.
     If decompress is defined, a file ending with `.gz` or `.bz2` is
     decompressed automatically.
@@ -183,8 +201,7 @@ def parsefilelist(filelist=None, decompress=False):
     filelist = filelist or '-'
 
     for filename in filelist:
-        for line in fileinput.input(filename, openhook=openhook):
-            yield (line, filename)
+        yield fileinput.FileInput([filename], openhook=openhook)
 
 
 def showbanner(width=None):
