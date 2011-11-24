@@ -8,7 +8,6 @@
 from __future__ import print_function, unicode_literals
 import curses
 import os
-import sys
 import time
 
 

@@ -5,7 +5,6 @@
 
 from __future__ import print_function, unicode_literals
 from pycoreutils.exception import ExtraOperandException
-import pycoreutils
 import calendar
 import time
 
