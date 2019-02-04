@@ -4,7 +4,7 @@
 # See LICENSE.txt for details.
 
 from __future__ import print_function
-import pycoreutils
+import cmdix
 import os
 
 try:
@@ -28,17 +28,17 @@ class CommandHelp(Command):
         print("running build_commandhelp")
         with open('docs/commands.rst', 'w') as fd:
             fd.write("\nCommands\n========\n\n.. contents:: :local:\n")
-            for commandname, commandhelp in pycoreutils.format_all_help():
+            for commandname, commandhelp in cmdix.format_all_help():
                 fd.write('\n\n' + commandname + '\n')
                 fd.write('-' * len(commandname) + '\n\n')
                 fd.write(commandhelp)
 
 
 setup(
-    name="pycoreutils",
-    version=pycoreutils.__version__,
+    name="cmdix",
+    version=cmdix.__version__,
     description="Coreutils in Pure Python",
-    long_description=pycoreutils.__doc__,
+    long_description=cmdix.__doc__,
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Environment :: Console",
@@ -49,15 +49,15 @@ setup(
         "Topic :: Utilities",
     ],
     license="MIT",
-    url="http://pypi.python.org/pypi/pycoreutils",
-    author="Hans van Leeuwen",
-    author_email="hansvl@gmail.com",
-    scripts=["scripts/pycoreutils"],
+    url="https://github.com/jaraco/cmdix",
+    author="Jason R. Coombs",
+    author_email="jaraco@jaraco.com",
+    scripts=["scripts/cmdix"],
     packages=[
-        "pycoreutils",
-        "pycoreutils.command",
-        "pycoreutils.test"
+        "cmdix",
+        "cmdix.command",
+        "cmdix.test"
     ],
-    test_suite="pycoreutils.test.getalltests",
+    test_suite="cmdix.test.getalltests",
     cmdclass={'build_commandhelp': CommandHelp},
 )
