@@ -1,10 +1,5 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import print_function, unicode_literals
-import pycoreutils.lib
+from .. import lib
 import base64 as _base64
 import textwrap
 
@@ -30,7 +25,7 @@ def parseargs(p):
 
 def func(args):
     s = ''
-    for _file in pycoreutils.lib.parsefilelist(args.FILE):
+    for _file in lib.parsefilelist(args.FILE):
         for line in _file:
             s += line
 

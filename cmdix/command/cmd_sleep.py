@@ -1,12 +1,8 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import print_function, unicode_literals
-import pycoreutils
 import time
 import sys
+
+from .. import exception
 
 
 def parseargs(p):
@@ -43,7 +39,7 @@ def func(args):
             else:
                 a.append(float(arg))
     except ValueError:
-        pycoreutils.StdErrException("sleep: invalid time interval " +\
+        exception.StdErrException("sleep: invalid time interval " +\
         "'{0}'. Try sleep --help' for more information.".format(arg))
         sys.exit(1)
 

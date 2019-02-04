@@ -1,15 +1,10 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import print_function, unicode_literals
-import pycoreutils
+from .. import onlyunix
 import os
 import os.path
 
 
-@pycoreutils.onlyunix
+@onlyunix
 def parseargs(p):
     '''
     Add arguments and `func` to `p`.

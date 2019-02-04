@@ -1,10 +1,5 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import print_function, unicode_literals
-import pycoreutils.lib
+from .. import lib
 import time
 
 
@@ -32,7 +27,7 @@ def parseargs(p):
 
 
 def func(args):
-    fds = pycoreutils.lib.filelist2fds(args.FILE)
+    fds = lib.filelist2fds(args.FILE)
     if args.follow:
         while True:
             time.sleep(args.interval)

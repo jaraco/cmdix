@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import print_function, unicode_literals
-import pycoreutils
 import os
+
+from .. import onlyunix
+from .. import exception
 
 try:
     import grp
@@ -14,7 +11,7 @@ except ImportError as err:
     pass
 
 
-@pycoreutils.onlyunix
+@onlyunix
 def parseargs(p):
     '''
     Add arguments and `func` to `p`.
@@ -65,7 +62,7 @@ def func(args):
         return uid
 
     if args.name:
-        pycoreutils.StdErrException("id: cannot print only names " +
+        exception.StdErrException("id: cannot print only names " +
                                     "or real IDs in default format")
 
     print("uid={0}({1}) gid={2}({3})".format(uid, username, gid, username))

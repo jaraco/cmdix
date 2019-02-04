@@ -1,15 +1,12 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import print_function, unicode_literals
-from pycoreutils.exception import StdOutException, StdErrException
+
 import bz2
 import gzip
 import os
 import shutil
 import sys
+
+from .exception import StdOutException, StdErrException
 
 
 def compressor(p, comptype='gzip', decompress=False):

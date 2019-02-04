@@ -1,13 +1,9 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import print_function, unicode_literals
-import pycoreutils
 import os
 import os.path
 import shutil
+
+from .. import exception
 
 
 def parseargs(p):
@@ -69,7 +65,7 @@ def func(args):
                         q = input("{0}: {1} already ".format(prog, dstfile) +\
                                   "exists; do you wish to overwrite (y or n)?")
                         if q.upper() != 'Y':
-                            pycoreutils.StdOutException("not overwritten", 2)
+                            exception.StdOutException("not overwritten", 2)
                             continue
                     _copy(srcfile, dstfile)
                     if args.verbose:

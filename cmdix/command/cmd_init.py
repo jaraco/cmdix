@@ -1,11 +1,7 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import print_function, unicode_literals
-import pycoreutils
 import subprocess
+
+import cmdix
 
 
 def parseargs(p):
@@ -24,7 +20,7 @@ def func(args):
     # TODO: Create a real init-system
     mount()
     setHostname()
-    pycoreutils.runcommandline('sh --nocoreutils')
+    cmdix.runcommandline('sh --nocoreutils')
 
 
 def mount():

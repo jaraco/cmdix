@@ -1,20 +1,20 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import print_function, unicode_literals
-import pycoreutils
 import crypt
 import getpass
 import os
 import pwd
-import spwd
 import subprocess
 from multiprocessing import Process
 
+from .. import onlyunix, run
 
-@pycoreutils.onlyunix
+try:
+    import spwd
+except ImportError:
+    pass
+
+
+@onlyunix
 def parseargs(p):
     '''
     Add arguments and `func` to `p`.
@@ -66,7 +66,7 @@ def func(args):
 
                     # Start user shell
                     if pw.pw_shell == 'sh':
-                        p = Process(target=pycoreutils.run, args=[['sh']])
+                        p = Process(target=run, args=[['sh']])
                         p.start()
                     else:
                         subprocess.call([pw.pw_shell])

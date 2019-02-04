@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+import cmdix
 
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
-import pycoreutils
-
-pycoreutils.run()
+__name__ == '__main__' and cmdix.run()

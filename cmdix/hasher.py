@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import print_function, unicode_literals
+
 import functools
 import hashlib
-import pycoreutils.lib
+
+from . import lib
 
 
 def hasher(algorithm, p):
@@ -15,7 +12,7 @@ def hasher(algorithm, p):
     :param p: ArgumentParser
     '''
     def myhash(args):
-        for fd in pycoreutils.lib.filelist2fds(args.FILE, 'rb'):
+        for fd in lib.filelist2fds(args.FILE, 'rb'):
             hasj = hashlib.new(algorithm)
             for data in iter(functools.partial(fd.read, 128), b''):
                 hasj.update(data)

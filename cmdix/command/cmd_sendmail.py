@@ -1,15 +1,9 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import print_function, unicode_literals
 import platform
 import smtplib
 import socket
 
-import pycoreutils
-import pycoreutils.lib
+from .. import lib
 
 
 def parseargs(p):
@@ -27,7 +21,7 @@ def parseargs(p):
     p.add_argument("-c", "--certfile", dest="certfile",
             help="certificate file to use. implies '-s'")
     p.add_argument("-f", "-r", "--sender", dest="sender",
-            default="{0}@{1}".format(pycoreutils.lib.getcurrentusername(),
+            default="{0}@{1}".format(lib.getcurrentusername(),
                     platform.node()), help="set the envelope sender address")
     p.add_argument("-k", "--keyfile", dest="keyfile",
             help="key file to use. implies '-s'")
@@ -47,7 +41,7 @@ def parseargs(p):
 def func(args):
     # TODO: Authentication
     msg = ""
-    for line, filename in pycoreutils.lib.parsefilelist(args.FILE):
+    for line, filename in lib.parsefilelist(args.FILE):
         msg += line
 
     if args.ssl or args.certfile or args.keyfile:

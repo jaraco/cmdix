@@ -1,11 +1,5 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import print_function, unicode_literals
-import pycoreutils
-import pycoreutils.lib
+from .. import lib
 import os
 import stat
 import time
@@ -46,7 +40,7 @@ def func(args):
                 print(f)
             else:
                 st = os.lstat(path)
-                mode = pycoreutils.lib.mode2string(st.st_mode)
+                mode = lib.mode2string(st.st_mode)
                 nlink = st.st_nlink
                 uid = st.st_uid
                 gid = st.st_gid

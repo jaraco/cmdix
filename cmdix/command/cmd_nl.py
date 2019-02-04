@@ -1,11 +1,5 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import print_function, unicode_literals
-import pycoreutils
-import pycoreutils.lib
+from .. import lib
 
 
 def parseargs(p):
@@ -29,7 +23,7 @@ def parseargs(p):
 
 def func(args):
     linenr = 0
-    for filename in pycoreutils.lib.parsefilelist(args.FILE):
+    for filename in lib.parsefilelist(args.FILE):
         for line in filename:
             if line == "\n":
                 print(" " * (args.width + len(args.separator)) + line, end='')

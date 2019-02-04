@@ -1,14 +1,11 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import unicode_literals
-from pycoreutils.test import BaseTestCase
+from . import BaseTestCase
 import os
-import pycoreutils
 import unittest
+
+import cmdix
+from .. import exception
 
 
 class TestCase(BaseTestCase):
@@ -16,8 +13,8 @@ class TestCase(BaseTestCase):
         for command in ['chmod', 'chown', 'id', 'ln', 'login', 'mount', 'tee',
                         'uptime', 'whoami']:
             os.name = 'nt'
-            self.assertRaises(pycoreutils.CommandNotFoundException,
-                              pycoreutils.getcommand, command)
+            self.assertRaises(exception.CommandNotFoundException,
+                              cmdix.getcommand, command)
 
 
 if __name__ == '__main__':

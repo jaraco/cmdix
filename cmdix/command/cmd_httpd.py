@@ -1,16 +1,12 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import print_function, unicode_literals
 from wsgiref import simple_server
-import pycoreutils
 import base64
 import mimetypes
 import os
 import ssl
 import sys
+
+import cmdix
 
 if sys.version_info[0] == 2:
     from StringIO import StringIO
@@ -125,7 +121,7 @@ def wsgishell(environ, start_response):
         stderrio = StringIO()
         sys.stdout = stdoutio
         sys.stderr = stderrio
-        pycoreutils.runcommandline(commandline)
+        cmdix.runcommandline(commandline)
         sys.stdout = sys.__stdout__
         sys.stderr = sys.__stderr__
         stdoutio.seek(0)
@@ -136,9 +132,9 @@ def wsgishell(environ, start_response):
         return [str("<div class='stdout'>{0}</div>").format(stdoutstr),
                 str("<div class='stderr'>{0}</div>").format(stderrstr)]
     else:
-        html = template.format(title='PyCoreutils Console',
+        html = template.format(title='Cmdix Console',
                                css=css,
-                               banner=pycoreutils.showbanner(),
+                               banner=cmdix.showbanner(),
                                javascript=javascript)
         start_response(b'200 ', [(b'Content-Type', b'text/html')])
         return [html.encode()]

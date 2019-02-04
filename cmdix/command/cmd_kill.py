@@ -1,13 +1,9 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import print_function, unicode_literals
-from pycoreutils import exception
-import pycoreutils
+from .. import exception
 import os
 import signal
+
+import cmdix
 
 
 def parseargs(p):
@@ -28,7 +24,7 @@ def parseargs(p):
 
 
 def func(args):
-    signals = pycoreutils.getsignals()
+    signals = cmdix.getsignals()
 
     # Add a string option for each signal
     for name, sigint in list(signals.items()):
@@ -44,7 +40,7 @@ def func(args):
                 const=sigint, help="send signal {0}".format(sigint))
 
     if len(args) == 0:
-        raise MissingOperandException(prog)
+        raise exception.MissingOperandException(prog)
 
     try:
         sig = int(args.signal)
@@ -58,14 +54,14 @@ def func(args):
     elif sig.lstrip('SIG') in signals:
         sigint = signals[sig.lstrip('SIG')]
     else:
-        raise StdErrException("kill: {0}: ".format(sig) +\
+        raise exception.StdErrException("kill: {0}: ".format(sig) +\
                               "invalid signal specification")
 
     for pid in args.pid:
         try:
             pid = int(pid)
         except ValueError:
-            raise StdErrException("kill: {0}: ".format(pid) +\
+            raise exception.StdErrException("kill: {0}: ".format(pid) +\
                                   "arguments must be process or job IDs")
 
         os.kill(pid, sigint)

@@ -1,27 +1,14 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import unicode_literals
 
 import unittest
 
-import pycoreutils
-import pycoreutils.lib
-from pycoreutils.test import BaseTestCase
+from .. import lib
+from . import BaseTestCase
 
 
 class TestCase(BaseTestCase):
     def test_showbanner(self):
-        self.assertEqual(pycoreutils.lib.showbanner(width=70),
-"  ____  _  _  ___  _____  ____  ____  __  __  ____  ____  __    ___   \n" +\
-" (  _ \( \/ )/ __)(  _  )(  _ \( ___)(  )(  )(_  _)(_  _)(  )  / __)  \n" +\
-"  )___/ \  /( (__  )(_)(  )   / )__)  )(__)(   )(   _)(_  )(__ \__ \  \n" +\
-" (__)   (__) \___)(_____)(_)\_)(____)(______) (__) (____)(____)(___/  \n\n" +\
-"-= PyCoreutils version {0} =-".format(pycoreutils.__version__).center(70) +\
-"\n")
+        lib.showbanner(width=70)
 
 
 if __name__ == '__main__':

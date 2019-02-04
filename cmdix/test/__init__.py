@@ -1,9 +1,4 @@
 
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import print_function, unicode_literals
 import doctest
 import filecmp
@@ -14,7 +9,8 @@ import sys
 import tempfile
 import unittest
 
-import pycoreutils
+import cmdix
+
 
 if sys.version_info[0] == 2:
     from StringIO import StringIO
@@ -56,7 +52,7 @@ class BaseTestCase(unittest.TestCase):
         stderrio = StringIO()
         sys.stdout = stdoutio
         sys.stderr = stderrio
-        pycoreutils.runcommandline(commandline)
+        cmdix.runcommandline(commandline)
         sys.stdout = sys.__stdout__
         sys.stderr = sys.__stderr__
         stdoutio.seek(0)
@@ -69,7 +65,7 @@ class BaseTestCase(unittest.TestCase):
         '''
         Create temporary work directory
         '''
-        self.workdir = tempfile.mkdtemp(prefix='pycoreutilstest.')
+        self.workdir = tempfile.mkdtemp(prefix='cmdix-test.')
         os.chdir(self.workdir)
 
     def setup_filesystem(self):
@@ -131,11 +127,11 @@ def getalltests():
     '''
     Return a testsuite containing all tests in unittests and doctests
     '''
-    # Create testsuite containing all tests in pycoreutils.test
-    testsuite = unittest.TestLoader().discover('pycoreutils.test')
+    # Create testsuite containing all tests in cmdix.test
+    testsuite = unittest.TestLoader().discover('cmdix.test')
 
-    # Add pycoreutils doctests to testsuite
-    testsuite.addTests(doctest.DocTestSuite(pycoreutils))
+    # Add cmdix doctests to testsuite
+    testsuite.addTests(doctest.DocTestSuite(cmdix))
 
     return testsuite
 

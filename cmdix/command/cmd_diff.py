@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 # Based on the example in difflib documentation
 
 from __future__ import print_function, unicode_literals

@@ -1,11 +1,5 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import print_function, unicode_literals
-import pycoreutils
-import pycoreutils.lib
+from .. import lib
 import cmd
 import os
 import platform
@@ -13,6 +7,8 @@ import pprint
 import shlex
 import subprocess
 import sys
+
+import cmdix
 
 
 def parseargs(p):
@@ -33,25 +29,25 @@ def parseargs(p):
 
 def func(args):
     if args.command:
-        return pycoreutils.runcommandline(args.command)
+        return cmdix.runcommandline(args.command)
     else:
         sh = Sh(nocoreutils=args.nocoreutils)
-        return sh.cmdloop(pycoreutils.lib.showbanner(width=80))
+        return sh.cmdloop(lib.showbanner(width=80))
 
 
 class Sh(cmd.Cmd):
     '''
-    Pycoreutils Shell
+    Shell
     '''
     exitstatus = 0
     prompttemplate = '{username}@{hostname}:{currentpath}$ '
 
     def __init__(self, nocoreutils=False, *args, **kwargs):
         if not nocoreutils:
-            # Copy all commands from pycoreutils to 'do_foo' functions
-            for command in pycoreutils.listcommands():
+            # Copy all commands from cmdix to 'do_foo' functions
+            for command in cmdix.listcommands():
                 x = """self.do_{0} = lambda l: \
-                       pycoreutils.runcommandline('{0} '+ l)""".format(command)
+                       cmdix.runcommandline('{0} '+ l)""".format(command)
                 exec(x)
         return cmd.Cmd.__init__(self, *args, **kwargs)
 
@@ -80,7 +76,7 @@ class Sh(cmd.Cmd):
         Change directory
         '''
         if not path:
-            p = pycoreutils.lib.getuserhome()
+            p = lib.getuserhome()
         else:
             p = os.path.expanduser(path)
         os.chdir(p)
@@ -97,7 +93,7 @@ class Sh(cmd.Cmd):
     def do_help(self, arg):
         return "Use 'COMMAND --help' for help\n" +\
                "Available commands:\n" +\
-               ", ".join(pycoreutils.listcommands()) + "\n"
+               ", ".join(cmdix.listcommands()) + "\n"
 
     def do_shell(self, line):
         '''
@@ -150,4 +146,4 @@ class Sh(cmd.Cmd):
         - username
         '''
         self.prompt = self.prompttemplate.format(currentpath=os.getcwd(),
-           hostname=platform.node(), username=pycoreutils.lib.getcurrentusername())
+           hostname=platform.node(), username=lib.getcurrentusername())

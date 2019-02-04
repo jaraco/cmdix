@@ -1,12 +1,8 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import print_function, unicode_literals
-from pycoreutils import StdErrException
-import pycoreutils
+from ..exception import StdErrException
 import os
+
+from .. import onlyunix
 
 try:
     import pwd
@@ -14,7 +10,7 @@ except ImportError:
     pass
 
 
-@pycoreutils.onlyunix
+@onlyunix
 def parseargs(p):
     '''
     Add arguments and `func` to `p`.

@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import print_function, unicode_literals
-import pycoreutils
 import shutil
 import sys
+
+import cmdix
+from .. import exception
 
 if sys.version_info[0] == 2:
     from urllib2 import build_opener, HTTPError
@@ -30,7 +27,7 @@ def parseargs(p):
     p.add_argument("-O", "--output-document", dest="outputdocument",
                    help="write documents to FILE.")
     p.add_argument("-u", "--user-agent", dest="useragent",
-                   help="identify as AGENT instead of PyCoreutils/VERSION.")
+                   help="identify as AGENT instead of default.")
     return p
 
 
@@ -43,7 +40,7 @@ def func(args):
     if args.useragent:
         useragent = args.useragent
     else:
-        useragent = 'PyCoreutils/' + pycoreutils.__version__
+        useragent = 'Cmdix/' + cmdix.__version__
 
     opener = build_opener()
     opener.addheaders = [('User-agent', useragent)]
@@ -52,7 +49,7 @@ def func(args):
         try:
             fdin = opener.open(url)
         except HTTPError as e:
-            pycoreutils.StdErrException("HTTP error opening " +\
+            exception.StdErrException("HTTP error opening " +\
                                         "{0}: {1}".format(url, e))
 
         length = int(fdin.headers['content-length'])

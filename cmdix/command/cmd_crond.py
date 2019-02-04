@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import print_function, unicode_literals
 import collections
 import logging
@@ -11,8 +6,7 @@ import subprocess
 import sys
 import time
 
-import pycoreutils
-import pycoreutils.lib
+from .. import lib
 
 
 def parseargs(p):
@@ -56,7 +50,7 @@ def func(args):
     logger.addHandler(handler)
 
     # Read crontab and load jobs
-    for line in pycoreutils.lib.parsefilelist(args.FILE):
+    for line in lib.parsefilelist(args.FILE):
         # Strip comments and split the string
         split = line.strip().partition('#')[0].split(None, 6)
         if len(split) == 7:

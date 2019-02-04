@@ -1,61 +1,15 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
-'''
-PyCoreutils is a pure Python implementation of various standard
-UNIX commands, like `ls`, `cp` and `sleep`. It also contains a shell-like
-environment which will make Unix-users feel right at home on the Windows
-command-prompt.
-'''
-
 from __future__ import print_function, unicode_literals
 import sys
 
-if sys.version_info[0] < 2 \
-or sys.version_info[0] == 2 and sys.version_info[1] < 7 \
-or sys.version_info[0] == 3 and sys.version_info[1] < 2:
-    print("Minimal required python version is 2.7 or 3.2", file=sys.stderr)
-    sys.exit(1)
-
 import argparse
-import base64
-import fileinput
-import glob
 import os
-import platform
 import shlex
-import shutil
-import signal
-import stat
 
-import pycoreutils.command
-from pycoreutils.exception import CommandNotFoundException, StdErrException
+from . import command
+from .exception import CommandNotFoundException, StdErrException
 
 
 __version__ = '0.1.0a'
-__license__ = '''Copyright (c) 2009, 2010, 2011 Hans van Leeuwen
-
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
-'''
 
 
 def onlyunix(f):
@@ -66,22 +20,22 @@ def onlyunix(f):
     return f
 
 
-def createlinks(directory, pycorepath='/usr/bin/pycoreutils'):
+def createlinks(directory, binpath='/usr/bin/cmdix'):
     '''
-    Create a symlink to pycoreutils for every available command
+    Create a symlink to this lib for every available command
 
     :param directory:   Directory where to store the links
     :param pycorepath:  Path to link to
     '''
     l = []
-    for command in listcommands():
-        linkname = os.path.join(directory, command)
+    for cmd in listcommands():
+        linkname = os.path.join(directory, cmd)
         if os.path.exists(linkname):
             raise StdErrException("{0} already exists. ".format(linkname) +\
                                   "Not doing anything.")
         l.append(linkname)
 
-    path = os.path.abspath(pycorepath)
+    path = os.path.abspath(binpath)
     for linkname in l:
         try:
             os.symlink(path, linkname)
@@ -107,7 +61,7 @@ def getcommand(commandname):
     Raises a CommandNotFoundException if the command is not found
     '''
     # Try to import the command module
-    importstring = 'pycoreutils.command.cmd_{0}'.format(commandname)
+    importstring = 'cmdix.command.cmd_{0}'.format(commandname)
     try:
         parseargs = __import__(importstring, fromlist=1).parseargs
     except ImportError:
@@ -129,7 +83,7 @@ def listcommands():
     '''
     Returns a list of all available commands
     '''
-    for cmd in pycoreutils.command.__all__:
+    for cmd in command.__all__:
         if cmd.startswith('cmd_'):
             yield cmd[4:]
 
@@ -141,8 +95,8 @@ def run(argv=None):
 
     For example:
 
-    >>> import pycoreutils
-    >>> pycoreutils.run(['seq', '-s', ' to the ', '1', '4'])
+    >>> import cmdix
+    >>> cmdix.run(['seq', '-s', ' to the ', '1', '4'])
     1 to the 2 to the 3 to the 4
 
     :param argv:    List of arguments
@@ -163,9 +117,9 @@ def run(argv=None):
                 help="Run all sort of tests")
     group.add_argument("--createlinks", dest="directory",
                 help="For every command, create a symlink to " +\
-                     "/usr/bin/pycoreutils in 'directory'")
+                     "this library in 'directory'")
 
-    if commandname in ('pycoreutils', '__main__.py'):
+    if commandname in ('__main__.py',):
         args, argv = parser.parse_known_args(argv)
 
         if args.license:
@@ -179,11 +133,11 @@ def run(argv=None):
 
         elif args.runtests:
             try:
-                import pycoreutils.test
+                from . import test
             except ImportError:
-                print("Can't import pycoreutils.test", file=sys.stderr)
+                print("Can't import test suite", file=sys.stderr)
                 sys.exit(1)
-            pycoreutils.test.runalltests()
+            test.runalltests()
             return
 
         elif args.directory:
@@ -209,15 +163,14 @@ def run(argv=None):
 
 def runcommandline(commandline):
     '''
-    Process a commandline.
-    This is main entry-point to PyCoreutils.
+    Process a commandline; main entry-point.
 
     Examples:
 
-    >>> import pycoreutils
-    >>> pycoreutils.runcommandline('basename /foo/bar/')
+    >>> import cmdix
+    >>> cmdix.runcommandline('basename /foo/bar/')
     bar
-    >>> pycoreutils.runcommandline('cal 2 2000')
+    >>> cmdix.runcommandline('cal 2 2000')
        February 2000
     Su Mo Tu We Th Fr Sa
            1  2  3  4  5
@@ -229,7 +182,3 @@ def runcommandline(commandline):
     :param commandline: String representing the commandline, i.e. "ls -l /tmp"
     '''
     return run(shlex.split(str(commandline)))
-
-
-if __name__ == '__main__':
-    sys.exit(run())

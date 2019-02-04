@@ -1,16 +1,10 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 '''
-This module contains various helper-functions for pycoreutils.command
+Various helper-functions for .command
 '''
 
 import fileinput
 import glob
 import os
-import pycoreutils
 import signal
 import stat
 import sys
@@ -91,7 +85,7 @@ def mode2string(mode):
     '''
     Convert mode-integer to string
 
-    >>> from pycoreutils.lib import mode2string
+    >>> from .lib import mode2string
     >>> mode2string(33261)
     '-rwxr-xr-x'
     >>> mode2string(33024)
@@ -176,7 +170,7 @@ def parsefilelist(filelist=None, decompress=False):
     Takes a list of files, and generates a list of generators generating the
     content of the file, line by line. Get it? ;-)
 
-    >>> from pycoreutils.lib import parsefilelist
+    >>> from .lib import parsefilelist
     >>> import tempfile
     >>> f = tempfile.NamedTemporaryFile(suffix='.bz2')
     >>> text = b"""Foo
@@ -211,15 +205,15 @@ def parsefilelist(filelist=None, decompress=False):
 
 def showbanner(width=None):
     '''
-    Returns pycoreutils banner.
+    Returns the command banner.
     The banner is centered if width is defined.
     '''
-    subtext = "-= PyCoreutils version {0} =-".format(pycoreutils.__version__)
+    subtext = "-= Cmdix version {0} =-".format(cmdix.__version__)
     banner = [
         " ____  _  _  ___  _____  ____  ____  __  __  ____  ____  __    ___ ",
-        "(  _ \( \/ )/ __)(  _  )(  _ \( ___)(  )(  )(_  _)(_  _)(  )  / __)",
-        " )___/ \  /( (__  )(_)(  )   / )__)  )(__)(   )(   _)(_  )(__ \__ \\",
-        "(__)   (__) \___)(_____)(_)\_)(____)(______) (__) (____)(____)(___/",
+        r"(  _ \( \/ )/ __)(  _  )(  _ \( ___)(  )(  )(_  _)(_  _)(  )  / __)",
+        r" )___/ \  /( (__  )(_)(  )   / )__)  )(__)(   )(   _)(_  )(__ \__ \\",
+        r"(__)   (__) \___)(_____)(_)\_)(____)(______) (__) (____)(____)(___/",
     ]
 
     if width:

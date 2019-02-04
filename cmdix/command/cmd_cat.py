@@ -1,10 +1,5 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 from __future__ import print_function, unicode_literals
-import pycoreutils.lib
+from .. import lib
 
 
 def parseargs(p):
@@ -24,6 +19,6 @@ def parseargs(p):
 
 
 def func(args):
-    for f in pycoreutils.lib.parsefilelist(args.FILE, True):
+    for f in lib.parsefilelist(args.FILE, True):
         for line in f:
             print(line.decode('utf-8'), end='')

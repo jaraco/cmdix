@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2009, 2010, 2011 Hans van Leeuwen.
-# See LICENSE.txt for details.
-
 # Based on repeat.py by Guido van Rossum
 
 from __future__ import print_function, unicode_literals
