@@ -1,6 +1,0 @@
-config BR2_PACKAGE_VIRTUALENV
-	bool "virtualenv"
-	depends on BR2_PACKAGE_PYTHON
-	help
-	  virtualenv
-
