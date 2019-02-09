@@ -170,23 +170,20 @@ def mode2string(mode):
 
 
 def parsefilelist(filelist=None, decompress=False):
-    '''
+    r'''
     Takes a list of files, and generates a list of generators generating the
     content of the file, line by line. Get it? ;-)
 
     >>> from .lib import parsefilelist
-    >>> import tempfile
+    >>> import tempfile, bz2
     >>> f = tempfile.NamedTemporaryFile(suffix='.bz2')
-    >>> text = b"""Foo
-    ... Bar
-    ... Biz"""
-    >>> encodedtext = text.encode('bz2')
-    >>> x = f.file.write(encodedtext)
+    >>> data = b'Foo\nBar\nBiz'
+    >>> encoded = bz2.compress(data)
+    >>> x = f.file.write(encoded)
     >>> f.file.flush()
     >>> for filename in parsefilelist([f.name], decompress=True):
     ...     for line in filename:
-    ...         print(line.strip())
-    ...
+    ...         print(line.decode().strip())
     Foo
     Bar
     Biz
