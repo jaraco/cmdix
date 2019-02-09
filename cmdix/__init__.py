@@ -27,16 +27,16 @@ def createlinks(directory, binpath='/usr/bin/cmdix'):
     :param directory:   Directory where to store the links
     :param pycorepath:  Path to link to
     '''
-    l = []
+    link_names = []
     for cmd in listcommands():
         linkname = os.path.join(directory, cmd)
         if os.path.exists(linkname):
-            raise StdErrException("{0} already exists. ".format(linkname) +\
-                                  "Not doing anything.")
-        l.append(linkname)
+            raise StdErrException(
+                "{0} already exists. Not doing anything.".format(linkname))
+        link_names.append(linkname)
 
     path = os.path.abspath(binpath)
-    for linkname in l:
+    for linkname in link_names:
         try:
             os.symlink(path, linkname)
         except OSError:
@@ -104,26 +104,31 @@ def run(argv=None):
     '''
     argv = argv or sys.argv
     commandname = os.path.basename(argv.pop(0))
-    parser = argparse.ArgumentParser(version=__version__, add_help=False,
-                    description="Coreutils in Pure Python.", prog=commandname,
-                    epilog="Available Commands: " + ", ".join(listcommands()))
+    parser = argparse.ArgumentParser(
+        version=__version__, add_help=False,
+        description="Coreutils in Pure Python.", prog=commandname,
+        epilog="Available Commands: " + ", ".join(listcommands()))
     group = parser.add_mutually_exclusive_group()
     group.add_argument("command", nargs="?")
-    group.add_argument("--allhelp", action="store_true",
-                help="Show the help pages off all commands")
-    group.add_argument("--license", action="store_true",
-                help="Show program's license and exit")
-    group.add_argument("--runtests", action="store_true",
-                help="Run all sort of tests")
-    group.add_argument("--createlinks", dest="directory",
-                help="For every command, create a symlink to " +\
-                     "this library in 'directory'")
+    group.add_argument(
+        "--allhelp", action="store_true",
+        help="Show the help pages off all commands")
+    group.add_argument(
+        "--license", action="store_true",
+        help="Show program's license and exit")
+    group.add_argument(
+        "--runtests", action="store_true",
+        help="Run all sort of tests")
+    group.add_argument(
+        "--createlinks", dest="directory",
+        help="For every command, create a symlink to "
+        "this library in 'directory'")
 
     if commandname in ('__main__.py',):
         args, argv = parser.parse_known_args(argv)
 
         if args.license:
-            print(__license__)
+            print("MIT")
             return
 
         elif args.allhelp:
