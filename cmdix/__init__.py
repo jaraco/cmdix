@@ -105,7 +105,7 @@ def run(argv=None):
     argv = argv or sys.argv
     commandname = os.path.basename(argv.pop(0))
     parser = argparse.ArgumentParser(
-        version=__version__, add_help=False,
+        add_help=False,
         description="Coreutils in Pure Python.", prog=commandname,
         epilog="Available Commands: " + ", ".join(listcommands()))
     group = parser.add_mutually_exclusive_group()
