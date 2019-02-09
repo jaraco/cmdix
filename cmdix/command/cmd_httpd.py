@@ -20,9 +20,10 @@ class WSGIServer(simple_server.WSGIServer):
     '''
     WSGIServer with SSL support
     '''
-    def __init__(self, server_address, certfile=None, keyfile=None, \
-                       ca_certs=None, ssl_version=ssl.PROTOCOL_SSLv23, \
-                       handler=simple_server.WSGIRequestHandler):
+    def __init__(
+            self, server_address, certfile=None, keyfile=None,
+            ca_certs=None, ssl_version=ssl.PROTOCOL_SSLv23,
+            handler=simple_server.WSGIRequestHandler):
         simple_server.WSGIServer.__init__(self, server_address, handler)
         self.allow_reuse_address = True
         self.certfile = certfile
@@ -33,12 +34,13 @@ class WSGIServer(simple_server.WSGIServer):
     def get_request(self):
         sock, addr = self.socket.accept()
         if self.certfile:
-            sock = ssl.wrap_socket(sock,
-                                    server_side=True,
-                                    certfile=self.certfile,
-                                    keyfile=self.keyfile,
-                                    ssl_version=self.ssl_version,
-                                    ca_certs=self.ca_certs)
+            sock = ssl.wrap_socket(
+                sock,
+                server_side=True,
+                certfile=self.certfile,
+                keyfile=self.keyfile,
+                ssl_version=self.ssl_version,
+                ca_certs=self.ca_certs)
         return sock, addr
 
 
@@ -64,8 +66,9 @@ class WSGIAuth():
                 if self.userdict[username] == password:
                     return self.app(environ, start_response)
 
-        return wsgierror(start_response, 401, "Authentication required",
-                [(b'WWW-Authenticate', b'Basic realm={0}'.format(self.realm))])
+        return wsgierror(
+            start_response, 401, "Authentication required",
+            [(b'WWW-Authenticate', b'Basic realm={0}'.format(self.realm))])
 
 
 def wsgierror(start_response, code, text, headers=[]):
@@ -98,11 +101,12 @@ def wsgiserver(app, args):
             userdict[username] = password
         app = WSGIAuth(app, userdict)
 
-    server = WSGIServer((args.address, args.port),
-                         certfile=args.certfile,
-                         keyfile=args.keyfile,
-                         ca_certs=args.cafile,
-                         ssl_version=ssl_version)
+    server = WSGIServer(
+        (args.address, args.port),
+        certfile=args.certfile,
+        keyfile=args.keyfile,
+        ca_certs=args.cafile,
+        ssl_version=ssl_version)
     server.set_app(app)
     return server
 
@@ -210,24 +214,32 @@ def parseargs(p):
     p.epilog = "To enable https, you must supply a certificate file using " +\
                "'-c' and a key using '-k', both PEM-formatted. If both the " +\
                "certificate and the key are in one file, just use '-c'."
-    p.add_argument("-a", "--address", default="", dest="address",
-                   help="address to bind to")
-    p.add_argument("-c", "--certfile", dest="certfile",
-                   help="Use ssl-certificate for https")
-    p.add_argument("-p", "--port", default=8000, dest="port", type=int,
-                   help="port to listen to")
-    p.add_argument("-k", "--keyfile", dest="keyfile",
-                   help="Use ssl-certificate for https")
-    p.add_argument("-u", "--user", action="append", dest="userlist",
-                   help="Add a user for authentication in the form of " +\
-                        "'USER:PASSWORD'. Can be specified multiple times.")
-    p.add_argument("-V", "--ssl-version", dest="ssl_version", default="SSLv23",
-                   help="Must be either SSLv23 (default), SSLv3, or TLSv1")
-    p.add_argument("--cafile", dest="cafile",
-                   help="Authenticate remote certificate using CA " +\
-                        "certificate file. Requires -c")
-    p.add_argument("-s", "--shell", action="store_true", dest="shell",
-                    help="Start a web shell")
+    p.add_argument(
+        "-a", "--address", default="", dest="address",
+        help="address to bind to")
+    p.add_argument(
+        "-c", "--certfile", dest="certfile",
+        help="Use ssl-certificate for https")
+    p.add_argument(
+        "-p", "--port", default=8000, dest="port", type=int,
+        help="port to listen to")
+    p.add_argument(
+        "-k", "--keyfile", dest="keyfile",
+        help="Use ssl-certificate for https")
+    p.add_argument(
+        "-u", "--user", action="append", dest="userlist",
+        help="Add a user for authentication in the form of " +
+        "'USER:PASSWORD'. Can be specified multiple times.")
+    p.add_argument(
+        "-V", "--ssl-version", dest="ssl_version", default="SSLv23",
+        help="Must be either SSLv23 (default), SSLv3, or TLSv1")
+    p.add_argument(
+        "--cafile", dest="cafile",
+        help="Authenticate remote certificate using CA " +
+        "certificate file. Requires -c")
+    p.add_argument(
+        "-s", "--shell", action="store_true", dest="shell",
+        help="Start a web shell")
     return p
 
 

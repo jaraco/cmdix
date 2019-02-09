@@ -12,26 +12,36 @@ def parseargs(p):
     :return:  ArgumentParser
     '''
     p.set_defaults(func=func)
-    p.description = "saves many files together into a single tape or disk " +\
-                   "archive, and can restore individual files from the archive"
-    p.usage = '%(prog)s -x [OPTION]...\n' + \
-       '       %(prog)s -t [OPTION]...\n' + \
-       '       %(prog)s -c [OPTION]... TARFILE SOURCE...\n'
+    p.description = (
+        "saves many files together into a single tape or disk "
+        "archive, and can restore individual files from the archive"
+    )
+    p.usage = (
+        '%(prog)s -x [OPTION]...\n'
+        '       %(prog)s -t [OPTION]...\n'
+        '       %(prog)s -c [OPTION]... TARFILE SOURCE...\n'
+    )
     p.epilog = "Files that end with '.bz2' or '.gz' are decompressed " +\
                "automatically."
     p.add_argument('FILE', nargs="*")
-    p.add_argument("-c", "--create", action="store_true", dest="create",
-            help="create zipfile from source.")
-    p.add_argument("-t", "--list", action="store_true", dest="list",
-            help="list files in zipfile.")
-    p.add_argument("-x", "--extract", action="store_true", dest="extract",
-            help="extract tarfile into current directory.")
-    p.add_argument("-j", "--bzip2", action="store_true", dest="bzip2",
-            help="(de)compress using bzip2")
-    p.add_argument("-f", "--file", dest="archive",
-            help="use archive file or device ARCHIVE")
-    p.add_argument("-z", "--gzip", action="store_true", dest="gzip",
-            help="(de)compress using gzip")
+    p.add_argument(
+        "-c", "--create", action="store_true", dest="create",
+        help="create zipfile from source.")
+    p.add_argument(
+        "-t", "--list", action="store_true", dest="list",
+        help="list files in zipfile.")
+    p.add_argument(
+        "-x", "--extract", action="store_true", dest="extract",
+        help="extract tarfile into current directory.")
+    p.add_argument(
+        "-j", "--bzip2", action="store_true", dest="bzip2",
+        help="(de)compress using bzip2")
+    p.add_argument(
+        "-f", "--file", dest="archive",
+        help="use archive file or device ARCHIVE")
+    p.add_argument(
+        "-z", "--gzip", action="store_true", dest="gzip",
+        help="(de)compress using gzip")
     return p
 
 
@@ -47,9 +57,10 @@ def func(args):
             infile = sys.stdin
         try:
             tar = tarfile.open(fileobj=infile)
-        except tarfile.TarError as err:
-            raise StdErrException("Could not parse file " +\
-                "{0}. Are you sure it is a tar-archive?".format(infile.name))
+        except tarfile.TarError:
+            raise StdErrException(
+                "Could not parse file {0}. Are you sure it is a tar-archive?"
+                .format(infile.name))
 
     if args.extract:
         tar.extractall()
@@ -59,7 +70,7 @@ def func(args):
         for tarinfo in tar:
             name = tarinfo.name
             if tarinfo.isdir():
-                    name += '/'
+                name += '/'
             print(name)
         tar.close()
 

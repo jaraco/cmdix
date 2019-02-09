@@ -20,10 +20,12 @@ def parseargs(p):
     '''
     p.set_defaults(func=func)
     p.description = "Start a shell"
-    p.add_argument("-c", "--command",
-            help="Read command from string")
-    p.add_argument("--nocoreutils", action="store_true",
-            help="Do not load pycoreutils")
+    p.add_argument(
+        "-c", "--command",
+        help="Read command from string")
+    p.add_argument(
+        "--nocoreutils", action="store_true",
+        help="Do not load pycoreutils")
     return p
 
 
@@ -55,15 +57,15 @@ class Sh(cmd.Cmd):
         '''
         Called on an input line when the command prefix is not recognized.
         '''
-        l = shlex.split(line)
+        ell = shlex.split(line)
         try:
-            subprocess.call(l)
+            subprocess.call(ell)
         except OSError as err:
-            if not os.path.dirname(l[0]):
+            if not os.path.dirname(ell[0]):
                 # Scan $PATH
                 if os.getenv('PATH'):
                     for path in os.getenv('PATH').split(':'):
-                        cmd = [os.path.join(path, l[0])] + l[1:]
+                        cmd = [os.path.join(path, ell[0])] + ell[1:]
                         try:
                             subprocess.call(cmd)
                         except Exception:
@@ -106,7 +108,7 @@ class Sh(cmd.Cmd):
         except Exception as err:
             return pprint.pformat(err) + '\n'
         else:
-            return pprint.pformat(r) + '\n'
+            return pprint.pformat(line) + '\n'
 
     def emptyline(self):
         '''
@@ -145,5 +147,6 @@ class Sh(cmd.Cmd):
         - hostname
         - username
         '''
-        self.prompt = self.prompttemplate.format(currentpath=os.getcwd(),
-           hostname=platform.node(), username=lib.getcurrentusername())
+        self.prompt = self.prompttemplate.format(
+            currentpath=os.getcwd(),
+            hostname=platform.node(), username=lib.getcurrentusername())

@@ -15,10 +15,12 @@ def parseargs(p):
     '''
     p.set_defaults(func=func)
     p.description = "package and compress (archive) files"
-    p.usage = '%(prog)s -l [OPTION]... ZIPFILE...\n' + \
-       '       %(prog)s -t [OPTION]... ZIPFILE...\n' + \
-       '       %(prog)s -e [OPTION]... ZIPFILE TARGET\n' + \
-       '       %(prog)s -c [OPTION]... ZIPFILE SOURCE...\n'
+    p.usage = (
+        '%(prog)s -l [OPTION]... ZIPFILE...\n'
+        '       %(prog)s -t [OPTION]... ZIPFILE...\n'
+        '       %(prog)s -e [OPTION]... ZIPFILE TARGET\n'
+        '       %(prog)s -c [OPTION]... ZIPFILE SOURCE...\n'
+    )
     p.add_argument('FILE', nargs='+')
     p.add_argument('target', nargs='?')
     p.add_argument("-c", "--create", action="store_true", dest="create",
@@ -35,7 +37,7 @@ def parseargs(p):
 def func(args):
     if args.list:
         if len(args) != 1:
-            p.print_usage(sys.stderr)
+            args.parser.print_usage(sys.stderr)
             sys.exit(1)
         zf = zipfile.ZipFile(args[0], 'r')
         zf.printdir()
@@ -43,7 +45,7 @@ def func(args):
 
     elif args.test:
         if len(args) != 1:
-            p.print_usage(sys.stderr)
+            args.parser.print_usage(sys.stderr)
             sys.exit(1)
         zf = zipfile.ZipFile(args[0], 'r')
         badfile = zf.testzip()
@@ -56,7 +58,7 @@ def func(args):
 
     elif args.extract:
         if len(args) != 2:
-            p.print_usage(sys.stderr)
+            args.parser.print_usage(sys.stderr)
             sys.exit(1)
 
         zf = zipfile.ZipFile(args[0], 'r')
@@ -77,7 +79,7 @@ def func(args):
 
     elif args.create:
         if len(args) < 2:
-            p.print_usage(sys.stderr)
+            args.parser.print_usage(sys.stderr)
             sys.exit(1)
 
         def addToZip(zf, path, zippath):
@@ -97,5 +99,5 @@ def func(args):
         zf.close()
 
     else:
-        p.print_usage(sys.stderr)
+        args.parser.print_usage(sys.stderr)
         sys.exit(1)

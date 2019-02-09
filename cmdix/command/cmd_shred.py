@@ -18,10 +18,12 @@ def parseargs(p):
     p.epilog = "This program acts as GNU 'shred -x', and doesn't round " + \
                "sizes up to the next full block"
     p.add_argument('FILE', nargs='*')
-    p.add_argument("-n", "--iterations", dest="iterations", default=3,
-            help="overwrite ITERATIONS times instead of the default (3)")
-    p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
-            help="show progress")
+    p.add_argument(
+        "-n", "--iterations", dest="iterations", default=3,
+        help="overwrite ITERATIONS times instead of the default (3)")
+    p.add_argument(
+        "-v", "--verbose", action="store_true", dest="verbose",
+        help="show progress")
     return p
 
 

@@ -17,16 +17,21 @@ def parseargs(p):
                     "not exist is created empty. A FILE argument string " + \
                     "of - is handled specially and causes touch to"
     p.add_argument('FILE', nargs='*')
-    p.add_argument("-a", action="store_true", dest="accessonly",
-            help="change only the access time")
-    p.add_argument("-c", "--no-create", action="store_true", dest="nocreate",
-            help="do not create any files")
-    p.add_argument("-f", action="store_true", dest="thisoptionshouldbeignored",
-            help="(ignored)")
-    p.add_argument("-m", action="store_true", dest="modonly",
-            help="change only the modification time")
-    p.add_argument("-r", "--reference", dest="reference",
-            help="use this file's times instead of current time")
+    p.add_argument(
+        "-a", action="store_true", dest="accessonly",
+        help="change only the access time")
+    p.add_argument(
+        "-c", "--no-create", action="store_true", dest="nocreate",
+        help="do not create any files")
+    p.add_argument(
+        "-f", action="store_true", dest="thisoptionshouldbeignored",
+        help="(ignored)")
+    p.add_argument(
+        "-m", action="store_true", dest="modonly",
+        help="change only the modification time")
+    p.add_argument(
+        "-r", "--reference", dest="reference",
+        help="use this file's times instead of current time")
     return p
 
 

@@ -18,14 +18,18 @@ def parseargs(p):
     p.usage = '%(prog)s [OPTION]... [FILE]\nor:    %(prog)s -e [OPTION]... ' +\
               '[ARG]...\nor:    %(prog)s -i LO-HI [OPTION]...'
     p.add_argument('file', nargs='?')
-    p.add_argument("-e", "--echo", action="store_true", dest="echo",
-            help="treat each ARG as an input line")
-    p.add_argument("-i", "--input-range", dest="inputrange",
-            help="treat each number LO through HI as an input line")
-    p.add_argument("-n", "--head-count", dest="headcount",
-            help="output at most HEADCOUNT lines")
-    p.add_argument("-o", "--output", dest="output",
-            help="write result to OUTPUT instead of standard output")
+    p.add_argument(
+        "-e", "--echo", action="store_true", dest="echo",
+        help="treat each ARG as an input line")
+    p.add_argument(
+        "-i", "--input-range", dest="inputrange",
+        help="treat each number LO through HI as an input line")
+    p.add_argument(
+        "-n", "--head-count", dest="headcount",
+        help="output at most HEADCOUNT lines")
+    p.add_argument(
+        "-o", "--output", dest="output",
+        help="write result to OUTPUT instead of standard output")
     return p
 
 
@@ -40,7 +44,7 @@ def func(args):
     if args.echo:
         if args.inputrange:
             exception.StdErrException(
-                        "{0}: cannot combine -e and -i options".format(prog))
+                "{0}: cannot combine -e and -i options".format(args.prog))
 
         lines = args.file
         random.shuffle(lines)

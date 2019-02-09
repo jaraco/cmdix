@@ -6,6 +6,8 @@ import pwd
 import subprocess
 from multiprocessing import Process
 
+from six.moves import input
+
 from .. import onlyunix, run
 
 try:
@@ -35,7 +37,7 @@ def func(args):
             if args.username:
                 username = args.username
             else:
-                username = raw_input("Username: ")
+                username = input("Username: ")
 
             # Get password
             password = getpass.getpass("Password: ")

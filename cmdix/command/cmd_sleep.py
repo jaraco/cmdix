@@ -39,8 +39,9 @@ def func(args):
             else:
                 a.append(float(arg))
     except ValueError:
-        exception.StdErrException("sleep: invalid time interval " +\
-        "'{0}'. Try sleep --help' for more information.".format(arg))
+        exception.StdErrException(
+            "sleep: invalid time interval "
+            "'{0}'. Try sleep --help' for more information.".format(arg))
         sys.exit(1)
 
     time.sleep(sum(a))

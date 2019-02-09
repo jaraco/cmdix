@@ -17,30 +17,36 @@ def parseargs(p):
     p.description = ""
     p.usage = '%(prog)s kill [ -SIGNAL | -s SIGNAL ] PID ...'
     p.add_argument("pid", nargs="+")
-    p.add_argument("-s", "--signal",  action="store", dest="signal",
-            default=signal.SIGTERM,
-            help="send signal")
+    p.add_argument(
+        "-s", "--signal", action="store", dest="signal",
+        default=signal.SIGTERM,
+        help="send signal")
     return p
 
 
 def func(args):
     signals = cmdix.getsignals()
 
+    # todo: fixme
+    p = None
+
     # Add a string option for each signal
     for name, sigint in list(signals.items()):
         signame = 'SIG' + name.upper()
-        p.add_argument("--" + signame, action="store_const", dest="signal",
+        p.add_argument(
+            "--" + signame, action="store_const", dest="signal",
             const=sigint,
             help="send signal {0}".format(signame))
 
     # Add an integer option for each signal
     for sigint in set(signals.values()):
         if sigint < 10:
-            p.add_argument("-%i" % sigint, action="store_const", dest="signal",
+            p.add_argument(
+                "-%i" % sigint, action="store_const", dest="signal",
                 const=sigint, help="send signal {0}".format(sigint))
 
     if len(args) == 0:
-        raise exception.MissingOperandException(prog)
+        raise exception.MissingOperandException(args.prog)
 
     try:
         sig = int(args.signal)
@@ -54,14 +60,14 @@ def func(args):
     elif sig.lstrip('SIG') in signals:
         sigint = signals[sig.lstrip('SIG')]
     else:
-        raise exception.StdErrException("kill: {0}: ".format(sig) +\
-                              "invalid signal specification")
+        raise exception.StdErrException(
+            "kill: {0}: invalid signal specification".format(sig))
 
     for pid in args.pid:
         try:
             pid = int(pid)
         except ValueError:
-            raise exception.StdErrException("kill: {0}: ".format(pid) +\
-                                  "arguments must be process or job IDs")
+            raise exception.StdErrException(
+                "kill: {0}: arguments must be process or job IDs".format(pid))
 
         os.kill(pid, sigint)

@@ -13,12 +13,15 @@ def parseargs(p):
     p.description = "Create the DIRECTORY(ies), if they do not already " + \
                     "exist."
     p.add_argument("directory", nargs="+")
-    p.add_argument("-p", "--parents", action="store_true", dest="parents",
-            help="no error if existing, make parent directories as needed")
-    p.add_argument("-m", "--mode", dest="mode", default=0o777,
-            help="set file mode (as in chmod), not a=rwx - umask")
-    p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
-            help="print a message for each created directory")
+    p.add_argument(
+        "-p", "--parents", action="store_true", dest="parents",
+        help="no error if existing, make parent directories as needed")
+    p.add_argument(
+        "-m", "--mode", dest="mode", default=0o777,
+        help="set file mode (as in chmod), not a=rwx - umask")
+    p.add_argument(
+        "-v", "--verbose", action="store_true", dest="verbose",
+        help="print a message for each created directory")
     return p
 
 

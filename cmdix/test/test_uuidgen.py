@@ -9,7 +9,7 @@ class TestCase(BaseTestCase):
     def test_uuidgen(self):
         # Make sure uuid1() generates UUIDs that are actually version 1.
         for uuid in [self.runcommandline('uuidgen')[0] for i in range(10)]:
-            l = uuid.rstrip().split('-')
+            ell = uuid.rstrip().split('-')
 
             # Check uuid-length
             self.assertEqual(len(uuid), 37)
@@ -18,10 +18,10 @@ class TestCase(BaseTestCase):
             self.assertTrue(uuid.endswith('\n'))
 
             # Check split
-            self.assertEqual(len(l), 5)
+            self.assertEqual(len(ell), 5)
 
             # Check if every character is hex
-            for x in l:
+            for x in ell:
                 for c in x:
                     self.assertTrue(0 <= int(c, 16) <= 15)
 

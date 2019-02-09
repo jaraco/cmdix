@@ -23,15 +23,19 @@ def parseargs(p):
     p.description = "Mount a filesystem"
     p.add_argument('SOURCE', nargs='?')
     p.add_argument('DEST', nargs='?')
-    p.add_argument("-a", "--all", action="store_true",
-            help="Mount all filesystems mentioned in fstab")
-    #p.add_argument("-o", "--options", default=0,
-            #help="print only the effective group ID")
-    p.add_argument("-t", "--types", default="ext2",
-            help="Filesystem type. Supported types: " +\
-                 ", ".join(available_filesystems))
-    p.add_argument("-v", "--verbose", action="store_true",
-            help="Output debugging information")
+    p.add_argument(
+        "-a", "--all", action="store_true",
+        help="Mount all filesystems mentioned in fstab")
+    # p.add_argument(
+    #     "-o", "--options", default=0,
+    #     help="print only the effective group ID")
+    p.add_argument(
+        "-t", "--types", default="ext2",
+        help="Filesystem type. Supported types: " +
+        ", ".join(available_filesystems))
+    p.add_argument(
+        "-v", "--verbose", action="store_true",
+        help="Output debugging information")
     return p
 
 
@@ -70,8 +74,8 @@ def mount_c(source, dest, fstype, options=0, data='', verbose=False):
     Frontend to libc mount
     '''
     if verbose:
-        print("Trying to mount {0} on {1} as type {2}".format(source, dest,
-                                                                       fstype))
+        print("Trying to mount {0} on {1} as type {2}".format(
+            source, dest, fstype))
     libc = ctypes.CDLL(ctypes.util.find_library('c'))
     res = libc.mount(str(source), str(dest), str(fstype), options, str(data))
     if res < 0:
@@ -80,13 +84,13 @@ def mount_c(source, dest, fstype, options=0, data='', verbose=False):
 
 
 def get_available_filesystems():
-    l = []
+    ell = []
     try:
         with open('/proc/filesystems') as fd:
             for line in fd.readlines():
-                l.append(line.split()[-1])
+                ell.append(line.split()[-1])
     except IOError:
         print("Error reading supported filesystems from /proc/filesystems",
               file=sys.stderr)
-        return l
-    return l
+        return ell
+    return ell

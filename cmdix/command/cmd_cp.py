@@ -50,7 +50,6 @@ def func(args):
 
                 # Create subdirectories in destination directory
                 for subdir in dirnames:
-                    srcdir = os.path.join(root, subdir)
                     dstdir = os.path.join(dstbase, dstmid, subdir)
                     if not os.path.exists(dstbase):
                         os.mkdir(dstdir)
@@ -62,8 +61,9 @@ def func(args):
                     dstfile = os.path.join(dstbase, dstmid, filename)
                     srcfile = os.path.join(root, filename)
                     if args.interactive and os.path.exists(dstfile):
-                        q = input("{0}: {1} already ".format(prog, dstfile) +\
-                                  "exists; do you wish to overwrite (y or n)?")
+                        q = input(
+                            "{0}: {1} already ".format(args.prog, dstfile) +
+                            "exists; do you wish to overwrite (y or n)?")
                         if q.upper() != 'Y':
                             exception.StdOutException("not overwritten", 2)
                             continue

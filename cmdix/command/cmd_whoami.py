@@ -5,7 +5,7 @@ from .. import onlyunix
 
 try:
     import pwd
-except ImportError as err:
+except ImportError:
     pass
 
 

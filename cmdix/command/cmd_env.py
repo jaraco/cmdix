@@ -17,8 +17,9 @@ def parseargs(p):
                     "COMMAND."
     p.usage = '%(prog)s [OPTION]... [-] [NAME=VALUE]... [COMMAND [ARG]...]'
     p.add_argument('command')
-    p.add_argument("-i", "--ignore-environment", action="store_true",
-            dest="ignoreenvironment", help="start with an empty environment")
+    p.add_argument(
+        "-i", "--ignore-environment", action="store_true",
+        dest="ignoreenvironment", help="start with an empty environment")
     return p
 
 
@@ -35,7 +36,7 @@ def func(args):
             x = arg.split('=')
             if len(x) < 2:
                 exception.StdErrException(
-                        "Invalid argument {0}. ".format(arg) +\
-                        "Arguments should be in the form of 'foo=bar'", 127)
+                    "Invalid argument {0}. ".format(arg) +
+                    "Arguments should be in the form of 'foo=bar'", 127)
             else:
                 print(x[0] + '=' + x[1])

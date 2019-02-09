@@ -21,11 +21,12 @@ class TestCase(BaseTestCase):
         os.mkdir('biz')
         self.createfile('foo', size=100)
         self.createfile('bar', size=999999)
-        os.chmod('bar',
-                    stat.S_IWUSR +\
-                    stat.S_IRGRP +\
-                    stat.S_IWOTH +\
-                    stat.S_IXOTH
+        os.chmod(
+            'bar',
+            stat.S_IWUSR +
+            stat.S_IRGRP +
+            stat.S_IWOTH +
+            stat.S_IXOTH
         )
 
         uid = os.getuid()
@@ -33,10 +34,14 @@ class TestCase(BaseTestCase):
         date = time.strftime('%Y-%m-%d %H:%m', time.localtime())
         self.assertEqual(
             self.runcommandline('ls -l')[0],
-        '--w-r---wx 1 {0:<5} {1:<5} 999999 {2} bar\n'.format(uid, gid, date) +\
-        'drwxr-xr-x 2 {0:<5} {1:<5}     40 {2} biz\n'.format(uid, gid, date) +\
-        '-rw-r--r-- 1 {0:<5} {1:<5}    100 {2} foo\n'.format(uid, gid, date)
+            '--w-r---wx 1 {0:<5} {1:<5} 999999 {2} bar\n'
+            .format(uid, gid, date) +
+            'drwxr-xr-x 2 {0:<5} {1:<5}     40 {2} biz\n'
+            .format(uid, gid, date) +
+            '-rw-r--r-- 1 {0:<5} {1:<5}    100 {2} foo\n'
+            .format(uid, gid, date)
         )
+
 
 if __name__ == '__main__':
     unittest.main()

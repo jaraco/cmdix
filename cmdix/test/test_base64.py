@@ -14,9 +14,11 @@ class TestCase(BaseTestCase):
     def test_base64_encode(self):
         self.createfile('foo', size=50)
         output = self.runcommandline('base64 -w 30 foo')[0]
-        self.assertEqual(output, 'MDAwMDAwMDAwMDAwMDAwMDAwMDAwMD\n' +\
-                                 'AwMDAwMDAwMDAwMDAwMDAwMDAwMDAw\n' +\
-                                 'MDAwMDA=\n')
+        self.assertEqual(
+            output,
+            'MDAwMDAwMDAwMDAwMDAwMDAwMDAwMD\n'
+            'AwMDAwMDAwMDAwMDAwMDAwMDAwMDAw\n'
+            'MDAwMDA=\n')
 
 
 if __name__ == '__main__':

@@ -17,12 +17,15 @@ def parseargs(p):
                     "header giving the file name. With no FILE, or when " + \
                     "FILE is -, read standard input."
     p.add_argument('FILE', nargs="*")
-    p.add_argument("-f", "--follow", action="store_true",
-            help="output appended data as the file grows")
-    p.add_argument("-i", "--interval", default=1, type=float,
-            help="When using 'follow', check the file every INTERVAL seconds")
-    p.add_argument("-n", "--lines", default=10, metavar="N",
-            help="output the last N lines, instead of the last 10", type=int)
+    p.add_argument(
+        "-f", "--follow", action="store_true",
+        help="output appended data as the file grows")
+    p.add_argument(
+        "-i", "--interval", default=1, type=float,
+        help="When using 'follow', check the file every INTERVAL seconds")
+    p.add_argument(
+        "-n", "--lines", default=10, metavar="N",
+        help="output the last N lines, instead of the last 10", type=int)
     return p
 
 

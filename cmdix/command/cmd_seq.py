@@ -14,8 +14,9 @@ def parseargs(p):
     p.usage = "%(prog)s [OPTION]... LAST\nor:    %(prog)s [OPTION]... FIRST" +\
               " LAST\nor:    %(prog)s [OPTION]... FIRST INCREMENT LAST"
     p.add_argument("ar", nargs='+')
-    p.add_argument("-s", "--seperator", dest="seperator",
-            help="use SEPERATOR to separate numbers (default: \\n)")
+    p.add_argument(
+        "-s", "--seperator", dest="seperator",
+        help="use SEPERATOR to separate numbers (default: \\n)")
     return p
 
 
@@ -33,7 +34,7 @@ def func(args):
         print("seq: error: too few arguments")
         return
 
-    if args.seperator == None:
+    if args.seperator is None:
         for x in a:
             print(str(x))
     else:

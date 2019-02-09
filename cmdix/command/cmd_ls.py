@@ -31,7 +31,7 @@ def func(args):
     for arg in filelist:
         dirlist = os.listdir(arg)
         dirlist.sort()
-        l = []
+        ell = []
         sizelen = 0     # Length of the largest filesize integer
         nlinklen = 0    # Length of the largest nlink integer
         for f in dirlist:
@@ -48,7 +48,7 @@ def func(args):
                 mtime = time.localtime(st.st_mtime)
                 if stat.S_ISLNK(st.st_mode):
                     f += " -> {0}".format(os.readlink(path))
-                l.append((mode, nlink, uid, gid, size, mtime, f))
+                ell.append((mode, nlink, uid, gid, size, mtime, f))
 
                 # Update sizelen
                 _sizelen = len(str(size))
@@ -60,16 +60,16 @@ def func(args):
                 if _nlinklen > nlinklen:
                     nlinklen = _nlinklen
 
-        for mode, nlink, uid, gid, size, mtime, f in l:
+        for mode, nlink, uid, gid, size, mtime, f in ell:
             modtime = time.strftime('%Y-%m-%d %H:%m', mtime)
             print("{0} {1:>{nlink}} {2:<5} {3:<5} {4:>{size}} {5} {6}".format(
-                                mode,
-                                nlink,
-                                uid,
-                                gid,
-                                size,
-                                modtime,
-                                f,
-                                size=sizelen,
-                                nlink=nlinklen,
-                                ))
+                mode,
+                nlink,
+                uid,
+                gid,
+                size,
+                modtime,
+                f,
+                size=sizelen,
+                nlink=nlinklen,
+            ))

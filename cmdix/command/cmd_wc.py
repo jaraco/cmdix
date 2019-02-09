@@ -14,12 +14,15 @@ def parseargs(p):
     p.epilog = "If the FILE ends with '.bz2' or '.gz', the file will be " +\
                "decompressed automatically."
     p.add_argument('FILE', nargs='*')
-    p.add_argument("-m", "--chars", action="store_true", dest="chars",
-            help="print the character counts")
-    p.add_argument("-l", "--lines", action="store_true", dest="lines",
-            help="print the newline counts")
-    p.add_argument("-w", "--words", action="store_true", dest="words",
-            help="print the word counts")
+    p.add_argument(
+        "-m", "--chars", action="store_true", dest="chars",
+        help="print the character counts")
+    p.add_argument(
+        "-l", "--lines", action="store_true", dest="lines",
+        help="print the newline counts")
+    p.add_argument(
+        "-w", "--words", action="store_true", dest="words",
+        help="print the word counts")
     return p
 
 
@@ -48,20 +51,20 @@ def func(args):
 
     for filename, v in fdict.items():
         if args.lines:
-            print("{0:>{l}} ".format(v['lines'], l=maxlen), end='')
+            print("{0:>{len}} ".format(v['lines'], len=maxlen), end='')
         if args.words:
-            print("{0:>{l}} ".format(v['words'], l=maxlen), end='')
+            print("{0:>{len}} ".format(v['words'], len=maxlen), end='')
         if args.chars:
-            print("{0:>{l}} ".format(v['chars'], l=maxlen), end='')
+            print("{0:>{len}} ".format(v['chars'], len=maxlen), end='')
         if filename != '-':
             print(filename, end='')
         print()
 
     if len(fdict) > 1:
         if args.lines:
-            print("{0:>{l}} ".format(totlines, l=maxlen), end='')
+            print("{0:>{len}} ".format(totlines, len=maxlen), end='')
         if args.words:
-            print("{0:>{l}} ".format(totwords, l=maxlen), end='')
+            print("{0:>{len}} ".format(totwords, len=maxlen), end='')
         if args.chars:
-            print("{0:>{l}} ".format(totchars, l=maxlen), end='')
+            print("{0:>{len}} ".format(totchars, len=maxlen), end='')
         print('total')

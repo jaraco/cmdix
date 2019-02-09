@@ -29,6 +29,6 @@ def func(args):
         load5, load10, load15, proc, unknown = f.readline().split()[:5]
         totproc, avgproc = proc.split('/')
 
-    print(" {0:%H:%M:%S} up ".format(datetime.datetime.today()) +\
-          " {0},  {1} users,  ".format(uptime, 'TODO') +\
+    print(" {0:%H:%M:%S} up ".format(datetime.datetime.today()) +
+          " {0},  {1} users,  ".format(uptime, 'TODO') +
           "load average: {0}, {1}, {2}".format(load5, load10, load15))

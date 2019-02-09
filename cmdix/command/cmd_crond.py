@@ -46,7 +46,7 @@ def func(args):
     logger.setLevel(logging.INFO)
     handler = logging.StreamHandler(logfile)
     handler.setFormatter(logging.Formatter(
-                "%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
     logger.addHandler(handler)
 
     # Read crontab and load jobs
@@ -54,9 +54,10 @@ def func(args):
         # Strip comments and split the string
         split = line.strip().partition('#')[0].split(None, 6)
         if len(split) == 7:
-            job = Job(min=split[0], hour=split[1], mday=split[2],
-                        mon=split[3], wday=split[4], user=split[5],
-                        cmd=split[6])
+            job = Job(
+                min=split[0], hour=split[1], mday=split[2],
+                mon=split[3], wday=split[4], user=split[5],
+                cmd=split[6])
             joblist.append(job)
             if args.verbose:
                 print('Read {0}'.format(job))
@@ -69,11 +70,13 @@ def func(args):
         scheduler.enterabs(t, 1, checkjobs, ())
         now = time.localtime(t)
         for job in joblist:
-            if job.min in ['*', now.tm_min]    \
-            and job.hour in ['*', now.tm_hour] \
-            and job.mday in ['*', now.tm_mday] \
-            and job.mon in ['*', now.tm_mon]   \
-            and job.wday in ['*', now.tm_wday]:
+            if (
+                job.min in ['*', now.tm_min]
+                and job.hour in ['*', now.tm_hour]
+                and job.mday in ['*', now.tm_mday]
+                and job.mon in ['*', now.tm_mon]
+                and job.wday in ['*', now.tm_wday]
+            ):
                 cmd = job.cmd
                 if args.verbose:
                     logger.info("Running job {0}".format(cmd))

@@ -15,19 +15,23 @@ def parseargs(p):
     p.description = "A shell command interface to the syslog system log " +\
                     "module"
     p.add_argument("message", nargs='?')
-    p.add_argument("--host", dest="host",
-            help="Address of the syslog daemon. The default is 'localhost'")
-    p.add_argument("-p", dest="priority",
-            help="Enter the message with the specified priority. The " +\
-                 "priority may as a ''facility.level'' pair. For example, " +\
-                 "''-p local3.info'' logs the message(s) as informational " +\
-                 "level in the local3 facility. " +\
-                 "The default is ''user.notice.''")
-    p.add_argument("--port", dest="port",
-            help="Port of the syslog daemon. The default is 514'.'")
-    p.add_argument("-s", action="store_true", dest="stderr",
-            help="Log the message to standard error, as well as the " +\
-                 "system log.")
+    p.add_argument(
+        "--host", dest="host",
+        help="Address of the syslog daemon. The default is 'localhost'")
+    p.add_argument(
+        "-p", dest="priority",
+        help="Enter the message with the specified priority. The "
+        "priority may as a ''facility.level'' pair. For example, "
+        "''-p local3.info'' logs the message(s) as informational "
+        "level in the local3 facility. "
+        "The default is ''user.notice.''")
+    p.add_argument(
+        "--port", dest="port",
+        help="Port of the syslog daemon. The default is 514'.'")
+    p.add_argument(
+        "-s", action="store_true", dest="stderr",
+        help="Log the message to standard error, as well as the "
+        "system log.")
     return p
 
 

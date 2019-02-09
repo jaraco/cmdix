@@ -4,7 +4,6 @@ import doctest
 import filecmp
 import os
 import os.path
-import subprocess
 import sys
 import tempfile
 import unittest
