@@ -8,6 +8,9 @@ import os
 import signal
 import stat
 import sys
+import textwrap
+
+import cmdix
 
 
 def filelist2fds(filelist, mode='r'):
@@ -39,8 +42,9 @@ def filelist2fds(filelist, mode='r'):
                 with open(filename, mode) as fd:
                     yield fd
             else:
-                print("Cannot access {1}:".format(filename) +\
-                      "No such file or directory")
+                print(
+                    "Cannot access {1}:".format(filename) +
+                    "No such file or directory")
 
 
 def getcurrentusername():
@@ -209,12 +213,12 @@ def showbanner(width=None):
     The banner is centered if width is defined.
     '''
     subtext = "-= Cmdix version {0} =-".format(cmdix.__version__)
-    banner = [
-        " ____  _  _  ___  _____  ____  ____  __  __  ____  ____  __    ___ ",
-        r"(  _ \( \/ )/ __)(  _  )(  _ \( ___)(  )(  )(_  _)(_  _)(  )  / __)",
-        r" )___/ \  /( (__  )(_)(  )   / )__)  )(__)(   )(   _)(_  )(__ \__ \\",
-        r"(__)   (__) \___)(_____)(_)\_)(____)(______) (__) (____)(____)(___/",
-    ]
+    banner = textwrap.dedent(r"""
+          ___  __  __  ____  ____  _  _
+         / __)(  \/  )(  _ \(_  _)( \/ )
+        ( (__  )    (  )(_) )_)(_  )  (
+         \___)(_/\/\_)(____/(____)(_/\_)
+        """).lstrip('\n')
 
     if width:
         ret = ""

@@ -60,7 +60,7 @@ class ExtraOperandException(StdErrException):
 
     def __str__(self):
         return "{0}: extra operand `{1}'. Try {0} --help' for more ".format(
-                self.program, self.operand) + "information."
+            self.program, self.operand) + "information."
 
 
 class MissingOperandException(StdErrException):
