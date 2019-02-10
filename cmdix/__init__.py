@@ -99,6 +99,12 @@ def listcommands():
     )
 
 
+def _gen_script_definitions():
+    print('console_scripts =')
+    for cmd in listcommands():
+        print('\t{cmd} = cmdix:run'.format(**locals()))
+
+
 def run(argv=None):
     '''
     Parse commandline arguments and run command.
