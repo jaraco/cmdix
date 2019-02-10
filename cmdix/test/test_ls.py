@@ -32,8 +32,9 @@ class TestCase(BaseTestCase):
         uid = os.getuid()
         gid = os.getgid()
         date = time.strftime('%Y-%m-%d %H:%m', time.localtime())
+        out = self.runcommandline('ls -l')[0]
         self.assertEqual(
-            self.runcommandline('ls -l')[0],
+            out,
             '--w-r---wx 1 {0:<5} {1:<5} 999999 {2} bar\n'
             .format(uid, gid, date) +
             'drwxr-xr-x 2 {0:<5} {1:<5}     64 {2} biz\n'
