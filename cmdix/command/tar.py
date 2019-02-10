@@ -3,6 +3,8 @@ from ..exception import StdErrException
 import sys
 import tarfile
 
+from ..py27compat import print_text as print
+
 
 def parseargs(p):
     '''

@@ -5,15 +5,11 @@ import mimetypes
 import os
 import ssl
 import sys
+import io
+
+from six.moves.urllib.parse import parse_qs, urljoin
 
 import cmdix
-
-if sys.version_info[0] == 2:
-    from StringIO import StringIO
-    from urlparse import parse_qs, urljoin
-else:
-    from io import StringIO
-    from urllib.parse import parse_qs, urljoin
 
 
 class WSGIServer(simple_server.WSGIServer):
@@ -121,8 +117,8 @@ def wsgishell(environ, start_response):
     qs = parse_qs(environ['QUERY_STRING'])
     if 'commandline' in qs:
         commandline = qs['commandline'][0]
-        stdoutio = StringIO()
-        stderrio = StringIO()
+        stdoutio = io.StringIO()
+        stderrio = io.StringIO()
         sys.stdout = stdoutio
         sys.stderr = stderrio
         cmdix.runcommandline(commandline)

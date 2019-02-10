@@ -4,16 +4,11 @@ import filecmp
 import os
 import os.path
 import sys
+import io
 
 import pytest
 
 import cmdix
-
-
-if sys.version_info[0] == 2:
-    from StringIO import StringIO
-else:
-    from io import StringIO
 
 
 class BaseTestCase:
@@ -46,8 +41,8 @@ class BaseTestCase:
         :param commandline: A string containing the commandline, i.e. 'ls -l X'
         :return:            A tuple containing the unicoded stdout and stderr
         '''
-        stdoutio = StringIO()
-        stderrio = StringIO()
+        stdoutio = io.StringIO()
+        stderrio = io.StringIO()
         sys.stdout = stdoutio
         sys.stderr = stderrio
         cmdix.runcommandline(commandline)
@@ -106,4 +101,4 @@ class BaseTestCase:
         self.createfile('dir2/dir2-2/file2-2-1', size=88888)
 
     def setStdin(self, string):
-        sys.stdin = StringIO(string)
+        sys.stdin = io.StringIO(string)

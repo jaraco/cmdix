@@ -5,11 +5,8 @@ import sys
 import cmdix
 from .. import exception
 
-if sys.version_info[0] == 2:
-    from urllib2 import build_opener, HTTPError
-else:
-    from urllib.error import HTTPError
-    from urllib.request import build_opener
+from six.moves.urllib.request import build_opener
+from six.moves.urllib.error import HTTPError
 
 
 def parseargs(p):
