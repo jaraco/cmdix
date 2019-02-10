@@ -1,10 +1,8 @@
 from __future__ import print_function, unicode_literals
-from .. import onlyunix
+
 import os
-import os.path
 
 
-@onlyunix
 def parseargs(p):
     '''
     Add arguments and `func` to `p`.
