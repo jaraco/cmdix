@@ -64,6 +64,7 @@ class BaseTestCase(unittest.TestCase):
         '''
         Create temporary work directory
         '''
+        self.orig_dir = os.getcwd()
         self.workdir = tempfile.mkdtemp(prefix='cmdix-test.')
         os.chdir(self.workdir)
 
@@ -120,6 +121,7 @@ class BaseTestCase(unittest.TestCase):
             for name in dirs:
                 os.rmdir(os.path.join(root, name))
         os.rmdir(self.workdir)
+        os.chdir(self.orig_dir)
 
 
 def getalltests():
