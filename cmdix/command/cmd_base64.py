@@ -32,7 +32,7 @@ def func(args):
             s += line
 
     if args.decode:
-        out = _base64.b64decode(s.encode('ascii'))
+        out = _base64.b64decode(s.encode('ascii')).decode('ascii')
         if args.wrap == 0:
             print(out)
         else:
