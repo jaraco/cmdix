@@ -69,7 +69,7 @@ def getcommand(commandname):
     Raises a CommandNotFoundException if the command is not found
     '''
     # Try to import the command module
-    importstring = 'cmdix.command.cmd_{0}'.format(commandname)
+    importstring = 'cmdix.command.{0}'.format(commandname)
     try:
         parseargs = __import__(importstring, fromlist=1).parseargs
     except ImportError:
@@ -93,9 +93,9 @@ def listcommands():
     '''
     paths = map(pathlib.Path, importlib_resources.contents(command))
     return (
-        path.stem[4:]
+        path.stem
         for path in paths
-        if path.name.startswith('cmd_')
+        if not path.name.startswith('_')
     )
 
 
