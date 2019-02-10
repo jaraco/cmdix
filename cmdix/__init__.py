@@ -6,6 +6,12 @@ import os
 import shlex
 
 import importlib_metadata
+import importlib_resources
+
+try:
+    import pathlib
+except ImportError:
+    import pathlib2 as pathlib
 
 from . import command
 from .exception import CommandNotFoundException, StdErrException
@@ -85,9 +91,12 @@ def listcommands():
     '''
     Returns a list of all available commands
     '''
-    for cmd in command.__all__:
-        if cmd.startswith('cmd_'):
-            yield cmd[4:]
+    paths = map(pathlib.Path, importlib_resources.contents(command))
+    return (
+        path.stem[4:]
+        for path in paths
+        if path.name.startswith('cmd_')
+    )
 
 
 def run(argv=None):
