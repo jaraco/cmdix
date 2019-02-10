@@ -5,11 +5,13 @@ import argparse
 import os
 import shlex
 
+import importlib_metadata
+
 from . import command
 from .exception import CommandNotFoundException, StdErrException
 
 
-__version__ = '0.1.0a'
+__version__ = importlib_metadata.version(__name__)
 
 
 def onlyunix(f):
