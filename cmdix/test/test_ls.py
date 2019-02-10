@@ -36,7 +36,7 @@ class TestCase(BaseTestCase):
             self.runcommandline('ls -l')[0],
             '--w-r---wx 1 {0:<5} {1:<5} 999999 {2} bar\n'
             .format(uid, gid, date) +
-            'drwxr-xr-x 2 {0:<5} {1:<5}     40 {2} biz\n'
+            'drwxr-xr-x 2 {0:<5} {1:<5}     64 {2} biz\n'
             .format(uid, gid, date) +
             '-rw-r--r-- 1 {0:<5} {1:<5}    100 {2} foo\n'
             .format(uid, gid, date)
