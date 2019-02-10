@@ -29,6 +29,7 @@ class TestCase(BaseTestCase):
             stat.S_IWOTH +
             stat.S_IXOTH
         )
+        os.chmod('foo', 0o644)
 
         dirsize = os.stat('biz').st_size
         uid = os.getuid()
