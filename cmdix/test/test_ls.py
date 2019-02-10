@@ -19,7 +19,7 @@ class TestCase(BaseTestCase):
         )
 
     def test_ls_l(self):
-        os.mkdir('biz')
+        os.mkdir('biz', mode=0o755)
         self.createfile('foo', size=100)
         self.createfile('bar', size=999999)
         os.chmod(
