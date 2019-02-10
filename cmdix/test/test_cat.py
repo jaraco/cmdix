@@ -16,7 +16,7 @@ class TestCase(BaseTestCase):
         f = gzip.GzipFile('foo.gz', 'wb')
         f.write(b'0' * 12345)
         f.close()
-        self.assertEqual(self.runcommandline('cat foo.gz')[0], b'0' * 12345)
+        self.assertEqual(self.runcommandline('cat foo.gz')[0], '0' * 12345)
 
     def test_cat_stdin(self):
         self.setStdin('foo' * 1000)

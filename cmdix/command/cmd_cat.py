@@ -1,4 +1,7 @@
 from __future__ import print_function, unicode_literals
+
+import sys
+
 from .. import lib
 
 
@@ -18,7 +21,18 @@ def parseargs(p):
     return p
 
 
+def try_decode(line):
+    try:
+        return line.decode()
+    except Exception:
+        return line
+
+
 def func(args):
-    for f in lib.parsefilelist(args.FILE, True):
-        for line in f:
-            print(line.decode('utf-8'), end='')
+    lines = (
+        try_decode(line)
+        for file in lib.parsefilelist(args.FILE, True)
+        for line in file
+    )
+    for line in lines:
+        sys.stdout.write(line)
