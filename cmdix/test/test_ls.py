@@ -30,13 +30,14 @@ class TestCase(BaseTestCase):
             stat.S_IXOTH
         )
 
+        dirsize = os.stat('biz').st_size
         uid = os.getuid()
         gid = os.getgid()
         date = time.strftime('%Y-%m-%d %H:%m', time.localtime())
         out = self.runcommandline('ls -l')[0]
         expected = textwrap.dedent("""
             --w-r---wx 1 {uid:<5} {gid:<5} 999999 {date} bar
-            drwxr-xr-x 2 {uid:<5} {gid:<5}     64 {date} biz
+            drwxr-xr-x 2 {uid:<5} {gid:<5} {dirsize:>6} {date} biz
             -rw-r--r-- 1 {uid:<5} {gid:<5}    100 {date} foo
             """).lstrip().format(**locals())
         self.assertEqual(out, expected)
