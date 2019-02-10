@@ -1,12 +1,13 @@
-
 from __future__ import print_function, unicode_literals
+
 import doctest
 import filecmp
 import os
 import os.path
 import sys
-import tempfile
 import unittest
+
+import pytest
 
 import cmdix
 
@@ -60,13 +61,11 @@ class BaseTestCase(unittest.TestCase):
         stderrstr = ''.join(stderrio.readlines())
         return (stdoutstr, stderrstr)
 
-    def setUp(self):
-        '''
-        Create temporary work directory
-        '''
-        self.orig_dir = os.getcwd()
-        self.workdir = tempfile.mkdtemp(prefix='cmdix-test.')
-        os.chdir(self.workdir)
+    @pytest.fixture(autouse=True)
+    def tmpdir_as_cwd(self, tmpdir):
+        with tmpdir.as_cwd():
+            self.workdir = str(tmpdir)
+            yield tmpdir
 
     def setup_filesystem(self):
         '''
@@ -110,18 +109,6 @@ class BaseTestCase(unittest.TestCase):
 
     def setStdin(self, string):
         sys.stdin = StringIO(string)
-
-    def tearDown(self):
-        '''
-        Recursively remove work directory
-        '''
-        for root, dirs, filenames in os.walk(self.workdir, topdown=False):
-            for name in filenames:
-                os.remove(os.path.join(root, name))
-            for name in dirs:
-                os.rmdir(os.path.join(root, name))
-        os.rmdir(self.workdir)
-        os.chdir(self.orig_dir)
 
 
 def getalltests():
