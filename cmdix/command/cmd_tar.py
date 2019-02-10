@@ -92,5 +92,7 @@ def func(args):
         for arg in args.FILE:
             tar.add(arg)
         tar.close()
+        if args.archive:
+            outfile.close()
     else:
         print("Either '-c', '-t' or '-x' should be specified", file=sys.stderr)

@@ -39,9 +39,9 @@ class TestCase(BaseTestCase):
 
         for archive in ('foo.tar', 'foo.tar.bz2', 'foo.tar.gz'):
             # Create an archive
-            self.assertEqual(
-                self.runcommandline(
-                    'tar -cf {0} dir1 dir2 file1'.format(archive))[0], '')
+            res = self.runcommandline(
+                'tar -cf {0} dir1 dir2 file1'.format(archive))
+            self.assertEqual(res[0], '')
             list_ = []
             for tarinfo in tarfile.open(archive):
                 name = tarinfo.name
