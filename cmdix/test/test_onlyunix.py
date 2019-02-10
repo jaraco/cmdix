@@ -1,8 +1,5 @@
-#!/usr/bin/env python
 from __future__ import unicode_literals
-from . import BaseTestCase
 import os
-import unittest
 
 import pytest
 
@@ -16,13 +13,13 @@ def pretend_windows(monkeypatch):
 
 
 @pytest.mark.usefixtures('pretend_windows')
-class TestCase(BaseTestCase):
+class TestCase:
+    unix_only_cmds = (
+        'chmod', 'chown', 'id', 'ln', 'login', 'mount', 'tee', 'uptime',
+        'whoami',
+    )
+
     def test_onlyunix(self):
-        for command in ['chmod', 'chown', 'id', 'ln', 'login', 'mount', 'tee',
-                        'uptime', 'whoami']:
-            self.assertRaises(exception.CommandNotFoundException,
-                              cmdix.getcommand, command)
-
-
-if __name__ == '__main__':
-    unittest.main()
+        for command in self.unix_only_cmds:
+            with pytest.raises(exception.CommandNotFoundException):
+                cmdix.getcommand(command)
