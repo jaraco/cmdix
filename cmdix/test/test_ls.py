@@ -40,7 +40,7 @@ class TestCase(BaseTestCase):
             drwxr-xr-x 2 {uid:<5} {gid:<5} {dirsize:>6} {date} biz
             -rw-r--r-- 1 {uid:<5} {gid:<5}    100 {date} foo
             """).lstrip().format(**locals())
-        self.assertEqual(out, expected)
+        assert out == expected
 
 
 if __name__ == '__main__':
