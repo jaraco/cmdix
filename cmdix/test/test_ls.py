@@ -1,10 +1,8 @@
-#!/usr/bin/env python
 from __future__ import unicode_literals
 
 import os
 import stat
 import time
-import unittest
 import textwrap
 
 from . import BaseTestCase
@@ -14,10 +12,8 @@ from . import py27compat
 class TestCase(BaseTestCase):
     def test_ls(self):
         self.setup_filesystem()
-        self.assertEqual(
-            self.runcommandline('ls')[0],
-            'dir1\ndir2\nfile1\nfile2.txt\nfile3.empty\n'
-        )
+        out = self.runcommandline('ls')[0]
+        assert out == 'dir1\ndir2\nfile1\nfile2.txt\nfile3.empty\n'
 
     def test_ls_l(self):
         py27compat.mkdir('biz', mode=0o755)
@@ -43,7 +39,3 @@ class TestCase(BaseTestCase):
             -rw-r--r-- 1 {uid:<5} {gid:<5}    100 {date} foo
             """).lstrip().format(**locals())
         assert out == expected
-
-
-if __name__ == '__main__':
-    unittest.main()

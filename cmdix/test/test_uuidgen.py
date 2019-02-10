@@ -1,7 +1,5 @@
-#!/usr/bin/env python
 from __future__ import unicode_literals
 
-import unittest
 from . import BaseTestCase
 
 
@@ -12,19 +10,15 @@ class TestCase(BaseTestCase):
             ell = uuid.rstrip().split('-')
 
             # Check uuid-length
-            self.assertEqual(len(uuid), 37)
+            assert len(uuid) == 37
 
             # Check if uuid ends with \n
-            self.assertTrue(uuid.endswith('\n'))
+            assert uuid.endswith('\n')
 
             # Check split
-            self.assertEqual(len(ell), 5)
+            assert len(ell) == 5
 
             # Check if every character is hex
             for x in ell:
                 for c in x:
-                    self.assertTrue(0 <= int(c, 16) <= 15)
-
-
-if __name__ == '__main__':
-    unittest.main()
+                    assert 0 <= int(c, 16) <= 15

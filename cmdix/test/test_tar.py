@@ -1,8 +1,8 @@
-#!/usr/bin/env python
 from __future__ import unicode_literals
 
 import tarfile
-import unittest
+
+import pytest
 
 from ..exception import StdErrException
 from . import BaseTestCase
@@ -11,11 +11,8 @@ from . import BaseTestCase
 class TestCase(BaseTestCase):
     def test_notarfile(self):
         self.createfile('foo', size=100)
-        self.assertRaises(
-            StdErrException,
-            self.runcommandline,
-            'tar -tf foo'
-        )
+        with pytest.raises(StdErrException):
+            self.runcommandline('tar -tf foo')
 
     def test_tar(self):
         self.setup_filesystem()
@@ -41,7 +38,7 @@ class TestCase(BaseTestCase):
             # Create an archive
             res = self.runcommandline(
                 'tar -cf {0} dir1 dir2 file1'.format(archive))
-            self.assertEqual(res[0], '')
+            assert res[0] == ''
             list_ = []
             for tarinfo in tarfile.open(archive):
                 name = tarinfo.name
@@ -49,13 +46,13 @@ class TestCase(BaseTestCase):
                     name += '/'
                 list_.append(name)
             list_.sort()
-            self.assertEqual(list_, good)
+            assert list_ == good
 
             # List the archive
             x = self.runcommandline(
                 'tar -tf {0}'.format(archive))[0].split()
             x.sort()
-            self.assertEqual(x, good)
+            assert x == good
 
             # Extract the archive
             """
@@ -64,9 +61,5 @@ class TestCase(BaseTestCase):
             os.chdir('extractdir')
             x = self.runcommandline(
                     'tar -xf {0}'.format(os.path.join(d, archive)))[0].split()
-            self.assertEqual(x, good)
+            assert x == good
             """
-
-
-if __name__ == '__main__':
-    unittest.main()
