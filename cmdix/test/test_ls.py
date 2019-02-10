@@ -5,6 +5,7 @@ import os
 import stat
 import time
 import unittest
+import textwrap
 
 from . import BaseTestCase
 
@@ -33,15 +34,12 @@ class TestCase(BaseTestCase):
         gid = os.getgid()
         date = time.strftime('%Y-%m-%d %H:%m', time.localtime())
         out = self.runcommandline('ls -l')[0]
-        self.assertEqual(
-            out,
-            '--w-r---wx 1 {0:<5} {1:<5} 999999 {2} bar\n'
-            .format(uid, gid, date) +
-            'drwxr-xr-x 2 {0:<5} {1:<5}     64 {2} biz\n'
-            .format(uid, gid, date) +
-            '-rw-r--r-- 1 {0:<5} {1:<5}    100 {2} foo\n'
-            .format(uid, gid, date)
-        )
+        expected = textwrap.dedent("""
+            --w-r---wx 1 {uid:<5} {gid:<5} 999999 {date} bar
+            drwxr-xr-x 2 {uid:<5} {gid:<5}     64 {date} biz
+            -rw-r--r-- 1 {uid:<5} {gid:<5}    100 {date} foo
+            """).lstrip().format(**locals())
+        self.assertEqual(out, expected)
 
 
 if __name__ == '__main__':
