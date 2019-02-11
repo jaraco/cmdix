@@ -1,5 +1,8 @@
 from __future__ import print_function, unicode_literals
 import platform
+import subprocess
+import io
+import re
 
 
 def parseargs(p):
@@ -47,6 +50,33 @@ def parseargs(p):
     return p
 
 
+def processor_from_cpu_info():
+    pattern = re.compile(r'model name\s+: (.*)')
+    try:
+        with io.open('/proc/cpuinfo') as lines:
+            matched = next(filter(pattern.match, lines))
+            return pattern.match(matched).group(1)
+    except Exception:
+        pass
+
+
+def get_processor():
+    """
+    On Unix systems (or non-windows in particular), Python falls
+    back to calling `uname -p` to get the processor... which
+    won't work if this module is implementing uname. So find
+    the info another way.
+    """
+    if platform.system() == 'Windows':
+        return platform.processor()
+
+    if platform.system() == 'Darwin':
+        cmd = 'sysctl -n machdep.cpu.brand_string'.split()
+        return subprocess.check_output(cmd, universal_newlines=True).strip()
+
+    return processor_from_cpu_info() or 'unknown'
+
+
 def func(args):
     output = []
 
@@ -66,7 +96,7 @@ def func(args):
         output.append(platform.machine())
 
     if args.processor:
-        output.append(platform.processor())
+        output.append(get_processor())
 
     if args.hardwareplatform:
         # Didn't find a way to get this
