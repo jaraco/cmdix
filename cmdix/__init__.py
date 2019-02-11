@@ -14,7 +14,7 @@ except ImportError:
     import pathlib2 as pathlib
 
 from . import command
-from .exception import CommandNotFoundException, StdErrException
+from .exception import CommandNotFoundException
 
 
 __version__ = importlib_metadata.version(__name__)
@@ -26,31 +26,6 @@ def onlyunix(f):
     '''
     f._onlyunix = True
     return f
-
-
-def createlinks(directory, binpath='/usr/bin/cmdix'):
-    '''
-    Create a symlink to this lib for every available command
-
-    :param directory:   Directory where to store the links
-    :param pycorepath:  Path to link to
-    '''
-    link_names = []
-    for cmd in listcommands():
-        linkname = os.path.join(directory, cmd)
-        if os.path.exists(linkname):
-            raise StdErrException(
-                "{0} already exists. Not doing anything.".format(linkname))
-        link_names.append(linkname)
-
-    path = os.path.abspath(binpath)
-    for linkname in link_names:
-        try:
-            os.symlink(path, linkname)
-        except OSError:
-            print("{0} already exists. Skipping.".format(path))
-        else:
-            print("Linked {0} to {1}".format(linkname, path))
 
 
 def format_all_help():
@@ -136,10 +111,6 @@ def run(argv=None):
     group.add_argument(
         "--runtests", action="store_true",
         help="Run all sort of tests")
-    group.add_argument(
-        "--createlinks", dest="directory",
-        help="For every command, create a symlink to "
-        "this library in 'directory'")
 
     if commandname in ('__main__.py',):
         args, argv = parser.parse_known_args(argv)
@@ -160,10 +131,6 @@ def run(argv=None):
                 print("Can't import test suite", file=sys.stderr)
                 sys.exit(1)
             test.runalltests()
-            return
-
-        elif args.directory:
-            createlinks(args.directory)
             return
 
         elif not args.command and not argv:
