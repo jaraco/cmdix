@@ -3,6 +3,7 @@ import platform
 import subprocess
 import io
 import re
+import contextlib
 
 
 def parseargs(p):
@@ -77,7 +78,26 @@ def get_processor():
     return processor_from_cpu_info() or 'unknown'
 
 
+@contextlib.contextmanager
+def patch_syscmd_uname():
+    """
+    To prevent an infinite recursion when `platform.uname()` is called,
+    suppress the `_syscmd_uname` function.
+    """
+    orig = platform._syscmd_uname
+    platform._syscmd_uname = lambda x, y: 'unknown'
+    try:
+        yield
+    finally:
+        platform._syscmd_uname = orig
+
+
 def func(args):
+    with patch_syscmd_uname():
+        return do_it(args)
+
+
+def do_it(args):
     output = []
 
     if args.kernelname or args.all:
