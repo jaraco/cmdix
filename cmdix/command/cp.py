@@ -17,14 +17,35 @@ def parseargs(p):
     p.description = "Copy SOURCE to DEST, or multiple SOURCE(s) to DIRECTORY."
     p.add_argument('SOURCE', nargs='+')
     p.add_argument('DIRECTORY', nargs=1)
-    p.add_argument("-i", "--interactive", action="store_true",
-                   dest="interactive", help="prompt before overwrite")
-    p.add_argument("-p", "--preserve", action="store_true", dest="preserve",
-                   help="preserve as many attributes as possible")
-    p.add_argument("-r", "-R", "--recursive", action="store_true",
-                   dest="recursive", help="copy directories recursively")
-    p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
-                   help="print a message for each created directory")
+    p.add_argument(
+        "-i",
+        "--interactive",
+        action="store_true",
+        dest="interactive",
+        help="prompt before overwrite",
+    )
+    p.add_argument(
+        "-p",
+        "--preserve",
+        action="store_true",
+        dest="preserve",
+        help="preserve as many attributes as possible",
+    )
+    p.add_argument(
+        "-r",
+        "-R",
+        "--recursive",
+        action="store_true",
+        dest="recursive",
+        help="copy directories recursively",
+    )
+    p.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        dest="verbose",
+        help="print a message for each created directory",
+    )
     return p
 
 
@@ -62,8 +83,9 @@ def func(args):
                     srcfile = os.path.join(root, filename)
                     if args.interactive and os.path.exists(dstfile):
                         q = input(
-                            "{0}: {1} already ".format(args.prog, dstfile) +
-                            "exists; do you wish to overwrite (y or n)?")
+                            "{0}: {1} already ".format(args.prog, dstfile)
+                            + "exists; do you wish to overwrite (y or n)?"
+                        )
                         if q.upper() != 'Y':
                             exception.StdOutException("not overwritten", 2)
                             continue

@@ -12,26 +12,31 @@ def parseargs(p):
     '''
     # TODO: -i, -f, t
     p.set_defaults(func=func)
-    p.description = "A shell command interface to the syslog system log " +\
-                    "module"
+    p.description = "A shell command interface to the syslog system log " + "module"
     p.add_argument("message", nargs='?')
     p.add_argument(
-        "--host", dest="host",
-        help="Address of the syslog daemon. The default is 'localhost'")
+        "--host",
+        dest="host",
+        help="Address of the syslog daemon. The default is 'localhost'",
+    )
     p.add_argument(
-        "-p", dest="priority",
+        "-p",
+        dest="priority",
         help="Enter the message with the specified priority. The "
         "priority may as a ''facility.level'' pair. For example, "
         "''-p local3.info'' logs the message(s) as informational "
         "level in the local3 facility. "
-        "The default is ''user.notice.''")
+        "The default is ''user.notice.''",
+    )
     p.add_argument(
-        "--port", dest="port",
-        help="Port of the syslog daemon. The default is 514'.'")
+        "--port", dest="port", help="Port of the syslog daemon. The default is 514'.'"
+    )
     p.add_argument(
-        "-s", action="store_true", dest="stderr",
-        help="Log the message to standard error, as well as the "
-        "system log.")
+        "-s",
+        action="store_true",
+        dest="stderr",
+        help="Log the message to standard error, as well as the " "system log.",
+    )
     return p
 
 
@@ -51,8 +56,7 @@ def func(args):
 
     handler = logging.handlers.SysLogHandler(address, facility)
     if facility not in handler.facility_names:
-        err = "Unknown facility {0}. ".format(facility) +\
-              "Valid facilities are: "
+        err = "Unknown facility {0}. ".format(facility) + "Valid facilities are: "
         facilitylist = list(handler.facility_names.keys())
         facilitylist.sort()
         for f in facilitylist:

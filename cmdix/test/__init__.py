@@ -12,7 +12,6 @@ import cmdix
 
 
 class BaseTestCase:
-
     def assertSamefile(self, file1, file2):
         assert filecmp.cmp(file1, file2)
 

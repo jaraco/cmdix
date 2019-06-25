@@ -3,7 +3,6 @@ from . import BaseTestCase
 
 
 class TestCase(BaseTestCase):
-
     def test_tail(self):
         self.createfile('foo', size=4096, fill='foo\n')
         assert self.runcommandline('tail foo')[0] == 'foo\n' * 10

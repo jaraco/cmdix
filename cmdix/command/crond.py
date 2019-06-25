@@ -19,14 +19,21 @@ def parseargs(p):
     # TODO: Environment variables, different users and daemonize
     p.set_defaults(func=func)
     p.description = "Very simple cron daemon"
-    p.epilog = "If CRONFILE ends with '.bz2' or '.gz', the file will be " + \
-               "decompressed automatically."
+    p.epilog = (
+        "If CRONFILE ends with '.bz2' or '.gz', the file will be "
+        + "decompressed automatically."
+    )
     p.add_argument("filelist", nargs='+')
     p.add_argument("-l", "--logfile", dest="logfile", help="log to file")
-    p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
-                   help="show debug info")
-    p.add_argument("--dryrun", action="store_true", dest="dryrun",
-                   help="don't actually do anything")
+    p.add_argument(
+        "-v", "--verbose", action="store_true", dest="verbose", help="show debug info"
+    )
+    p.add_argument(
+        "--dryrun",
+        action="store_true",
+        dest="dryrun",
+        help="don't actually do anything",
+    )
     return p
 
 
@@ -38,15 +45,15 @@ def func(args):
 
     scheduler = sched.scheduler(time.time, time.sleep)
     joblist = []
-    Job = collections.namedtuple('Job',
-                                 'min, hour, mday, mon, wday, user, cmd')
+    Job = collections.namedtuple('Job', 'min, hour, mday, mon, wday, user, cmd')
 
     # Create logger
     logger = logging.getLogger("crond")
     logger.setLevel(logging.INFO)
     handler = logging.StreamHandler(logfile)
-    handler.setFormatter(logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
+    handler.setFormatter(
+        logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    )
     logger.addHandler(handler)
 
     # Read crontab and load jobs
@@ -55,9 +62,14 @@ def func(args):
         split = line.strip().partition('#')[0].split(None, 6)
         if len(split) == 7:
             job = Job(
-                min=split[0], hour=split[1], mday=split[2],
-                mon=split[3], wday=split[4], user=split[5],
-                cmd=split[6])
+                min=split[0],
+                hour=split[1],
+                mday=split[2],
+                mon=split[3],
+                wday=split[4],
+                user=split[5],
+                cmd=split[6],
+            )
             joblist.append(job)
             if args.verbose:
                 print('Read {0}'.format(job))
@@ -85,10 +97,9 @@ def func(args):
                     break
 
                 # Run the command
-                stdout, stderr = subprocess.Popen(cmd,
-                                                  stdout=subprocess.PIPE,
-                                                  stderr=subprocess.PIPE,
-                                                  shell=True).communicate()
+                stdout, stderr = subprocess.Popen(
+                    cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
+                ).communicate()
                 if args.verbose:
                     if stdout:
                         logger.info("{0}: {1}".format(cmd, stdout.strip()))

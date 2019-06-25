@@ -11,18 +11,28 @@ def parseargs(p):
     '''
     p.set_defaults(func=func)
     p.description = "Print newline, word, and byte counts for each file"
-    p.epilog = "If the FILE ends with '.bz2' or '.gz', the file will be " +\
-               "decompressed automatically."
+    p.epilog = (
+        "If the FILE ends with '.bz2' or '.gz', the file will be "
+        + "decompressed automatically."
+    )
     p.add_argument('FILE', nargs='*')
     p.add_argument(
-        "-m", "--chars", action="store_true", dest="chars",
-        help="print the character counts")
+        "-m",
+        "--chars",
+        action="store_true",
+        dest="chars",
+        help="print the character counts",
+    )
     p.add_argument(
-        "-l", "--lines", action="store_true", dest="lines",
-        help="print the newline counts")
+        "-l",
+        "--lines",
+        action="store_true",
+        dest="lines",
+        help="print the newline counts",
+    )
     p.add_argument(
-        "-w", "--words", action="store_true", dest="words",
-        help="print the word counts")
+        "-w", "--words", action="store_true", dest="words", help="print the word counts"
+    )
     return p
 
 
@@ -33,8 +43,7 @@ def func(args):
         args.FILE = ['-']
     for filename in args.FILE:
         fdict[filename] = {'chars': 0, 'lines': 0, 'words': 0}
-        for line in fileinput.input(filename,
-                                    openhook=fileinput.hook_compressed):
+        for line in fileinput.input(filename, openhook=fileinput.hook_compressed):
             fdict[filename]['chars'] += len(line)
             fdict[filename]['lines'] += 1
             fdict[filename]['words'] += len(line.split())

@@ -13,12 +13,17 @@ def parseargs(p):
     :return:  ArgumentParser
     '''
     p.set_defaults(func=func)
-    p.description = "Copy standard input to each FILE, and also to " + \
-                    "standard output."
+    p.description = (
+        "Copy standard input to each FILE, and also to " + "standard output."
+    )
     p.add_argument('FILE', nargs='*')
     p.add_argument(
-        "-a", "--append", action="store_true", dest="append",
-        help="append to the given FILEs, do not overwrite")
+        "-a",
+        "--append",
+        action="store_true",
+        dest="append",
+        help="append to the given FILEs, do not overwrite",
+    )
     return p
 
 

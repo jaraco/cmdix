@@ -15,5 +15,6 @@ class TestCase(BaseTestCase):
         expected = (
             'MDAwMDAwMDAwMDAwMDAwMDAwMDAwMD\n'
             'AwMDAwMDAwMDAwMDAwMDAwMDAwMDAw\n'
-            'MDAwMDA=\n')
+            'MDAwMDA=\n'
+        )
         assert output == expected

@@ -5,7 +5,6 @@ from . import BaseTestCase
 
 
 class TestCase(BaseTestCase):
-
     def test_cat(self):
         self.createfile('foo', size=66666)
         out = self.runcommandline('cat foo')[0]

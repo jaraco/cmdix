@@ -14,8 +14,8 @@ def parseargs(p):
     p.add_argument("SOURCE", nargs='+')
     p.add_argument("DEST", nargs=1)
     p.add_argument(
-        "-v", "--verbose", action="store_true",
-        help="explain what is being done")
+        "-v", "--verbose", action="store_true", help="explain what is being done"
+    )
     return p
 
 

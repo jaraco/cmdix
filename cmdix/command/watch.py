@@ -17,8 +17,13 @@ def parseargs(p):
     p.description = "execute a program periodically, showing output fullscreen"
     p.add_argument('command', nargs='+')
     p.add_argument(
-        "-n", "--interval", dest="seconds", type=float, default=2,
-        help="Interval between updates")
+        "-n",
+        "--interval",
+        dest="seconds",
+        type=float,
+        default=2,
+        help="Interval between updates",
+    )
     return p
 
 

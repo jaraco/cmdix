@@ -67,11 +67,7 @@ def listcommands():
     Returns a list of all available commands
     '''
     paths = map(pathlib.Path, importlib_resources.contents(command))
-    return (
-        path.stem
-        for path in paths
-        if not path.name.startswith('_')
-    )
+    return (path.stem for path in paths if not path.name.startswith('_'))
 
 
 def _gen_script_definitions():
@@ -98,19 +94,19 @@ def run(argv=None):
     commandname = os.path.basename(argv.pop(0))
     parser = argparse.ArgumentParser(
         add_help=False,
-        description="Coreutils in Pure Python.", prog=commandname,
-        epilog="Available Commands: " + ", ".join(listcommands()))
+        description="Coreutils in Pure Python.",
+        prog=commandname,
+        epilog="Available Commands: " + ", ".join(listcommands()),
+    )
     group = parser.add_mutually_exclusive_group()
     group.add_argument("command", nargs="?")
     group.add_argument(
-        "--allhelp", action="store_true",
-        help="Show the help pages off all commands")
+        "--allhelp", action="store_true", help="Show the help pages off all commands"
+    )
     group.add_argument(
-        "--license", action="store_true",
-        help="Show program's license and exit")
-    group.add_argument(
-        "--runtests", action="store_true",
-        help="Run all sort of tests")
+        "--license", action="store_true", help="Show program's license and exit"
+    )
+    group.add_argument("--runtests", action="store_true", help="Run all sort of tests")
 
     if commandname in ('__main__.py',):
         args, argv = parser.parse_known_args(argv)

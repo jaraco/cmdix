@@ -20,10 +20,11 @@ def parseargs(p):
     '''
     # TODO: Support for groups and --reference
     p.set_defaults(func=func)
-    p.description = \
-        "Change the owner and/or group of each FILE to OWNER " + \
-        "and/or GROUP. With --reference, change the owner and" + \
-        " group of each FILE to those of RFILE."
+    p.description = (
+        "Change the owner and/or group of each FILE to OWNER "
+        + "and/or GROUP. With --reference, change the owner and"
+        + " group of each FILE to those of RFILE."
+    )
     p.add_argument('FILE', nargs='*')
     p.add_argument('owner', nargs='?')
     return p
@@ -35,7 +36,8 @@ def func(args):
             user = pwd.getpwnam(args.owner)
         except KeyError:
             raise StdErrException(
-                "{0}: invalid user: '{1}'".format(args.prog, args.owner))
+                "{0}: invalid user: '{1}'".format(args.prog, args.owner)
+            )
         uid = user.pw_uid
 
     for arg in args.FILE:

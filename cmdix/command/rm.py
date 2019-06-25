@@ -13,13 +13,28 @@ def parseargs(p):
     p.set_defaults(func=func)
     p.description = "print name of current/working directory"
     p.add_argument('FILE', nargs='+')
-    p.add_argument("-f", "--force", action="store_true", dest="force",
-                   help="ignore nonexistent files, never prompt")
-    p.add_argument("-r", "-R", "--recursive", action="store_true",
-                   dest="recursive",
-                   help="remove directories and their contents recursively")
-    p.add_argument("-v", "--verbose", action="store_true", dest="verbose",
-                   help="explain what is being done")
+    p.add_argument(
+        "-f",
+        "--force",
+        action="store_true",
+        dest="force",
+        help="ignore nonexistent files, never prompt",
+    )
+    p.add_argument(
+        "-r",
+        "-R",
+        "--recursive",
+        action="store_true",
+        dest="recursive",
+        help="remove directories and their contents recursively",
+    )
+    p.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        dest="verbose",
+        help="explain what is being done",
+    )
     return p
 
 
@@ -31,8 +46,7 @@ def func(args):
     for arg in args.FILE:
         if args.recursive and os.path.isdir(arg):
             # Remove directory recursively
-            for root, dirs, files in os.walk(arg, topdown=False,
-                                             onerror=_raise):
+            for root, dirs, files in os.walk(arg, topdown=False, onerror=_raise):
                 for name in files:
                     path = os.path.join(root, name)
                     os.remove(path)

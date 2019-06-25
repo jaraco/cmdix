@@ -11,10 +11,16 @@ def parseargs(p):
     '''
     # TODO: Templates, most of the options
     p.set_defaults(func=func)
-    p.description = "Create a temporary file or directory, safely, and " + \
-                    "print its name."
-    p.add_argument("-d", "--directory", action="store_true", dest="directory",
-                   help="create a directory, not a file")
+    p.description = (
+        "Create a temporary file or directory, safely, and " + "print its name."
+    )
+    p.add_argument(
+        "-d",
+        "--directory",
+        action="store_true",
+        dest="directory",
+        help="create a directory, not a file",
+    )
     return p
 
 

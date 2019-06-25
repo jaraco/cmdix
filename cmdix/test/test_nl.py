@@ -19,9 +19,7 @@ class TestCase(BaseTestCase):
     def test_nl_s(self):
         self.createfile('foo', content=testdata)
         out = self.runcommandline('nl -s XYZ foo')[0]
-        expected = (
-            '         \n     1XYZfoo bar\n         \n     2XYZbiz\n     3XYZ '
-        )
+        expected = '         \n     1XYZfoo bar\n         \n     2XYZbiz\n     3XYZ '
         assert out == expected
 
     def test_nl_w(self):

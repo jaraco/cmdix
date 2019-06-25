@@ -23,14 +23,30 @@ def parseargs(p):
     )
     p.add_argument('FILE', nargs='+')
     p.add_argument('target', nargs='?')
-    p.add_argument("-c", "--create", action="store_true", dest="create",
-                   help="create zipfile from source.")
-    p.add_argument("-e", "--extract", action="store_true", dest="extract",
-                   help="extract zipfile into target directory.")
-    p.add_argument("-l", "--list", action="store_true", dest="list",
-                   help="list files in zipfile.")
-    p.add_argument("-t", "--test", action="store_true", dest="test",
-                   help="test if a zipfile is valid.")
+    p.add_argument(
+        "-c",
+        "--create",
+        action="store_true",
+        dest="create",
+        help="create zipfile from source.",
+    )
+    p.add_argument(
+        "-e",
+        "--extract",
+        action="store_true",
+        dest="extract",
+        help="extract zipfile into target directory.",
+    )
+    p.add_argument(
+        "-l", "--list", action="store_true", dest="list", help="list files in zipfile."
+    )
+    p.add_argument(
+        "-t",
+        "--test",
+        action="store_true",
+        dest="test",
+        help="test if a zipfile is valid.",
+    )
     return p
 
 
@@ -87,8 +103,7 @@ def func(args):
                 zf.write(path, zippath, zipfile.ZIP_DEFLATED)
             elif os.path.isdir(path):
                 for nm in os.listdir(path):
-                    addToZip(zf, os.path.join(path, nm),
-                             os.path.join(zippath, nm))
+                    addToZip(zf, os.path.join(path, nm), os.path.join(zippath, nm))
             else:
                 exception.StdErrException("Can't store {0}".format(path))
 

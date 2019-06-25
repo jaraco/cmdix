@@ -43,8 +43,8 @@ def filelist2fds(filelist, mode='r'):
                     yield fd
             else:
                 print(
-                    "Cannot access {1}:".format(filename) +
-                    "No such file or directory")
+                    "Cannot access {1}:".format(filename) + "No such file or directory"
+                )
 
 
 def getcurrentusername():
@@ -52,7 +52,7 @@ def getcurrentusername():
     Returns the username of the current user
     '''
     if 'USER' in os.environ:
-        return os.environ['USER']      # Unix
+        return os.environ['USER']  # Unix
     if 'USERNAME' in os.environ:
         return os.environ['USERNAME']  # Windows
 
@@ -62,10 +62,42 @@ def getsignals():
     Return a dict of all available signals
     '''
     signallist = [
-        'ABRT', 'CONT', 'IO', 'PROF', 'SEGV', 'TSTP', 'USR2', '_DFL', 'ALRM',
-        'FPE', 'IOT', 'PWR', 'STOP', 'TTIN', 'VTALRM', '_IGN', 'BUS', 'HUP',
-        'KILL', 'QUIT', 'SYS', 'TTOU', 'WINCH', 'CHLD', 'ILL', 'PIPE', 'RTMAX',
-        'TERM', 'URG', 'XCPU', 'CLD', 'INT', 'POLL', 'RTMIN', 'TRAP', 'USR1',
+        'ABRT',
+        'CONT',
+        'IO',
+        'PROF',
+        'SEGV',
+        'TSTP',
+        'USR2',
+        '_DFL',
+        'ALRM',
+        'FPE',
+        'IOT',
+        'PWR',
+        'STOP',
+        'TTIN',
+        'VTALRM',
+        '_IGN',
+        'BUS',
+        'HUP',
+        'KILL',
+        'QUIT',
+        'SYS',
+        'TTOU',
+        'WINCH',
+        'CHLD',
+        'ILL',
+        'PIPE',
+        'RTMAX',
+        'TERM',
+        'URG',
+        'XCPU',
+        'CLD',
+        'INT',
+        'POLL',
+        'RTMIN',
+        'TRAP',
+        'USR1',
         'XFSZ',
     ]
     signals = {}
@@ -80,7 +112,7 @@ def getuserhome():
     Returns the home-directory of the current user
     '''
     if 'HOME' in os.environ:
-        return os.environ['HOME']      # Unix
+        return os.environ['HOME']  # Unix
     if 'HOMEPATH' in os.environ:
         return os.environ['HOMEPATH']  # Windows
 
@@ -210,12 +242,14 @@ def showbanner(width=None):
     The banner is centered if width is defined.
     '''
     subtext = "-= Cmdix version {0} =-".format(cmdix.__version__)
-    banner = textwrap.dedent(r"""
+    banner = textwrap.dedent(
+        r"""
           ___  __  __  ____  ____  _  _
          / __)(  \/  )(  _ \(_  _)( \/ )
         ( (__  )    (  )(_) )_)(_  )  (
          \___)(_/\/\_)(____/(____)(_/\_)
-        """).lstrip('\n')
+        """
+    ).lstrip('\n')
 
     if width:
         ret = ""

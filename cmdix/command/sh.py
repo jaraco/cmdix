@@ -20,12 +20,8 @@ def parseargs(p):
     '''
     p.set_defaults(func=func)
     p.description = "Start a shell"
-    p.add_argument(
-        "-c", "--command",
-        help="Read command from string")
-    p.add_argument(
-        "--nocoreutils", action="store_true",
-        help="Do not load pycoreutils")
+    p.add_argument("-c", "--command", help="Read command from string")
+    p.add_argument("--nocoreutils", action="store_true", help="Do not load pycoreutils")
     return p
 
 
@@ -41,6 +37,7 @@ class Sh(cmd.Cmd):
     '''
     Shell
     '''
+
     exitstatus = 0
     prompttemplate = '{username}@{hostname}:{currentpath}$ '
 
@@ -49,7 +46,9 @@ class Sh(cmd.Cmd):
             # Copy all commands from cmdix to 'do_foo' functions
             for command in cmdix.listcommands():
                 x = """self.do_{0} = lambda l: \
-                       cmdix.runcommandline('{0} '+ l)""".format(command)
+                       cmdix.runcommandline('{0} '+ l)""".format(
+                    command
+                )
                 exec(x)
         return cmd.Cmd.__init__(self, *args, **kwargs)
 
@@ -93,9 +92,12 @@ class Sh(cmd.Cmd):
         sys.exit(n or self.exitstatus)
 
     def do_help(self, arg):
-        return "Use 'COMMAND --help' for help\n" +\
-               "Available commands:\n" +\
-               ", ".join(cmdix.listcommands()) + "\n"
+        return (
+            "Use 'COMMAND --help' for help\n"
+            + "Available commands:\n"
+            + ", ".join(cmdix.listcommands())
+            + "\n"
+        )
 
     def do_shell(self, line):
         '''
@@ -149,4 +151,6 @@ class Sh(cmd.Cmd):
         '''
         self.prompt = self.prompttemplate.format(
             currentpath=os.getcwd(),
-            hostname=platform.node(), username=lib.getcurrentusername())
+            hostname=platform.node(),
+            username=lib.getcurrentusername(),
+        )

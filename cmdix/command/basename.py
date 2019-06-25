@@ -10,8 +10,10 @@ def parseargs(p):
     :return:  ArgumentParser
     '''
     p.set_defaults(func=func)
-    p.description = "Print NAME with any leading directory components " + \
-                    "removed. If specified, also remove a trailing SUFFIX."
+    p.description = (
+        "Print NAME with any leading directory components "
+        + "removed. If specified, also remove a trailing SUFFIX."
+    )
     p.add_argument('name', nargs='+')
     return p
 

@@ -16,10 +16,16 @@ class WSGIServer(simple_server.WSGIServer):
     '''
     WSGIServer with SSL support
     '''
+
     def __init__(
-            self, server_address, certfile=None, keyfile=None,
-            ca_certs=None, ssl_version=ssl.PROTOCOL_SSLv23,
-            handler=simple_server.WSGIRequestHandler):
+        self,
+        server_address,
+        certfile=None,
+        keyfile=None,
+        ca_certs=None,
+        ssl_version=ssl.PROTOCOL_SSLv23,
+        handler=simple_server.WSGIRequestHandler,
+    ):
         simple_server.WSGIServer.__init__(self, server_address, handler)
         self.allow_reuse_address = True
         self.certfile = certfile
@@ -36,14 +42,16 @@ class WSGIServer(simple_server.WSGIServer):
                 certfile=self.certfile,
                 keyfile=self.keyfile,
                 ssl_version=self.ssl_version,
-                ca_certs=self.ca_certs)
+                ca_certs=self.ca_certs,
+            )
         return sock, addr
 
 
-class WSGIAuth():
+class WSGIAuth:
     '''
     WSGI middleware for basic authentication
     '''
+
     def __init__(self, app, userdict, realm='authentication'):
         self.app = app
         self.userdict = userdict
@@ -63,17 +71,24 @@ class WSGIAuth():
                     return self.app(environ, start_response)
 
         return wsgierror(
-            start_response, 401, "Authentication required",
-            [(b'WWW-Authenticate', b'Basic realm={0}'.format(self.realm))])
+            start_response,
+            401,
+            "Authentication required",
+            [(b'WWW-Authenticate', b'Basic realm={0}'.format(self.realm))],
+        )
 
 
 def wsgierror(start_response, code, text, headers=[]):
     h = [(b'Content-Type', b'text/html')]
     h.extend(headers)
     start_response(b'{0} '.format(code), h)
-    return [b'''<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"><html><head>
+    return [
+        b'''<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"><html><head>
                 <title>{code} {text}</title></head><body><h1>{code} {text}</h1>
-                </body></html>'''.format(code=code, text=text)]
+                </body></html>'''.format(
+            code=code, text=text
+        )
+    ]
 
 
 def wsgiserver(app, args):
@@ -102,7 +117,8 @@ def wsgiserver(app, args):
         certfile=args.certfile,
         keyfile=args.keyfile,
         ca_certs=args.cafile,
-        ssl_version=ssl_version)
+        ssl_version=ssl_version,
+    )
     server.set_app(app)
     return server
 
@@ -129,13 +145,17 @@ def wsgishell(environ, start_response):
         stdoutstr = ''.join(stdoutio.readlines())
         stderrstr = ''.join(stderrio.readlines())
         start_response(b'200 ', [(b'Content-Type', b'text/html')])
-        return [str("<div class='stdout'>{0}</div>").format(stdoutstr),
-                str("<div class='stderr'>{0}</div>").format(stderrstr)]
+        return [
+            str("<div class='stdout'>{0}</div>").format(stdoutstr),
+            str("<div class='stderr'>{0}</div>").format(stderrstr),
+        ]
     else:
-        html = template.format(title='Cmdix Console',
-                               css=css,
-                               banner=cmdix.showbanner(),
-                               javascript=javascript)
+        html = template.format(
+            title='Cmdix Console',
+            css=css,
+            banner=cmdix.showbanner(),
+            javascript=javascript,
+        )
         start_response(b'200 ', [(b'Content-Type', b'text/html')])
         return [html.encode()]
 
@@ -207,35 +227,47 @@ def parseargs(p):
     '''
     p.set_defaults(func=func)
     p.description = "Start a web server that serves the current directory"
-    p.epilog = "To enable https, you must supply a certificate file using " +\
-               "'-c' and a key using '-k', both PEM-formatted. If both the " +\
-               "certificate and the key are in one file, just use '-c'."
+    p.epilog = (
+        "To enable https, you must supply a certificate file using "
+        + "'-c' and a key using '-k', both PEM-formatted. If both the "
+        + "certificate and the key are in one file, just use '-c'."
+    )
     p.add_argument(
-        "-a", "--address", default="", dest="address",
-        help="address to bind to")
+        "-a", "--address", default="", dest="address", help="address to bind to"
+    )
     p.add_argument(
-        "-c", "--certfile", dest="certfile",
-        help="Use ssl-certificate for https")
+        "-c", "--certfile", dest="certfile", help="Use ssl-certificate for https"
+    )
     p.add_argument(
-        "-p", "--port", default=8000, dest="port", type=int,
-        help="port to listen to")
+        "-p", "--port", default=8000, dest="port", type=int, help="port to listen to"
+    )
     p.add_argument(
-        "-k", "--keyfile", dest="keyfile",
-        help="Use ssl-certificate for https")
+        "-k", "--keyfile", dest="keyfile", help="Use ssl-certificate for https"
+    )
     p.add_argument(
-        "-u", "--user", action="append", dest="userlist",
-        help="Add a user for authentication in the form of " +
-        "'USER:PASSWORD'. Can be specified multiple times.")
+        "-u",
+        "--user",
+        action="append",
+        dest="userlist",
+        help="Add a user for authentication in the form of "
+        + "'USER:PASSWORD'. Can be specified multiple times.",
+    )
     p.add_argument(
-        "-V", "--ssl-version", dest="ssl_version", default="SSLv23",
-        help="Must be either SSLv23 (default), SSLv3, or TLSv1")
+        "-V",
+        "--ssl-version",
+        dest="ssl_version",
+        default="SSLv23",
+        help="Must be either SSLv23 (default), SSLv3, or TLSv1",
+    )
     p.add_argument(
-        "--cafile", dest="cafile",
-        help="Authenticate remote certificate using CA " +
-        "certificate file. Requires -c")
+        "--cafile",
+        dest="cafile",
+        help="Authenticate remote certificate using CA "
+        + "certificate file. Requires -c",
+    )
     p.add_argument(
-        "-s", "--shell", action="store_true", dest="shell",
-        help="Start a web shell")
+        "-s", "--shell", action="store_true", dest="shell", help="Start a web shell"
+    )
     return p
 
 

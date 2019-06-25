@@ -19,12 +19,19 @@ def parseargs(p):
     # TODO: Fix for Python3, recursion, proxy, progress bar, you name it...
     p.set_defaults(func=func)
     p.description = "Download of files from the Internet"
-    p.add_argument("url", nargs="+",
-                   help="write documents to FILE.")
-    p.add_argument("-O", "--output-document", dest="outputdocument",
-                   help="write documents to FILE.")
-    p.add_argument("-u", "--user-agent", dest="useragent",
-                   help="identify as AGENT instead of default.")
+    p.add_argument("url", nargs="+", help="write documents to FILE.")
+    p.add_argument(
+        "-O",
+        "--output-document",
+        dest="outputdocument",
+        help="write documents to FILE.",
+    )
+    p.add_argument(
+        "-u",
+        "--user-agent",
+        dest="useragent",
+        help="identify as AGENT instead of default.",
+    )
     return p
 
 
@@ -46,8 +53,7 @@ def func(args):
         try:
             fdin = opener.open(url)
         except HTTPError as e:
-            exception.StdErrException(
-                "HTTP error opening {0}: {1}".format(url, e))
+            exception.StdErrException("HTTP error opening {0}: {1}".format(url, e))
 
         length = int(fdin.headers['content-length'])
         print("Getting {0} bytes from {1}...".format(length, url))

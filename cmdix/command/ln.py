@@ -15,11 +15,19 @@ def parseargs(p):
     p.add_argument("TARGET", nargs=1)
     p.add_argument("LINK_NAME", nargs='?')
     p.add_argument(
-        "-s", "--symbolic", action="store_true", dest="symbolic",
-        help="make symbolic links instead of hard links")
+        "-s",
+        "--symbolic",
+        action="store_true",
+        dest="symbolic",
+        help="make symbolic links instead of hard links",
+    )
     p.add_argument(
-        "-v", "--verbose", action="store_true", dest="verbose",
-        help="print a message for each created directory")
+        "-v",
+        "--verbose",
+        action="store_true",
+        dest="verbose",
+        help="print a message for each created directory",
+    )
     return p
 
 
@@ -43,5 +51,8 @@ def func(args):
         try:
             f(src, dst)
         except Exception as err:
-            print("ln: creating {0} link '{1}' => '{2}': {3}\n".format(
-                linktype, dst, src, err.strerror))
+            print(
+                "ln: creating {0} link '{1}' => '{2}': {3}\n".format(
+                    linktype, dst, src, err.strerror
+                )
+            )

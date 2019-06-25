@@ -12,16 +12,19 @@ def parseargs(p):
     :return:  ArgumentParser
     '''
     p.set_defaults(func=func)
-    p.description = "Base64 encode or decode FILE, or standard input, " + \
-                    "to standard output."
+    p.description = (
+        "Base64 encode or decode FILE, or standard input, " + "to standard output."
+    )
     p.add_argument('FILE', nargs=1)
+    p.add_argument("-d", action="store_true", dest="decode", help="decode data")
     p.add_argument(
-        "-d", action="store_true", dest="decode",
-        help="decode data")
-    p.add_argument(
-        "-w", dest="wrap", default=76, type=int,
-        help="wrap encoded lines after COLS character (default 76). " +
-        "Use 0 to disable line wrapping")
+        "-w",
+        dest="wrap",
+        default=76,
+        type=int,
+        help="wrap encoded lines after COLS character (default 76). "
+        + "Use 0 to disable line wrapping",
+    )
     return p
 
 

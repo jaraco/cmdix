@@ -14,9 +14,13 @@ def parseargs(p):
     p.usage = '%(prog)s [OPTION]... DIRECTORY...'
     p.add_argument('directory', nargs='+')
     p.add_argument(
-        "-p", "--parent", action="store_true", dest="parent",
-        help="remove DIRECTORY and its ancestors; e.g., " +
-        "'rmdir -p a/b/c' is similar to 'rmdir a/b/c a/b a'")
+        "-p",
+        "--parent",
+        action="store_true",
+        dest="parent",
+        help="remove DIRECTORY and its ancestors; e.g., "
+        + "'rmdir -p a/b/c' is similar to 'rmdir a/b/c a/b a'",
+    )
     return p
 
 

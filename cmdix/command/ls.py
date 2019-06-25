@@ -14,12 +14,15 @@ def parseargs(p):
     '''
     # TODO: Show user and group names in ls -l, correctly format dates in ls -l
     p.set_defaults(func=func)
-    p.description = "List information about the FILEs (the current " + \
-                    "directory by default). Sort entries " + \
-                    "alphabetically if none of -cftuvSUX nor --sort."
+    p.description = (
+        "List information about the FILEs (the current "
+        + "directory by default). Sort entries "
+        + "alphabetically if none of -cftuvSUX nor --sort."
+    )
     p.add_argument('FILE', nargs="*")
-    p.add_argument("-l", "--longlist", action="store_true",
-                   help="use a long listing format")
+    p.add_argument(
+        "-l", "--longlist", action="store_true", help="use a long listing format"
+    )
     return p
 
 
@@ -32,8 +35,8 @@ def func(args):
         dirlist = os.listdir(arg)
         dirlist.sort()
         ell = []
-        sizelen = 0     # Length of the largest filesize integer
-        nlinklen = 0    # Length of the largest nlink integer
+        sizelen = 0  # Length of the largest filesize integer
+        nlinklen = 0  # Length of the largest nlink integer
         for f in dirlist:
             path = os.path.join(arg, f)
             if not args.longlist:
@@ -62,14 +65,16 @@ def func(args):
 
         for mode, nlink, uid, gid, size, mtime, f in ell:
             modtime = time.strftime('%Y-%m-%d %H:%m', mtime)
-            print("{0} {1:>{nlink}} {2:<5} {3:<5} {4:>{size}} {5} {6}".format(
-                mode,
-                nlink,
-                uid,
-                gid,
-                size,
-                modtime,
-                f,
-                size=sizelen,
-                nlink=nlinklen,
-            ))
+            print(
+                "{0} {1:>{nlink}} {2:<5} {3:<5} {4:>{size}} {5} {6}".format(
+                    mode,
+                    nlink,
+                    uid,
+                    gid,
+                    size,
+                    modtime,
+                    f,
+                    size=sizelen,
+                    nlink=nlinklen,
+                )
+            )

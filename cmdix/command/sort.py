@@ -15,8 +15,12 @@ def parseargs(p):
     p.description = "sort lines of text files"
     p.add_argument('FILE', nargs='*')
     p.add_argument(
-        "-r", "--reverse", action="store_true", dest="reverse",
-        help="reverse the result of comparisons")
+        "-r",
+        "--reverse",
+        action="store_true",
+        dest="reverse",
+        help="reverse the result of comparisons",
+    )
     return p
 
 

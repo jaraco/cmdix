@@ -18,8 +18,10 @@ def parseargs(p):
     :return:  ArgumentParser
     '''
     p.set_defaults(func=func)
-    p.description = "Print the user name associated with the current" + \
-                    "effective user ID.\nSame as id -un."
+    p.description = (
+        "Print the user name associated with the current"
+        + "effective user ID.\nSame as id -un."
+    )
     return p
 
 

@@ -18,9 +18,13 @@ def parseargs(p):
     p.usage = '%(prog)s kill [ -SIGNAL | -s SIGNAL ] PID ...'
     p.add_argument("pid", nargs="+")
     p.add_argument(
-        "-s", "--signal", action="store", dest="signal",
+        "-s",
+        "--signal",
+        action="store",
+        dest="signal",
         default=signal.SIGTERM,
-        help="send signal")
+        help="send signal",
+    )
     return p
 
 
@@ -34,16 +38,23 @@ def func(args):
     for name, sigint in list(signals.items()):
         signame = 'SIG' + name.upper()
         p.add_argument(
-            "--" + signame, action="store_const", dest="signal",
+            "--" + signame,
+            action="store_const",
+            dest="signal",
             const=sigint,
-            help="send signal {0}".format(signame))
+            help="send signal {0}".format(signame),
+        )
 
     # Add an integer option for each signal
     for sigint in set(signals.values()):
         if sigint < 10:
             p.add_argument(
-                "-%i" % sigint, action="store_const", dest="signal",
-                const=sigint, help="send signal {0}".format(sigint))
+                "-%i" % sigint,
+                action="store_const",
+                dest="signal",
+                const=sigint,
+                help="send signal {0}".format(sigint),
+            )
 
     if len(args) == 0:
         raise exception.MissingOperandException(args.prog)
@@ -61,13 +72,15 @@ def func(args):
         sigint = signals[sig.lstrip('SIG')]
     else:
         raise exception.StdErrException(
-            "kill: {0}: invalid signal specification".format(sig))
+            "kill: {0}: invalid signal specification".format(sig)
+        )
 
     for pid in args.pid:
         try:
             pid = int(pid)
         except ValueError:
             raise exception.StdErrException(
-                "kill: {0}: arguments must be process or job IDs".format(pid))
+                "kill: {0}: arguments must be process or job IDs".format(pid)
+            )
 
         os.kill(pid, sigint)

@@ -10,9 +10,11 @@ def parseargs(p):
     :return:  ArgumentParser
     '''
     p.set_defaults(func=func)
-    p.description = "Print NAME with its trailing /component removed; if " + \
-                    "NAME contains no /'s, output '.' (meaning the current" + \
-                    " directory)."
+    p.description = (
+        "Print NAME with its trailing /component removed; if "
+        + "NAME contains no /'s, output '.' (meaning the current"
+        + " directory)."
+    )
     p.add_argument('path')
     return p
 

@@ -14,40 +14,80 @@ def parseargs(p):
     :return:  ArgumentParser
     '''
     p.set_defaults(func=func)
-    p.description = "Print certain system information.  With no OPTION, " + \
-                    "same as -s."
+    p.description = (
+        "Print certain system information.  With no OPTION, " + "same as -s."
+    )
     p.add_argument(
-        "-a", "--all", action="store_true", dest="all",
+        "-a",
+        "--all",
+        action="store_true",
+        dest="all",
         help="print all information, in the following order, except "
-        "omit -p and -i if unknown")
+        "omit -p and -i if unknown",
+    )
     p.add_argument(
-        "-s", "--kernel-name", action="store_true",
-        dest="kernelname", help="print the kernel name")
+        "-s",
+        "--kernel-name",
+        action="store_true",
+        dest="kernelname",
+        help="print the kernel name",
+    )
     p.add_argument(
-        "-n", "--nodename", action="store_true", dest="nodename",
-        help="print the network node hostname")
+        "-n",
+        "--nodename",
+        action="store_true",
+        dest="nodename",
+        help="print the network node hostname",
+    )
     p.add_argument(
-        "-r", "--kernel-release", action="store_true",
-        dest="kernelrelease", help="print the kernel release")
+        "-r",
+        "--kernel-release",
+        action="store_true",
+        dest="kernelrelease",
+        help="print the kernel release",
+    )
     p.add_argument(
-        "-v", "--kernel-version", action="store_true",
-        dest="kernelversion", help="print the kernel version")
+        "-v",
+        "--kernel-version",
+        action="store_true",
+        dest="kernelversion",
+        help="print the kernel version",
+    )
     p.add_argument(
-        "-m", "--machine", action="store_true", dest="machine",
-        help="print the machine hardware name")
+        "-m",
+        "--machine",
+        action="store_true",
+        dest="machine",
+        help="print the machine hardware name",
+    )
     p.add_argument(
-        "-p", "--processor", action="store_true", dest="processor",
-        help='print the processor type or "unknown"')
+        "-p",
+        "--processor",
+        action="store_true",
+        dest="processor",
+        help='print the processor type or "unknown"',
+    )
     p.add_argument(
-        "-i", "--hardware-platform", action="store_true",
+        "-i",
+        "--hardware-platform",
+        action="store_true",
         dest="hardwareplatform",
-        help="print the hardware platform or \"unknown\"")
+        help="print the hardware platform or \"unknown\"",
+    )
     p.add_argument(
-        "-o", "--operating-system", action="store_true",
-        dest="operatingsystem", help="print the operating system")
+        "-o",
+        "--operating-system",
+        action="store_true",
+        dest="operatingsystem",
+        help="print the operating system",
+    )
     p.add_argument(
-        "-A", "--architecture", action="store_true",
-        dest="architecture", help="print the systems architecture")
+        "-A",
+        "--architecture",
+        action="store_true",
+        dest="architecture",
+        help="print the systems architecture",
+    )
     return p
 
 

@@ -12,18 +12,26 @@ def parseargs(p):
     :return:  ArgumentParser
     '''
     p.set_defaults(func=func)
-    p.description = "Overwrite the specified FILE(s) repeatedly, in order " + \
-                    "to make it harder for even very expensive hardware " + \
-                    "probing to recover the data."
-    p.epilog = "This program acts as GNU 'shred -x', and doesn't round " + \
-               "sizes up to the next full block"
+    p.description = (
+        "Overwrite the specified FILE(s) repeatedly, in order "
+        + "to make it harder for even very expensive hardware "
+        + "probing to recover the data."
+    )
+    p.epilog = (
+        "This program acts as GNU 'shred -x', and doesn't round "
+        + "sizes up to the next full block"
+    )
     p.add_argument('FILE', nargs='*')
     p.add_argument(
-        "-n", "--iterations", dest="iterations", default=3,
-        help="overwrite ITERATIONS times instead of the default (3)")
+        "-n",
+        "--iterations",
+        dest="iterations",
+        default=3,
+        help="overwrite ITERATIONS times instead of the default (3)",
+    )
     p.add_argument(
-        "-v", "--verbose", action="store_true", dest="verbose",
-        help="show progress")
+        "-v", "--verbose", action="store_true", dest="verbose", help="show progress"
+    )
     return p
 
 

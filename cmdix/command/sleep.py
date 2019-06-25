@@ -14,12 +14,14 @@ def parseargs(p):
     '''
     p.set_defaults(func=func)
     p.description = "delay for a specified amount of time"
-    p.epilog = "Pause for NUMBER seconds. SUFFIX may be 's' for " + \
-               "seconds (the default), 'm' for minutes, 'h' for " + \
-               "hours or 'd' for days. Unlike most implementations " + \
-               "that require NUMBER be an integer, here NUMBER may " + \
-               "be an arbitrary floating point number. Given two or " + \
-               "more arguments, pause for the amount of time"
+    p.epilog = (
+        "Pause for NUMBER seconds. SUFFIX may be 's' for "
+        + "seconds (the default), 'm' for minutes, 'h' for "
+        + "hours or 'd' for days. Unlike most implementations "
+        + "that require NUMBER be an integer, here NUMBER may "
+        + "be an arbitrary floating point number. Given two or "
+        + "more arguments, pause for the amount of time"
+    )
     p.add_argument('number', nargs='+')
     return p
 
@@ -41,7 +43,8 @@ def func(args):
     except ValueError:
         exception.StdErrException(
             "sleep: invalid time interval "
-            "'{0}'. Try sleep --help' for more information.".format(arg))
+            "'{0}'. Try sleep --help' for more information.".format(arg)
+        )
         sys.exit(1)
 
     time.sleep(sum(a))

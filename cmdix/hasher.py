@@ -11,6 +11,7 @@ def hasher(algorithm, p):
     :param algorithm: hash algorithm
     :param p: ArgumentParser
     '''
+
     def myhash(args):
         for fd in lib.filelist2fds(args.FILE, 'rb'):
             hasj = hashlib.new(algorithm)
@@ -19,8 +20,10 @@ def hasher(algorithm, p):
             print(hasj.hexdigest() + '  ' + fd.name)
 
     p.set_defaults(func=myhash)
-    p.description = "Print or check {0} ".format(algorithm.upper()) +\
-                    "checksums. With no FILE, or when FILE is -, read " +\
-                    "standard input."
+    p.description = (
+        "Print or check {0} ".format(algorithm.upper())
+        + "checksums. With no FILE, or when FILE is -, read "
+        + "standard input."
+    )
     p.add_argument('FILE', nargs='*')
     return p

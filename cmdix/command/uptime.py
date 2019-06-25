@@ -15,8 +15,10 @@ def parseargs(p):
     # TODO: List number of users
     p.set_defaults(func=func)
     p.description = "Tell how long the system has been running"
-    p.epilog = "System load averages is the average number of processes " +\
-               "that are either in a runnable or uninterruptable state."
+    p.epilog = (
+        "System load averages is the average number of processes "
+        + "that are either in a runnable or uninterruptable state."
+    )
     return p
 
 
@@ -29,6 +31,8 @@ def func(args):
         load5, load10, load15, proc, unknown = f.readline().split()[:5]
         totproc, avgproc = proc.split('/')
 
-    print(" {0:%H:%M:%S} up ".format(datetime.datetime.today()) +
-          " {0},  {1} users,  ".format(uptime, 'TODO') +
-          "load average: {0}, {1}, {2}".format(load5, load10, load15))
+    print(
+        " {0:%H:%M:%S} up ".format(datetime.datetime.today())
+        + " {0},  {1} users,  ".format(uptime, 'TODO')
+        + "load average: {0}, {1}, {2}".format(load5, load10, load15)
+    )

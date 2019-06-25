@@ -14,20 +14,34 @@ def parseargs(p):
     '''
     # TODO: Everything!!!!!!!!
     p.set_defaults(func=func)
-    p.description = "Print the last 10 lines of each FILE to standard " + \
-                    "output. With more than one FILE, precede each with a " + \
-                    "header giving the file name. With no FILE, or when " + \
-                    "FILE is -, read standard input."
+    p.description = (
+        "Print the last 10 lines of each FILE to standard "
+        + "output. With more than one FILE, precede each with a "
+        + "header giving the file name. With no FILE, or when "
+        + "FILE is -, read standard input."
+    )
     p.add_argument('FILE', nargs="*")
     p.add_argument(
-        "-f", "--follow", action="store_true",
-        help="output appended data as the file grows")
+        "-f",
+        "--follow",
+        action="store_true",
+        help="output appended data as the file grows",
+    )
     p.add_argument(
-        "-i", "--interval", default=1, type=float,
-        help="When using 'follow', check the file every INTERVAL seconds")
+        "-i",
+        "--interval",
+        default=1,
+        type=float,
+        help="When using 'follow', check the file every INTERVAL seconds",
+    )
     p.add_argument(
-        "-n", "--lines", default=10, metavar="N",
-        help="output the last N lines, instead of the last 10", type=int)
+        "-n",
+        "--lines",
+        default=10,
+        metavar="N",
+        help="output the last N lines, instead of the last 10",
+        type=int,
+    )
     return p
 
 
@@ -55,7 +69,7 @@ def func(args):
                 finally:
                     lines = list(fd)
                 pos *= 2
-            for line in lines[-args.lines:]:
+            for line in lines[-args.lines :]:
                 print(line, end='')
 
     """

@@ -15,7 +15,14 @@ def pretend_windows(monkeypatch):
 @pytest.mark.usefixtures('pretend_windows')
 class TestCase:
     unix_only_cmds = (
-        'chmod', 'chown', 'id', 'login', 'mount', 'tee', 'uptime', 'whoami',
+        'chmod',
+        'chown',
+        'id',
+        'login',
+        'mount',
+        'tee',
+        'uptime',
+        'whoami',
     )
 
     def test_onlyunix(self):
