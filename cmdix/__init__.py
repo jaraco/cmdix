@@ -4,6 +4,7 @@ import argparse
 import os
 import shlex
 import pathlib
+import platform
 
 import importlib_metadata
 import importlib_resources
@@ -33,28 +34,34 @@ def format_all_help():
         yield (commandname, p.format_help())
 
 
+def _is_available(name):
+    try:
+        cmd = _get_command(name)
+        needs_unix = getattr(cmd, '_onlyunix', False)
+        is_windows = platform.system() == 'Windows'
+        return not (needs_unix and is_windows)
+    except CommandNotFoundException:
+        return False
+
+
+def _get_command(name):
+    # Try to import the command module
+    importstring = 'cmdix.command.{0}'.format(name)
+    try:
+        return __import__(importstring, fromlist=1).parseargs
+    except ImportError:
+        raise CommandNotFoundException(name)
+
+
 def getcommand(commandname):
     """
     Returns the `parseargs`-function of the given commandname.
     Raises a CommandNotFoundException if the command is not found
     """
-    # Try to import the command module
-    importstring = 'cmdix.command.{0}'.format(commandname)
-    try:
-        parseargs = __import__(importstring, fromlist=1).parseargs
-    except ImportError:
+    cmd = _get_command(commandname)
+    if not _is_available(commandname):
         raise CommandNotFoundException(commandname)
-
-    # Check if the command is available on Windows
-    if os.name == 'nt':
-        try:
-            parseargs._onlyunix
-        except AttributeError:
-            pass
-        else:
-            raise CommandNotFoundException(commandname)
-
-    return parseargs
+    return cmd
 
 
 def listcommands():
@@ -62,7 +69,8 @@ def listcommands():
     Returns a list of all available commands
     """
     paths = map(pathlib.Path, importlib_resources.contents(command))
-    return (path.stem for path in paths if not path.name.startswith('_'))
+    all = (path.stem for path in paths if not path.name.startswith('_'))
+    return filter(_is_available, all)
 
 
 def _gen_script_definitions():
