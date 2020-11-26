@@ -43,7 +43,7 @@ def filelist2fds(filelist, mode='r'):
                     yield fd
             else:
                 print(
-                    "Cannot access {1}:".format(filename) + "No such file or directory"
+                    f"Cannot access {filename}: No such file or directory"
                 )
 
 

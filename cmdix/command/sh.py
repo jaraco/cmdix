@@ -121,8 +121,8 @@ class Sh(cmd.Cmd):
     def postcmd(self, stop, line):
         self.updateprompt()
         if stop:
-            for l in stop:
-                print(l, end='')
+            for line in stop:
+                print(line, end='')
 
     def onecmd(self, line):
         try:
