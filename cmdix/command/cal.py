@@ -7,12 +7,12 @@ from ..py27compat import print_text as print
 
 
 def parseargs(p):
-    '''
+    """
     Add arguments and `func` to `p`.
 
     :param p: ArgumentParser
     :return:  ArgumentParser
-    '''
+    """
     p.set_defaults(func=func, firstweekday=6)
     p.description = "Displays a calendar"
     p.usage = (

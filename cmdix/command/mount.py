@@ -10,12 +10,12 @@ from .. import onlyunix
 
 @onlyunix
 def parseargs(p):
-    '''
+    """
     Add arguments and `func` to `p`.
 
     :param p: ArgumentParser
     :return:  ArgumentParser
-    '''
+    """
     available_filesystems = get_available_filesystems()
     available_filesystems.sort()
 
@@ -75,9 +75,9 @@ def func(args):
 
 
 def mount_c(source, dest, fstype, options=0, data='', verbose=False):
-    '''
+    """
     Frontend to libc mount
-    '''
+    """
     if verbose:
         print("Trying to mount {0} on {1} as type {2}".format(source, dest, fstype))
     libc = ctypes.CDLL(ctypes.util.find_library('c'))

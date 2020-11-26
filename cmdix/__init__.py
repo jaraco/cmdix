@@ -21,17 +21,17 @@ __version__ = importlib_metadata.version(__name__)
 
 
 def onlyunix(f):
-    '''
+    """
     Decorator that indicates that the command cannot be run on windows
-    '''
+    """
     f._onlyunix = True
     return f
 
 
 def format_all_help():
-    '''
+    """
     Yields (commandname, commandhelp) for all available commands.
-    '''
+    """
     for commandname in listcommands():
         cmd = getcommand(commandname)
         p = cmd(argparse.ArgumentParser(prog=commandname))
@@ -39,10 +39,10 @@ def format_all_help():
 
 
 def getcommand(commandname):
-    '''
+    """
     Returns the `parseargs`-function of the given commandname.
     Raises a CommandNotFoundException if the command is not found
-    '''
+    """
     # Try to import the command module
     importstring = 'cmdix.command.{0}'.format(commandname)
     try:
@@ -63,9 +63,9 @@ def getcommand(commandname):
 
 
 def listcommands():
-    '''
+    """
     Returns a list of all available commands
-    '''
+    """
     paths = map(pathlib.Path, importlib_resources.contents(command))
     return (path.stem for path in paths if not path.name.startswith('_'))
 
@@ -77,7 +77,7 @@ def _gen_script_definitions():
 
 
 def run(argv=None):
-    '''
+    """
     Parse commandline arguments and run command.
     If argv is None, read from sys.argv.
 
@@ -89,7 +89,7 @@ def run(argv=None):
 
     :param argv:    List of arguments
     :return:        The exit status of the command. None means 0.
-    '''
+    """
     argv = argv or sys.argv
     commandname = os.path.basename(argv.pop(0))
     parser = argparse.ArgumentParser(
@@ -147,7 +147,7 @@ def run(argv=None):
 
 
 def runcommandline(commandline):
-    '''
+    """
     Process a commandline; main entry-point.
 
     Examples:
@@ -165,5 +165,5 @@ def runcommandline(commandline):
     27 28 29
 
     :param commandline: String representing the commandline, i.e. "ls -l /tmp"
-    '''
+    """
     return run(shlex.split(str(commandline)))

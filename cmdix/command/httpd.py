@@ -13,9 +13,9 @@ import cmdix
 
 
 class WSGIServer(simple_server.WSGIServer):
-    '''
+    """
     WSGIServer with SSL support
-    '''
+    """
 
     def __init__(
         self,
@@ -48,9 +48,9 @@ class WSGIServer(simple_server.WSGIServer):
 
 
 class WSGIAuth:
-    '''
+    """
     WSGI middleware for basic authentication
-    '''
+    """
 
     def __init__(self, app, userdict, realm='authentication'):
         self.app = app
@@ -92,9 +92,9 @@ def wsgierror(start_response, code, text, headers=[]):
 
 
 def wsgiserver(app, args):
-    '''
+    """
     Parse opts and return a WSGIServer running app
-    '''
+    """
     # Set protocol version
     if args.ssl_version:
         if args.ssl_version == 'SSLv23':
@@ -124,9 +124,9 @@ def wsgiserver(app, args):
 
 
 def wsgishell(environ, start_response):
-    '''
+    """
     Web shell
-    '''
+    """
     if environ['REQUEST_METHOD'].upper() != 'GET':
         return wsgierror(start_response, 400, 'Bad Request')
 
@@ -219,12 +219,12 @@ def list_directory(urlpath, filepath):
 
 
 def parseargs(p):
-    '''
+    """
     Add arguments and `func` to `p`.
 
     :param p: ArgumentParser
     :return:  ArgumentParser
-    '''
+    """
     p.set_defaults(func=func)
     p.description = "Start a web server that serves the current directory"
     p.epilog = (

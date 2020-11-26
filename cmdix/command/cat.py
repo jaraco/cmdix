@@ -6,12 +6,12 @@ from .. import lib
 
 
 def parseargs(p):
-    '''
+    """
     Add arguments and `func` to `p`.
 
     :param p: ArgumentParser
     :return:  ArgumentParser
-    '''
+    """
     p.set_defaults(func=func)
     p.description = "Concatenate FILE(s), or standard input, " + "to standard output."
     p.epilog = (

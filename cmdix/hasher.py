@@ -7,10 +7,10 @@ from . import lib
 
 
 def hasher(algorithm, p):
-    '''
+    """
     :param algorithm: hash algorithm
     :param p: ArgumentParser
-    '''
+    """
 
     def myhash(args):
         for fd in lib.filelist2fds(args.FILE, 'rb'):

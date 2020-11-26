@@ -10,9 +10,9 @@ from .exception import StdOutException, StdErrException
 
 
 def compressor(p, comptype='gzip', decompress=False):
-    '''
+    """
     Handles compression and decompression as bzip2 and gzip
-    '''
+    """
     p.description = (
         "Compress or uncompress FILE (by default, compress " + "FILE in-place)."
     )

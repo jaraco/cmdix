@@ -2,15 +2,15 @@ from __future__ import print_function, unicode_literals
 
 
 class StdOutException(Exception):
-    '''
+    """
     Raised when data is written to stdout
-    '''
+    """
 
     def __init__(self, text, errno=1):
-        '''
+        """
         :text:  Output text
         ;errno: Exit status of program
-        '''
+        """
         self.text = text
         self.errno = errno
 
@@ -19,15 +19,15 @@ class StdOutException(Exception):
 
 
 class StdErrException(Exception):
-    '''
+    """
     Raised when data is written to stderr
-    '''
+    """
 
     def __init__(self, text, errno=2):
-        '''
+        """
         :text:  Error text
         ;errno: Exit status of program
-        '''
+        """
         self.text = text
         self.errno = errno
 
@@ -36,9 +36,9 @@ class StdErrException(Exception):
 
 
 class CommandNotFoundException(Exception):
-    '''
+    """
     Raised when an unknown command is requested
-    '''
+    """
 
     def __init__(self, prog):
         self.prog = prog
@@ -48,16 +48,16 @@ class CommandNotFoundException(Exception):
 
 
 class ExtraOperandException(StdErrException):
-    '''
+    """
     Raised when an argument is expected but not found
-    '''
+    """
 
     def __init__(self, program, operand, errno=1):
-        '''
+        """
         :program:   Program that caused the error
         :operand:   Value of the extra operand
         ;errno:     Exit status of program
-        '''
+        """
         self.program = program
         self.operand = operand
         self.errno = errno
@@ -72,15 +72,15 @@ class ExtraOperandException(StdErrException):
 
 
 class MissingOperandException(StdErrException):
-    '''
+    """
     Raised when an argument is expected but not found
-    '''
+    """
 
     def __init__(self, program, errno=1):
-        '''
+        """
         :program:   Program that caused the error
         ;errno:     Exit status of program
-        '''
+        """
         self.program = program
         self.errno = errno
 

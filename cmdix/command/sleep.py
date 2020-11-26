@@ -6,12 +6,12 @@ from .. import exception
 
 
 def parseargs(p):
-    '''
+    """
     Add arguments and `func` to `p`.
 
     :param p: ArgumentParser
     :return:  ArgumentParser
-    '''
+    """
     p.set_defaults(func=func)
     p.description = "delay for a specified amount of time"
     p.epilog = (

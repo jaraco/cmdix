@@ -3,12 +3,12 @@ import os
 
 
 def parseargs(p):
-    '''
+    """
     Add arguments and `func` to `p`.
 
     :param p: ArgumentParser
     :return:  ArgumentParser
-    '''
+    """
     p.set_defaults(func=func)
     p.description = "print name of current/working directory"
     p.add_argument(

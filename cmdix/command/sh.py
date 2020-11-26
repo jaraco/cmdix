@@ -12,12 +12,12 @@ import cmdix
 
 
 def parseargs(p):
-    '''
+    """
     Add arguments and `func` to `p`.
 
     :param p: ArgumentParser
     :return:  ArgumentParser
-    '''
+    """
     p.set_defaults(func=func)
     p.description = "Start a shell"
     p.add_argument("-c", "--command", help="Read command from string")
@@ -34,9 +34,9 @@ def func(args):
 
 
 class Sh(cmd.Cmd):
-    '''
+    """
     Shell
-    '''
+    """
 
     exitstatus = 0
     prompttemplate = '{username}@{hostname}:{currentpath}$ '
@@ -53,9 +53,9 @@ class Sh(cmd.Cmd):
         return cmd.Cmd.__init__(self, *args, **kwargs)
 
     def default(self, line):
-        '''
+        """
         Called on an input line when the command prefix is not recognized.
-        '''
+        """
         ell = shlex.split(line)
         try:
             subprocess.call(ell)
@@ -73,9 +73,9 @@ class Sh(cmd.Cmd):
             print(err.strerror, file=sys.stderr)
 
     def do_cd(self, path):
-        '''
+        """
         Change directory
-        '''
+        """
         if not path:
             p = lib.getuserhome()
         else:
@@ -83,12 +83,12 @@ class Sh(cmd.Cmd):
         os.chdir(p)
 
     def do_exit(self, n=None):
-        '''
+        """
         Exit the shell.
 
         Exits the shell with a status of N.  If N is omitted, the exit status
         is that of the last command executed.
-        '''
+        """
         sys.exit(n or self.exitstatus)
 
     def do_help(self, arg):
@@ -100,11 +100,11 @@ class Sh(cmd.Cmd):
         )
 
     def do_shell(self, line):
-        '''
+        """
         Run when them command is '!' or 'shell'.
         Execute the line using the Python interpreter.
         i.e. "!dir()"
-        '''
+        """
         try:
             exec("r = {0}".format(line))
         except Exception as err:
@@ -113,9 +113,9 @@ class Sh(cmd.Cmd):
             return pprint.pformat(line) + '\n'
 
     def emptyline(self):
-        '''
+        """
         Called when an empty line is entered in response to the prompt.
-        '''
+        """
         print()
 
     def postcmd(self, stop, line):
@@ -141,14 +141,14 @@ class Sh(cmd.Cmd):
         self.updateprompt()
 
     def updateprompt(self):
-        '''
+        """
         Update the prompt using format() on the template in self.prompttemplate
 
         You can use the following keywords:
         - currentpath
         - hostname
         - username
-        '''
+        """
         self.prompt = self.prompttemplate.format(
             currentpath=os.getcwd(),
             hostname=platform.node(),

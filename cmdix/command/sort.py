@@ -3,12 +3,12 @@ from .. import lib
 
 
 def parseargs(p):
-    '''
+    """
     Add arguments and `func` to `p`.
 
     :param p: ArgumentParser
     :return:  ArgumentParser
-    '''
+    """
     # TODO: GNU's sort doesn't count '/'.
     # Sorting /etc/fstab has different outcomes.
     p.set_defaults(func=func)

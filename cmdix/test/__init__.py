@@ -16,10 +16,10 @@ class BaseTestCase:
         assert filecmp.cmp(file1, file2)
 
     def createfile(self, filename, content=None, size=64 * 1024, fill='0'):
-        '''
+        """
         Create a temporary file containing `content`. If `content` is not
         defined, fill file with `size` times `fill`.
-        '''
+        """
         with open(os.path.join(self.workdir, filename), 'w') as fd:
             if content:
                 fd.write(content)
@@ -27,19 +27,19 @@ class BaseTestCase:
                 fd.write(size * fill)
 
     def createrandomfile(self, filename, size):
-        '''
+        """
         Create a temporary file containing random data
-        '''
+        """
         with open(os.path.join(self.workdir, filename), 'w') as fd:
             fd.write(os.urandom(size))
 
     def runcommandline(self, commandline, stdin=None):
-        '''
+        """
         Run commandline as a subprocess.
 
         :param commandline: A string containing the commandline, i.e. 'ls -l X'
         :return:            A tuple containing the unicoded stdout and stderr
-        '''
+        """
         with CapturedOutput() as output:
             cmdix.runcommandline(commandline)
         return output
@@ -51,7 +51,7 @@ class BaseTestCase:
             yield tmpdir
 
     def setup_filesystem(self):
-        '''
+        """
         Create the following filesystem:
 
         /dir1
@@ -73,7 +73,7 @@ class BaseTestCase:
         /file1
         /file2.txt
         /file3
-        '''
+        """
         os.makedirs('dir1/dir1-1/dir1-1-1')
         os.makedirs('dir1/dir1-1/dir1-1-2')
         os.makedirs('dir1/dir1-2/dir1-2-1')

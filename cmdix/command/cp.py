@@ -7,12 +7,12 @@ from .. import exception
 
 
 def parseargs(p):
-    '''
+    """
     Add arguments and `func` to `p`.
 
     :param p: ArgumentParser
     :return:  ArgumentParser
-    '''
+    """
     p.set_defaults(func=func)
     p.description = "Copy SOURCE to DEST, or multiple SOURCE(s) to DIRECTORY."
     p.add_argument('SOURCE', nargs='+')

@@ -14,7 +14,7 @@ import cmdix
 
 
 def filelist2fds(filelist, mode='r'):
-    '''
+    """
     Take a list of files and yield the file descriptor.
     Yield sys.stdin if the filename is `-`, or the filelist is empty.
     Unix-style patterns will be parsed.
@@ -32,7 +32,7 @@ def filelist2fds(filelist, mode='r'):
 
     :param filelist: A list for files
     :param mode:     Mode in which the file is opened
-    '''
+    """
     filelist = filelist or ['-']
     for f in filelist:
         if f == '-':
@@ -48,9 +48,9 @@ def filelist2fds(filelist, mode='r'):
 
 
 def getcurrentusername():
-    '''
+    """
     Returns the username of the current user
-    '''
+    """
     if 'USER' in os.environ:
         return os.environ['USER']  # Unix
     if 'USERNAME' in os.environ:
@@ -58,9 +58,9 @@ def getcurrentusername():
 
 
 def getsignals():
-    '''
+    """
     Return a dict of all available signals
-    '''
+    """
     signallist = [
         'ABRT',
         'CONT',
@@ -108,9 +108,9 @@ def getsignals():
 
 
 def getuserhome():
-    '''
+    """
     Returns the home-directory of the current user
-    '''
+    """
     if 'HOME' in os.environ:
         return os.environ['HOME']  # Unix
     if 'HOMEPATH' in os.environ:
@@ -118,7 +118,7 @@ def getuserhome():
 
 
 def mode2string(mode):
-    '''
+    """
     Convert mode-integer to string
 
     >>> from .lib import mode2string
@@ -126,7 +126,7 @@ def mode2string(mode):
     '-rwxr-xr-x'
     >>> mode2string(33024)
     '-r--------'
-    '''
+    """
     if stat.S_ISREG(mode):
         s = '-'
     elif stat.S_ISDIR(mode):
@@ -202,7 +202,7 @@ def mode2string(mode):
 
 
 def parsefilelist(filelist=None, decompress=False):
-    r'''
+    r"""
     Takes a list of files, and generates a list of generators generating the
     content of the file, line by line. Get it? ;-)
 
@@ -223,7 +223,7 @@ def parsefilelist(filelist=None, decompress=False):
     Files called `-` will be replaced with stdin.
     If decompress is defined, a file ending with `.gz` or `.bz2` is
     decompressed automatically.
-    '''
+    """
     if decompress:
         openhook = fileinput.hook_compressed
     else:
@@ -237,10 +237,10 @@ def parsefilelist(filelist=None, decompress=False):
 
 
 def showbanner(width=None):
-    '''
+    """
     Returns the command banner.
     The banner is centered if width is defined.
-    '''
+    """
     subtext = "-= Cmdix version {0} =-".format(cmdix.__version__)
     banner = textwrap.dedent(
         r"""

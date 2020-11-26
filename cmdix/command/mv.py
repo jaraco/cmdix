@@ -3,12 +3,12 @@ import shutil
 
 
 def parseargs(p):
-    '''
+    """
     Add arguments and `func` to `p`.
 
     :param p: ArgumentParser
     :return:  ArgumentParser
-    '''
+    """
     p.set_defaults(func=func)
     p.description = "Move SOURCE to DEST"
     p.add_argument("SOURCE", nargs='+')

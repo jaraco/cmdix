@@ -7,12 +7,12 @@ import time
 
 
 def parseargs(p):
-    '''
+    """
     Add arguments and `func` to `p`.
 
     :param p: ArgumentParser
     :return:  ArgumentParser
-    '''
+    """
     p.set_defaults(func=func)
     p.description = "execute a program periodically, showing output fullscreen"
     p.add_argument('command', nargs='+')

@@ -6,12 +6,12 @@ from .. import onlyunix
 
 @onlyunix
 def parseargs(p):
-    '''
+    """
     Add arguments and `func` to `p`.
 
     :param p: ArgumentParser
     :return:  ArgumentParser
-    '''
+    """
     p.set_defaults(func=func)
     p.description = (
         "Copy standard input to each FILE, and also to " + "standard output."

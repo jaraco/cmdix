@@ -7,12 +7,12 @@ from ..py27compat import print_text as print
 
 
 def parseargs(p):
-    '''
+    """
     Add arguments and `func` to `p`.
 
     :param p: ArgumentParser
     :return:  ArgumentParser
-    '''
+    """
     p.set_defaults(func=func)
     p.description = (
         "saves many files together into a single tape or disk "
