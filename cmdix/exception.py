@@ -1,6 +1,3 @@
-from __future__ import print_function, unicode_literals
-
-
 class StdOutException(Exception):
     """
     Raised when data is written to stdout

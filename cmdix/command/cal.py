@@ -1,9 +1,6 @@
-from __future__ import print_function, unicode_literals
 from ..exception import ExtraOperandException
 import calendar
 import time
-
-from ..py27compat import print_text as print
 
 
 def parseargs(p):

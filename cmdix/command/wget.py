@@ -1,12 +1,10 @@
-from __future__ import print_function, unicode_literals
 import shutil
 import sys
+from urllib.request import build_opener
+from urllib.error import HTTPError
 
 import cmdix
 from .. import exception
-
-from six.moves.urllib.request import build_opener
-from six.moves.urllib.error import HTTPError
 
 
 def parseargs(p):

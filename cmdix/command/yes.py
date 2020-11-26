@@ -1,6 +1,3 @@
-from __future__ import print_function, unicode_literals
-
-
 def parseargs(p):
     """
     Add arguments and `func` to `p`.

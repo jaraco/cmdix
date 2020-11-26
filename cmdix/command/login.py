@@ -1,12 +1,9 @@
-from __future__ import print_function, unicode_literals
 import crypt
 import getpass
 import os
 import pwd
 import subprocess
 from multiprocessing import Process
-
-from six.moves import input
 
 from .. import onlyunix, run
 

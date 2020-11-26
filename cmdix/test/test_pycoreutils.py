@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import cmdix
 
 from . import BaseTestCase

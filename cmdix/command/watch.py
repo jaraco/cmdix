@@ -1,6 +1,5 @@
 # Based on repeat.py by Guido van Rossum
 
-from __future__ import print_function, unicode_literals
 import curses
 import os
 import time

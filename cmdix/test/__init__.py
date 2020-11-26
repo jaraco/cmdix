@@ -1,5 +1,3 @@
-from __future__ import print_function, unicode_literals
-
 import filecmp
 import os
 import os.path

@@ -1,6 +1,5 @@
 # Based on the example in difflib documentation
 
-from __future__ import print_function, unicode_literals
 import difflib
 import os
 import sys

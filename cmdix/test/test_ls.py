@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import os
 import stat
 import time
@@ -7,7 +5,6 @@ import textwrap
 import pytest
 
 from . import BaseTestCase
-from . import py27compat
 
 
 class TestCase(BaseTestCase):
@@ -18,7 +15,7 @@ class TestCase(BaseTestCase):
 
     @pytest.mark.xfail("platform.system() == 'Windows'")
     def test_ls_l(self):
-        py27compat.mkdir('biz', mode=0o755)
+        os.mkdir('biz', mode=0o755)
         self.createfile('foo', size=100)
         self.createfile('bar', size=999999)
         os.chmod('bar', stat.S_IWUSR + stat.S_IRGRP + stat.S_IWOTH + stat.S_IXOTH)

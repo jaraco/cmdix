@@ -1,4 +1,3 @@
-from __future__ import print_function, unicode_literals, absolute_import
 from wsgiref import simple_server
 import base64
 import mimetypes
@@ -6,8 +5,7 @@ import os
 import ssl
 import sys
 import io
-
-from six.moves.urllib.parse import parse_qs, urljoin
+from urllib.parse import parse_qs, urljoin
 
 import cmdix
 
