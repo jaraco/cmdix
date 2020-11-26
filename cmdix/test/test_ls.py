@@ -4,6 +4,7 @@ import os
 import stat
 import time
 import textwrap
+import pytest
 
 from . import BaseTestCase
 from . import py27compat
@@ -15,6 +16,7 @@ class TestCase(BaseTestCase):
         out = self.runcommandline('ls')[0]
         assert out == 'dir1\ndir2\nfile1\nfile2.txt\nfile3.empty\n'
 
+    @pytest.mark.xfail("platform.system() == 'Windows'")
     def test_ls_l(self):
         py27compat.mkdir('biz', mode=0o755)
         self.createfile('foo', size=100)
