@@ -1,3 +1,10 @@
+v0.3.0
+======
+
+Require Python 3.6 or later.
+
+Refreshed package metadata.
+
 v0.2.0
 ======
 
