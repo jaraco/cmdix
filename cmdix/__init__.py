@@ -1,17 +1,12 @@
-from __future__ import print_function, unicode_literals
 import sys
 
 import argparse
 import os
 import shlex
+import pathlib
 
 import importlib_metadata
 import importlib_resources
-
-try:
-    import pathlib
-except ImportError:
-    import pathlib2 as pathlib
 
 from . import command
 from .exception import CommandNotFoundException
