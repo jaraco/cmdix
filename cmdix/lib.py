@@ -42,9 +42,7 @@ def filelist2fds(filelist, mode='r'):
                 with open(filename, mode) as fd:
                     yield fd
             else:
-                print(
-                    f"Cannot access {filename}: No such file or directory"
-                )
+                print(f"Cannot access {filename}: No such file or directory")
 
 
 def getcurrentusername():
