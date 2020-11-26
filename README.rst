@@ -1,20 +1,21 @@
 .. image:: https://img.shields.io/pypi/v/cmdix.svg
-   :target: https://pypi.org/project/cmdix
+   :target: `PyPI link`_
 
 .. image:: https://img.shields.io/pypi/pyversions/cmdix.svg
+   :target: `PyPI link`_
 
-.. image:: https://img.shields.io/travis/jaraco/cmdix/master.svg
-   :target: https://travis-ci.org/jaraco/cmdix
+.. _PyPI link: https://pypi.org/project/cmdix
+
+.. image:: https://github.com/jaraco/cmdix/workflows/Automated%20Tests/badge.svg
+   :target: https://github.com/jaraco/cmdix/actions?query=workflow%3A%22Automated+Tests%22
+   :alt: Automated Tests
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-   :target: https://github.com/ambv/black
+   :target: https://github.com/psf/black
    :alt: Code style: Black
 
-.. .. image:: https://img.shields.io/appveyor/ci/jaraco/cmdix/master.svg
-..    :target: https://ci.appveyor.com/project/jaraco/cmdix/branch/master
-
-.. .. image:: https://readthedocs.org/projects/cmdix/badge/?version=latest
-..    :target: https://cmdix.readthedocs.io/en/latest/?badge=latest
+.. .. image:: https://readthedocs.org/projects/skeleton/badge/?version=latest
+..    :target: https://skeleton.readthedocs.io/en/latest/?badge=latest
 
 cmdix is a pure Python implementation of various standard UNIX commands,
 like 'ls', 'cp' and 'sleep'. It also contains a shell-like environment which
