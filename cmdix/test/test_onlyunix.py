@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 import os
+import platform
 
 import pytest
 
@@ -10,6 +11,7 @@ from .. import exception
 @pytest.fixture
 def pretend_windows(monkeypatch):
     monkeypatch.setattr(os, 'name', 'nt')
+    monkeypatch.setattr(platform, 'system', lambda: 'Windows')
 
 
 @pytest.mark.usefixtures('pretend_windows')
