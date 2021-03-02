@@ -57,44 +57,52 @@ def func(args):
 
     dstbase = args.pop()
     for src in args.SOURCE:
-        if args.recursive:
-            # Create the base destination directory if it does not exists
+        handle(_copy, args, dstbase, src)
+
+
+def handle(_copy, args, dstbase, src):
+    if args.recursive:
+        # Create the base destination directory if it does not exists
+        if not os.path.exists(dstbase):
+            os.mkdir(dstbase)
+
+        walk(_copy, args, dstbase, src)
+    else:
+        dstfile = dstbase
+        if os.path.isdir(dstbase):
+            dstfile = os.path.join(dstbase, src)
+        _copy(src, dstfile)
+        if args.verbose:
+            print("'{0}' -> '{1}'".format(src, dstfile))
+
+
+def walk(_copy, args, dstbase, src):
+    # Walk the source directory
+    for root, dirnames, filenames in os.walk(src):
+        if root == dstbase:
+            continue
+        dstmid = root.lstrip(src)
+
+        # Create subdirectories in destination directory
+        for subdir in dirnames:
+            dstdir = os.path.join(dstbase, dstmid, subdir)
             if not os.path.exists(dstbase):
-                os.mkdir(dstbase)
-
-            # Walk the source directory
-            for root, dirnames, filenames in os.walk(src):
-                if root == dstbase:
-                    continue
-                dstmid = root.lstrip(src)
-
-                # Create subdirectories in destination directory
-                for subdir in dirnames:
-                    dstdir = os.path.join(dstbase, dstmid, subdir)
-                    if not os.path.exists(dstbase):
-                        os.mkdir(dstdir)
-                    if args.verbose:
-                        print("'{0}' -> '{1}'".format(root, dstdir))
-
-                # Copy file
-                for filename in filenames:
-                    dstfile = os.path.join(dstbase, dstmid, filename)
-                    srcfile = os.path.join(root, filename)
-                    if args.interactive and os.path.exists(dstfile):
-                        q = input(
-                            "{0}: {1} already ".format(args.prog, dstfile)
-                            + "exists; do you wish to overwrite (y or n)?"
-                        )
-                        if q.upper() != 'Y':
-                            exception.StdOutException("not overwritten", 2)
-                            continue
-                    _copy(srcfile, dstfile)
-                    if args.verbose:
-                        print("'{0}' -> '{1}'".format(srcfile, dstfile))
-        else:
-            dstfile = dstbase
-            if os.path.isdir(dstbase):
-                dstfile = os.path.join(dstbase, src)
-            _copy(src, dstfile)
+                os.mkdir(dstdir)
             if args.verbose:
-                print("'{0}' -> '{1}'".format(src, dstfile))
+                print("'{0}' -> '{1}'".format(root, dstdir))
+
+        # Copy file
+        for filename in filenames:
+            dstfile = os.path.join(dstbase, dstmid, filename)
+            srcfile = os.path.join(root, filename)
+            if args.interactive and os.path.exists(dstfile):
+                q = input(
+                    "{0}: {1} already ".format(args.prog, dstfile)
+                    + "exists; do you wish to overwrite (y or n)?"
+                )
+                if q.upper() != 'Y':
+                    exception.StdOutException("not overwritten", 2)
+                    continue
+            _copy(srcfile, dstfile)
+            if args.verbose:
+                print("'{0}' -> '{1}'".format(srcfile, dstfile))
