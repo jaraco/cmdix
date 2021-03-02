@@ -55,6 +55,48 @@ def func(args):
     )
     logger.addHandler(handler)
 
+    read_and_load(Job, args, joblist)
+
+    scheduler.enter(1, 1, checkjobs, (scheduler, joblist, args, logger))
+    scheduler.run()
+    print("No more jobs. This should not happen!", file=sys.stderr)
+
+
+def checkjobs(scheduler, joblist, args, logger):
+    ''' Check if there are jobs available '''
+    t = int(time.time() / 60 + 1) * 60  # start of the next minute
+    scheduler.enterabs(t, 1, checkjobs, ())
+    now = time.localtime(t)
+    for job in joblist:
+        if (
+            job.min in ['*', now.tm_min]
+            and job.hour in ['*', now.tm_hour]
+            and job.mday in ['*', now.tm_mday]
+            and job.mon in ['*', now.tm_mon]
+            and job.wday in ['*', now.tm_wday]
+        ):
+            cmd = job.cmd
+            if args.verbose:
+                logger.info("Running job {0}".format(cmd))
+
+            if args.dryrun:
+                break
+
+            # Run the command
+            stdout, stderr = subprocess.Popen(
+                cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
+            ).communicate()
+            if args.verbose:
+                if stdout:
+                    logger.info("{0}: {1}".format(cmd, stdout.strip()))
+                if stderr:
+                    logger.error("{0}: {1}".format(cmd, stderr.strip()))
+        else:
+            if args.verbose:
+                logger.info("Skipping job {0}".format(job))
+
+
+def read_and_load(Job, args, joblist):
     # Read crontab and load jobs
     for line in lib.parsefilelist(args.FILE):
         # Strip comments and split the string
@@ -74,40 +116,3 @@ def func(args):
                 print('Read {0}'.format(job))
         elif split:
             print('Ignoring invalid line {0}'.format(line))
-
-    def checkjobs():
-        ''' Check if there are jobs available '''
-        t = int(time.time() / 60 + 1) * 60  # start of the next minute
-        scheduler.enterabs(t, 1, checkjobs, ())
-        now = time.localtime(t)
-        for job in joblist:
-            if (
-                job.min in ['*', now.tm_min]
-                and job.hour in ['*', now.tm_hour]
-                and job.mday in ['*', now.tm_mday]
-                and job.mon in ['*', now.tm_mon]
-                and job.wday in ['*', now.tm_wday]
-            ):
-                cmd = job.cmd
-                if args.verbose:
-                    logger.info("Running job {0}".format(cmd))
-
-                if args.dryrun:
-                    break
-
-                # Run the command
-                stdout, stderr = subprocess.Popen(
-                    cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
-                ).communicate()
-                if args.verbose:
-                    if stdout:
-                        logger.info("{0}: {1}".format(cmd, stdout.strip()))
-                    if stderr:
-                        logger.error("{0}: {1}".format(cmd, stderr.strip()))
-            else:
-                if args.verbose:
-                    logger.info("Skipping job {0}".format(job))
-
-    scheduler.enter(1, 1, checkjobs, ())
-    scheduler.run()
-    print("No more jobs. This should not happen!", file=sys.stderr)
