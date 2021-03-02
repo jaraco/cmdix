@@ -79,6 +79,25 @@ def _gen_script_definitions():
         print('\t{cmd} = cmdix:run'.format(**locals()))
 
 
+def get_parser(commandname):
+    parser = argparse.ArgumentParser(
+        add_help=False,
+        description="Coreutils in Pure Python.",
+        prog=commandname,
+        epilog="Available Commands: " + ", ".join(listcommands()),
+    )
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("command", nargs="?")
+    group.add_argument(
+        "--allhelp", action="store_true", help="Show the help pages off all commands"
+    )
+    group.add_argument(
+        "--license", action="store_true", help="Show program's license and exit"
+    )
+    group.add_argument("--runtests", action="store_true", help="Run all sort of tests")
+    return parser
+
+
 def run(argv=None):
     """
     Parse commandline arguments and run command.
@@ -95,50 +114,47 @@ def run(argv=None):
     """
     argv = argv or sys.argv
     commandname = os.path.basename(argv.pop(0))
-    parser = argparse.ArgumentParser(
-        add_help=False,
-        description="Coreutils in Pure Python.",
-        prog=commandname,
-        epilog="Available Commands: " + ", ".join(listcommands()),
-    )
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument("command", nargs="?")
-    group.add_argument(
-        "--allhelp", action="store_true", help="Show the help pages off all commands"
-    )
-    group.add_argument(
-        "--license", action="store_true", help="Show program's license and exit"
-    )
-    group.add_argument("--runtests", action="store_true", help="Run all sort of tests")
+    parser = get_parser(commandname)
 
     if commandname in ('__main__.py',):
         args, argv = parser.parse_known_args(argv)
 
-        if args.license:
-            print("MIT")
-            return
-
-        elif args.allhelp:
-            for commandname, commandhelp in format_all_help():
-                print("\n" + commandname + "\n\n" + commandhelp)
-            return
-
-        elif args.runtests:
-            try:
-                from . import test
-            except ImportError:
-                print("Can't import test suite", file=sys.stderr)
-                sys.exit(1)
-            test.runalltests()
-            return
-
-        elif not args.command and not argv:
-            parser.print_help()
+        if handle_args(parser, args, argv):
             return
 
         commandname = args.command
 
-    # Run the subcommand
+    return run_subcommand(commandname, argv)
+
+
+def handle_args(parser, args, argv):
+    if args.license:
+        print("MIT")
+        return True
+
+    if args.allhelp:
+        for commandname, commandhelp in format_all_help():
+            print("\n" + commandname + "\n\n" + commandhelp)
+        return True
+
+    if args.runtests:
+        try:
+            from . import test
+        except ImportError:
+            print("Can't import test suite", file=sys.stderr)
+            sys.exit(1)
+        test.runalltests()
+        return True
+
+    if not args.command and not argv:
+        parser.print_help()
+        return True
+
+
+def run_subcommand(commandname, argv):
+    """
+    Run the subcommand
+    """
     try:
         cmd = getcommand(commandname)
     except CommandNotFoundException:
