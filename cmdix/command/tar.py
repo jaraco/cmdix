@@ -81,32 +81,39 @@ def func(args):
         tar.close()
 
     elif args.list:
-        for tarinfo in tar:
-            name = tarinfo.name
-            if tarinfo.isdir():
-                name += '/'
-            print(name)
-        tar.close()
+        list_(tar)
 
     elif args.create:
-        # Set outfile
-        if args.archive:
-            outfile = open(args.archive, 'wb')
-        else:
-            outfile = sys.stout
-
-        # Set mode
-        if args.gzip:
-            mode = 'w:gz'
-        elif args.bzip2:
-            mode = 'w:bz2'
-        else:
-            mode = 'w'
-        tar = tarfile.open(fileobj=outfile, mode=mode)
-        for arg in args.FILE:
-            tar.add(arg)
-        tar.close()
-        if args.archive:
-            outfile.close()
+        create(args)
     else:
         print("Either '-c', '-t' or '-x' should be specified", file=sys.stderr)
+
+
+def list_(tar):
+    for tarinfo in tar:
+        name = tarinfo.name
+        if tarinfo.isdir():
+            name += '/'
+        print(name)
+    tar.close()
+
+
+def create(args):
+    # Set outfile
+    if args.archive:
+        outfile = open(args.archive, 'wb')
+    else:
+        outfile = sys.stout
+    # Set mode
+    if args.gzip:
+        mode = 'w:gz'
+    elif args.bzip2:
+        mode = 'w:bz2'
+    else:
+        mode = 'w'
+    tar = tarfile.open(fileobj=outfile, mode=mode)
+    for arg in args.FILE:
+        tar.add(arg)
+    tar.close()
+    if args.archive:
+        outfile.close()
