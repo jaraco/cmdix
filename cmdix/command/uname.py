@@ -123,7 +123,10 @@ def patch_syscmd_uname():
     To prevent an infinite recursion when `platform.uname()` is called,
     suppress the `_syscmd_uname` function.
     """
-    orig = platform._syscmd_uname
+    orig = getattr(platform, '_syscmd_uname', None)
+    if not orig:
+        yield
+        return
     platform._syscmd_uname = lambda x, y: 'unknown'
     try:
         yield
