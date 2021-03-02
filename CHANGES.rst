@@ -1,3 +1,10 @@
+v0.3.1
+======
+
+Fixed linter errors due to complexity checks.
+
+Refreshed packaging.
+
 v0.3.0
 ======
 
