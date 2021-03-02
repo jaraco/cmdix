@@ -113,7 +113,8 @@ def run(argv=None):
     :return:        The exit status of the command. None means 0.
     """
     argv = argv or sys.argv
-    commandname = os.path.basename(argv.pop(0))
+    commandname = os.path.basename(argv[0])
+    argv = argv[1:]
     parser = get_parser(commandname)
 
     if commandname in ('__main__.py',):

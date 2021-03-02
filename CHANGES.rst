@@ -1,3 +1,8 @@
+v0.3.1
+======
+
+#3: Fixed argument handling in smtpd.
+
 v0.3.0
 ======
 
