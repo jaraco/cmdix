@@ -119,36 +119,44 @@ def compressorfunc(args):
 
     for infile in infiles:
         if args.decompress:
-            # Decompress
-            infile = compresstype(infile, 'rb', compresslevel=args.compresslevel)
-            if len(args.FILE) == 0 or args.stdout:
-                outfile = sys.stdout
-            else:
-                unzippath = infile.rstrip(suffix)
-                if os.path.exists(unzippath):
-                    q = input(
-                        "{0}: {1} ".format(args.prog, unzippath)
-                        + "already exists; do you wish to overwrite (y or n)? "
-                    )
-                    if q.upper() != 'Y':
-                        StdOutException("not overwritten", 2)
-
-                outfile = open(unzippath, 'wb')
+            infile, outfile = decompress(args, compresstype, infile, suffix)
         else:
-            # Compress
-            zippath = infile + suffix
-            infile = open(infile, 'rb')
-            if len(args.FILE) == 0 or args.stdout:
-                outfile = sys.stdout
-            else:
-                if os.path.exists(zippath):
-                    q = input(
-                        "{0}: {1} ".format(args.prog, zippath)
-                        + "already exists; do you wish to overwrite (y or n)? "
-                    )
-                    if q.upper() != 'Y':
-                        StdErrException("not overwritten", 2)
-
-                outfile = compresstype(zippath, 'wb', compresslevel=args.compresslevel)
+            infile, outfile = compress(args, compresstype, infile, outfile, suffix)
 
         shutil.copyfileobj(infile, outfile)
+
+
+def compress(args, compresstype, infile, outfile, suffix):
+    zippath = infile + suffix
+    infile = open(infile, 'rb')
+    if len(args.FILE) == 0 or args.stdout:
+        outfile = sys.stdout
+    else:
+        if os.path.exists(zippath):
+            q = input(
+                "{0}: {1} ".format(args.prog, zippath)
+                + "already exists; do you wish to overwrite (y or n)? "
+            )
+            if q.upper() != 'Y':
+                StdErrException("not overwritten", 2)
+
+        outfile = compresstype(zippath, 'wb', compresslevel=args.compresslevel)
+    return infile, outfile
+
+
+def decompress(args, compresstype, infile, suffix):
+    infile = compresstype(infile, 'rb', compresslevel=args.compresslevel)
+    if len(args.FILE) == 0 or args.stdout:
+        outfile = sys.stdout
+    else:
+        unzippath = infile.rstrip(suffix)
+        if os.path.exists(unzippath):
+            q = input(
+                "{0}: {1} ".format(args.prog, unzippath)
+                + "already exists; do you wish to overwrite (y or n)? "
+            )
+            if q.upper() != 'Y':
+                StdOutException("not overwritten", 2)
+
+        outfile = open(unzippath, 'wb')
+    return infile, outfile
