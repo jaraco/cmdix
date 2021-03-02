@@ -43,25 +43,29 @@ def func(args):
             raise err
 
     for arg in args.FILE:
-        if args.recursive and os.path.isdir(arg):
-            # Remove directory recursively
-            for root, dirs, files in os.walk(arg, topdown=False, onerror=_raise):
-                for name in files:
-                    path = os.path.join(root, name)
-                    os.remove(path)
-                    if args.verbose:
-                        print("Removed file '{0}'\n".format(path))
-                for name in dirs:
-                    path = os.path.join(root, name)
-                    os.rmdir(path)
-                    if args.verbose:
-                        print("Removed directory '{0}'\n".format(path))
-            os.rmdir(arg)
-        else:
-            # Remove single file
-            try:
-                os.remove(arg)
+        do_it(_raise, arg, args)
+
+
+def do_it(_raise, arg, args):
+    if args.recursive and os.path.isdir(arg):
+        # Remove directory recursively
+        for root, dirs, files in os.walk(arg, topdown=False, onerror=_raise):
+            for name in files:
+                path = os.path.join(root, name)
+                os.remove(path)
                 if args.verbose:
-                    print("Removed '{0}'\n".format(arg))
-            except OSError as err:
-                _raise(err)
+                    print("Removed file '{0}'\n".format(path))
+            for name in dirs:
+                path = os.path.join(root, name)
+                os.rmdir(path)
+                if args.verbose:
+                    print("Removed directory '{0}'\n".format(path))
+        os.rmdir(arg)
+    else:
+        # Remove single file
+        try:
+            os.remove(arg)
+            if args.verbose:
+                print("Removed '{0}'\n".format(arg))
+        except OSError as err:
+            _raise(err)
