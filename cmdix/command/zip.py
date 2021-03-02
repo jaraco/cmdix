@@ -51,67 +51,81 @@ def parseargs(p):
 
 def func(args):
     if args.list:
-        if len(args) != 1:
-            args.parser.print_usage(sys.stderr)
-            sys.exit(1)
-        zf = zipfile.ZipFile(args[0], 'r')
-        zf.printdir()
-        zf.close()
+        list_(args)
 
     elif args.test:
-        if len(args) != 1:
-            args.parser.print_usage(sys.stderr)
-            sys.exit(1)
-        zf = zipfile.ZipFile(args[0], 'r')
-        badfile = zf.testzip()
-        if badfile:
-            sys.stderr("Error on file {0}\n".format(badfile))
-            sys.exit(1)
-        else:
-            print("{0} tested ok".format(args[0]) + "\n")
-            sys.exit(0)
+        test(args)
 
     elif args.extract:
-        if len(args) != 2:
-            args.parser.print_usage(sys.stderr)
-            sys.exit(1)
-
-        zf = zipfile.ZipFile(args[0], 'r')
-        out = args[1]
-        for path in zf.namelist():
-            if path.startswith('./'):
-                tgt = os.path.join(out, path[2:])
-            else:
-                tgt = os.path.join(out, path)
-
-            tgtdir = os.path.dirname(tgt)
-            if not os.path.exists(tgtdir):
-                os.makedirs(tgtdir)
-            fp = open(tgt, 'wb')
-            fp.write(zf.read(path))
-            fp.close()
-        zf.close()
+        extract(args)
 
     elif args.create:
-        if len(args) < 2:
-            args.parser.print_usage(sys.stderr)
-            sys.exit(1)
-
-        def addToZip(zf, path, zippath):
-            if os.path.isfile(path):
-                zf.write(path, zippath, zipfile.ZIP_DEFLATED)
-            elif os.path.isdir(path):
-                for nm in os.listdir(path):
-                    addToZip(zf, os.path.join(path, nm), os.path.join(zippath, nm))
-            else:
-                exception.StdErrException("Can't store {0}".format(path))
-
-        zf = zipfile.ZipFile(args[0], 'w', allowZip64=True)
-        for src in args[1:]:
-            addToZip(zf, src, os.path.basename(src))
-
-        zf.close()
+        create(args)
 
     else:
         args.parser.print_usage(sys.stderr)
         sys.exit(1)
+
+
+def create(args):
+    if len(args) < 2:
+        args.parser.print_usage(sys.stderr)
+        sys.exit(1)
+
+    def addToZip(zf, path, zippath):
+        if os.path.isfile(path):
+            zf.write(path, zippath, zipfile.ZIP_DEFLATED)
+        elif os.path.isdir(path):
+            for nm in os.listdir(path):
+                addToZip(zf, os.path.join(path, nm), os.path.join(zippath, nm))
+        else:
+            exception.StdErrException("Can't store {0}".format(path))
+
+    zf = zipfile.ZipFile(args[0], 'w', allowZip64=True)
+    for src in args[1:]:
+        addToZip(zf, src, os.path.basename(src))
+    zf.close()
+
+
+def extract(args):
+    if len(args) != 2:
+        args.parser.print_usage(sys.stderr)
+        sys.exit(1)
+    zf = zipfile.ZipFile(args[0], 'r')
+    out = args[1]
+    for path in zf.namelist():
+        if path.startswith('./'):
+            tgt = os.path.join(out, path[2:])
+        else:
+            tgt = os.path.join(out, path)
+
+        tgtdir = os.path.dirname(tgt)
+        if not os.path.exists(tgtdir):
+            os.makedirs(tgtdir)
+        fp = open(tgt, 'wb')
+        fp.write(zf.read(path))
+        fp.close()
+    zf.close()
+
+
+def test(args):
+    if len(args) != 1:
+        args.parser.print_usage(sys.stderr)
+        sys.exit(1)
+    zf = zipfile.ZipFile(args[0], 'r')
+    badfile = zf.testzip()
+    if badfile:
+        sys.stderr("Error on file {0}\n".format(badfile))
+        sys.exit(1)
+    else:
+        print("{0} tested ok".format(args[0]) + "\n")
+        sys.exit(0)
+
+
+def list_(args):
+    if len(args) != 1:
+        args.parser.print_usage(sys.stderr)
+        sys.exit(1)
+    zf = zipfile.ZipFile(args[0], 'r')
+    zf.printdir()
+    zf.close()
