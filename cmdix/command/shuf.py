@@ -46,7 +46,6 @@ def parseargs(p):
 
 
 def func(args):
-    lines = ''
     outfd = sys.stdout
 
     # Write to file if -o is specified
@@ -54,40 +53,47 @@ def func(args):
         outfd = open(args.output, 'w')
 
     if args.echo:
-        if args.inputrange:
-            exception.StdErrException(
-                "{0}: cannot combine -e and -i options".format(args.prog)
-            )
-
-        lines = args.file
-        random.shuffle(lines)
-
-        if args.headcount:
-            lines = lines[0 : int(args.headcount)]
-        for line in lines:
-            outfd.write(line + '\n')
+        echo(args, outfd)
 
     elif args.inputrange:
-        (lo, hi) = args.inputrange.split('-')
-        lines = list(range(int(lo), int(hi) + 1))
-        random.shuffle(lines)
-
-        if args.headcount:
-            lines = lines[0 : int(args.headcount)]
-        for line in lines:
-            outfd.write(line + '\n')
+        input_range(args, outfd)
 
     else:
-        # Use stdin for input if no file is specified
-        if not args.file:
-            fd = sys.stdin
-        else:
-            fd = open(args.file)
+        other(args, outfd)
 
-        lines = fd.readlines()
-        random.shuffle(lines)
 
-        if args.headcount:
-            lines = lines[0 : int(args.headcount)]
-        for line in lines:
-            outfd.write(line)
+def other(args, outfd):
+    # Use stdin for input if no file is specified
+    if not args.file:
+        fd = sys.stdin
+    else:
+        fd = open(args.file)
+    lines = fd.readlines()
+    random.shuffle(lines)
+    if args.headcount:
+        lines = lines[0 : int(args.headcount)]
+    for line in lines:
+        outfd.write(line)
+
+
+def input_range(args, outfd):
+    (lo, hi) = args.inputrange.split('-')
+    lines = list(range(int(lo), int(hi) + 1))
+    random.shuffle(lines)
+    if args.headcount:
+        lines = lines[0 : int(args.headcount)]
+    for line in lines:
+        outfd.write(line + '\n')
+
+
+def echo(args, outfd):
+    if args.inputrange:
+        exception.StdErrException(
+            "{0}: cannot combine -e and -i options".format(args.prog)
+        )
+    lines = args.file
+    random.shuffle(lines)
+    if args.headcount:
+        lines = lines[0 : int(args.headcount)]
+    for line in lines:
+        outfd.write(line + '\n')
