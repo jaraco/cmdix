@@ -1,5 +1,5 @@
-Welcome to cmdix documentation!
-===============================
+Welcome to |project| documentation!
+===================================
 
 .. toctree::
    :maxdepth: 1
