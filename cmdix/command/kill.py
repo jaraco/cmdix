@@ -33,27 +33,7 @@ def func(args):
     # todo: fixme
     p = None
 
-    # Add a string option for each signal
-    for name, sigint in list(signals.items()):
-        signame = 'SIG' + name.upper()
-        p.add_argument(
-            "--" + signame,
-            action="store_const",
-            dest="signal",
-            const=sigint,
-            help="send signal {0}".format(signame),
-        )
-
-    # Add an integer option for each signal
-    for sigint in set(signals.values()):
-        if sigint < 10:
-            p.add_argument(
-                "-%i" % sigint,
-                action="store_const",
-                dest="signal",
-                const=sigint,
-                help="send signal {0}".format(sigint),
-            )
+    add_arguments(p, signals)
 
     if len(args) == 0:
         raise exception.MissingOperandException(args.prog)
@@ -83,3 +63,27 @@ def func(args):
             )
 
         os.kill(pid, sigint)
+
+
+def add_arguments(p, signals):
+    # Add a string option for each signal
+    for name, sigint in list(signals.items()):
+        signame = 'SIG' + name.upper()
+        p.add_argument(
+            "--" + signame,
+            action="store_const",
+            dest="signal",
+            const=sigint,
+            help="send signal {0}".format(signame),
+        )
+
+    # Add an integer option for each signal
+    for sigint in set(signals.values()):
+        if sigint < 10:
+            p.add_argument(
+                "-%i" % sigint,
+                action="store_const",
+                dest="signal",
+                const=sigint,
+                help="send signal {0}".format(sigint),
+            )
