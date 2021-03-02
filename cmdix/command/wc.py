@@ -37,26 +37,18 @@ def parseargs(p):
 
 def func(args):
     # TODO: Bytes
-    fdict = {}
-    if args.FILE == []:
-        args.FILE = ['-']
-    for filename in args.FILE:
-        fdict[filename] = {'chars': 0, 'lines': 0, 'words': 0}
-        for line in fileinput.input(filename, openhook=fileinput.hook_compressed):
-            fdict[filename]['chars'] += len(line)
-            fdict[filename]['lines'] += 1
-            fdict[filename]['words'] += len(line.split())
+    fdict = make_fdict(args)
 
-    totchars = totlines = totwords = 0
-    for filename, v in fdict.items():
-        totchars += v['chars']
-        totlines += v['lines']
-        totwords += v['words']
+    totchars, totlines, totwords = count(fdict)
 
     maxlen = len(str(totchars))
     if not args.chars and not args.lines and not args.words:
         args.chars = args.lines = args.words = True
 
+    report(args, fdict, maxlen, totchars, totlines, totwords)
+
+
+def report(args, fdict, maxlen, totchars, totlines, totwords):
     for filename, v in fdict.items():
         if args.lines:
             print("{0:>{len}} ".format(v['lines'], len=maxlen), end='')
@@ -67,7 +59,6 @@ def func(args):
         if filename != '-':
             print(filename, end='')
         print()
-
     if len(fdict) > 1:
         if args.lines:
             print("{0:>{len}} ".format(totlines, len=maxlen), end='')
@@ -76,3 +67,25 @@ def func(args):
         if args.chars:
             print("{0:>{len}} ".format(totchars, len=maxlen), end='')
         print('total')
+
+
+def count(fdict):
+    totchars = totlines = totwords = 0
+    for filename, v in fdict.items():
+        totchars += v['chars']
+        totlines += v['lines']
+        totwords += v['words']
+    return totchars, totlines, totwords
+
+
+def make_fdict(args):
+    fdict = {}
+    if args.FILE == []:
+        args.FILE = ['-']
+    for filename in args.FILE:
+        fdict[filename] = {'chars': 0, 'lines': 0, 'words': 0}
+        for line in fileinput.input(filename, openhook=fileinput.hook_compressed):
+            fdict[filename]['chars'] += len(line)
+            fdict[filename]['lines'] += 1
+            fdict[filename]['words'] += len(line.split())
+    return fdict
