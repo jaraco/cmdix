@@ -1,6 +1,8 @@
 v0.3.1
 ======
 
+#3: Fixed argument handling in smtpd.
+
 Fixed linter errors due to complexity checks.
 
 Refreshed packaging.
