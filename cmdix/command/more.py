@@ -24,13 +24,15 @@ def parseargs(p):
 
 
 def func(args):
-    text = ''
-    currentfilename = ''
-    for line, filename in lib.parsefilelist(args.FILE):
-        if len(args.FILE) > 1 and filename != currentfilename:
-            currentfilename = filename
-            text += "::::::::::::::\n"
-            text += currentfilename + "\n"
-            text += "::::::::::::::\n"
-        text += line
-    pydoc.pager(text)
+    lines = _gen_lines(args.FILE)
+    pydoc.pager(''.join(lines))
+
+
+def _gen_lines(files):
+    for index, file in enumerate(lib.parsefilelist(files)):
+        # except for first file, announce the filename
+        if index != 0:
+            yield "::::::::::::::\n"
+            yield file.filename() + "\n"
+            yield "::::::::::::::\n"
+        yield from file
