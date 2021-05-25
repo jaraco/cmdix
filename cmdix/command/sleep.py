@@ -1,7 +1,4 @@
 import time
-import sys
-
-from .. import exception
 
 
 def parseargs(p):
@@ -21,29 +18,36 @@ def parseargs(p):
         + "be an arbitrary floating point number. Given two or "
         + "more arguments, pause for the amount of time"
     )
-    p.add_argument('number', nargs='+')
+    p.add_argument('number', nargs='+', type=duration)
     return p
 
 
-def func(args):
-    a = []
-    try:
-        for arg in args.number:
-            if arg.endswith('s'):
-                a.append(float(arg[0:-1]))
-            elif arg.endswith('m'):
-                a.append(float(arg[0:-1]) * 60)
-            elif arg.endswith('h'):
-                a.append(float(arg[0:-1]) * 3600)
-            elif arg.endswith('d'):
-                a.append(float(arg[0:-1]) * 86400)
-            else:
-                a.append(float(arg))
-    except ValueError:
-        exception.StdErrException(
-            "sleep: invalid time interval "
-            "'{0}'. Try sleep --help' for more information.".format(arg)
-        )
-        sys.exit(1)
+def duration(spec):
+    """
+    >>> duration('1')
+    1.0
+    >>> duration('1s')
+    1.0
+    >>> duration('1 s')
+    1.0
+    >>> duration('1h')
+    3600.0
+    >>> duration('1d')
+    86400.0
+    >>> duration('1m')
+    60.0
+    """
+    if spec.endswith('s'):
+        return float(spec[0:-1])
+    elif spec.endswith('m'):
+        return float(spec[0:-1]) * 60
+    elif spec.endswith('h'):
+        return float(spec[0:-1]) * 3600
+    elif spec.endswith('d'):
+        return float(spec[0:-1]) * 86400
+    else:
+        return float(spec)
 
-    time.sleep(sum(a))
+
+def func(args):
+    time.sleep(sum(args.number))
