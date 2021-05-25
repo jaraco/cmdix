@@ -1,3 +1,8 @@
+"""
+>>> import cmdix
+>>> cmdix.runcommandline('sleep 0')
+"""
+
 import time
 
 
@@ -38,15 +43,14 @@ def duration(spec):
     60.0
     """
     if spec.endswith('s'):
-        return float(spec[0:-1])
+        return float(spec[:-1])
     elif spec.endswith('m'):
-        return float(spec[0:-1]) * 60
+        return float(spec[:-1]) * 60
     elif spec.endswith('h'):
-        return float(spec[0:-1]) * 3600
+        return float(spec[:-1]) * 3600
     elif spec.endswith('d'):
-        return float(spec[0:-1]) * 86400
-    else:
-        return float(spec)
+        return float(spec[:-1]) * 86400
+    return float(spec)
 
 
 def func(args):
