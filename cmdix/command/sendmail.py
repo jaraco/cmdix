@@ -71,11 +71,15 @@ def parseargs(p):
     return p
 
 
+def _read_msg(files):
+    msg = ""
+    for line, filename in lib.parsefilelist(files):
+        msg += line
+    return msg
+
+
 def func(args):
     # TODO: Authentication
-    msg = ""
-    for line, filename in lib.parsefilelist(args.FILE):
-        msg += line
 
     if args.ssl or args.certfile or args.keyfile:
         smtp = smtplib.SMTP_SSL(
@@ -89,5 +93,5 @@ def func(args):
         smtp = smtplib.SMTP(args.address, args.port, timeout=args.timeout)
 
     smtp.set_debuglevel(args.verbose)
-    smtp.sendmail(args.sender, args.recipient, msg)
+    smtp.sendmail(args.sender, args.recipient, _read_msg(args.FILE))
     smtp.quit()
