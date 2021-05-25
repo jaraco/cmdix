@@ -1,6 +1,7 @@
 import platform
 import smtplib
 import socket
+import itertools
 
 from .. import lib
 
@@ -76,10 +77,7 @@ def _read_msg(files):
     >>> print(_read_msg([__file__]))
     import ...
     """
-    msg = ""
-    for line, filename in lib.parsefilelist(files):
-        msg += line
-    return msg
+    return ''.join(itertools.chain.from_iterable(lib.parsefilelist(files)))
 
 
 def func(args):
