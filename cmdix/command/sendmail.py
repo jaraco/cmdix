@@ -72,6 +72,10 @@ def parseargs(p):
 
 
 def _read_msg(files):
+    """
+    >>> print(_read_msg([__file__]))
+    import ...
+    """
     msg = ""
     for line, filename in lib.parsefilelist(files):
         msg += line
