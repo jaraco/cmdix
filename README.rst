@@ -17,6 +17,9 @@
 .. .. image:: https://readthedocs.org/projects/skeleton/badge/?version=latest
 ..    :target: https://skeleton.readthedocs.io/en/latest/?badge=latest
 
+.. image:: https://img.shields.io/badge/skeleton-2021-informational
+   :target: https://blog.jaraco.com/skeleton
+
 cmdix is a pure Python implementation of various standard UNIX commands,
 like 'ls', 'cp' and 'sleep'. It also contains a shell-like environment which
 will make Unix-users feel right at home on the Windows command-prompt.
