@@ -28,11 +28,7 @@ def parseargs(p):
 
 
 def func(args):
-    s = ''.join(
-        line
-        for file in lib.parsefilelist(args.FILE)
-        for line in file
-    )
+    s = ''.join(line for file in lib.parsefilelist(args.FILE) for line in file)
 
     if args.decode:
         out = _base64.b64decode(s.encode('ascii')).decode('ascii')
