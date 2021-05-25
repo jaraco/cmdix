@@ -1,3 +1,19 @@
+"""
+>>> from unittest import mock
+>>> args = mock.Mock()
+>>> args.FILE = [__file__]
+>>> args.reverse = False
+>>> func(args)
+<BLANKLINE>
+...
+>>> args.reverse = True
+>>> func(args)
+import itertools
+...
+"""
+
+import itertools
+
 from .. import lib
 
 
@@ -19,13 +35,12 @@ def parseargs(p):
         action="store_true",
         dest="reverse",
         help="reverse the result of comparisons",
+        default=False,
     )
     return p
 
 
 def func(args):
-    ell = []
-    for line, filename in lib.parsefilelist(args.FILE):
-        ell.append(line)
-    ell.sort(reverse=args.reverse or False)
-    print(''.join(ell), end='')
+    lines = itertools.chain.from_iterable(lib.parsefilelist(args.FILE))
+    rendered = sorted(lines, reverse=args.reverse)
+    print(''.join(rendered), end='')
