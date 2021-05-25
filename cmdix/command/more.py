@@ -33,6 +33,6 @@ def _gen_lines(files):
         # except for first file, announce the filename
         if index != 0:
             yield "::::::::::::::\n"
-            yield file.filename() + "\n"
+            yield file._files[0] + "\n"
             yield "::::::::::::::\n"
         yield from file
