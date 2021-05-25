@@ -95,5 +95,5 @@ def func(args):
         smtp = smtplib.SMTP(args.address, args.port, timeout=args.timeout)
 
     smtp.set_debuglevel(args.verbose)
-    smtp.sendmail(args.sender, args.recipient, _read_msg(args.FILE))
+    smtp.sendmail(args.sender, args.recipient, _read_msg(args.messagefile))
     smtp.quit()
