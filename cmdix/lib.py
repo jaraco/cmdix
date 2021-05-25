@@ -169,8 +169,8 @@ def mode2string(mode):
 
 def parsefilelist(filelist=None, decompress=False):
     r"""
-    Takes a list of files, and generates a list of generators generating the
-    content of the file, line by line. Get it? ;-)
+    Take a list of files and generate a series of generators,
+    each generating lines of a file.
 
     >>> import bz2
     >>> target = getfixture('tmpdir') / 'data.bz2'
