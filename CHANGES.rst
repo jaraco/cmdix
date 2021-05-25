@@ -1,7 +1,7 @@
 v0.3.2
 ======
 
-#4: Fixed more command.
+#4: Fixed broken commands: more, sort, sendmail.
 
 v0.3.1
 ======
