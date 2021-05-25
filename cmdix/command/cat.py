@@ -1,4 +1,5 @@
 import sys
+import itertools
 
 from .. import lib
 
@@ -20,16 +21,7 @@ def parseargs(p):
     return p
 
 
-def try_decode(line):
-    try:
-        return line.decode()
-    except Exception:
-        return line
-
-
 def func(args):
-    lines = (
-        try_decode(line) for file in lib.parsefilelist(args.FILE, True) for line in file
-    )
+    lines = itertools.chain.from_iterable(lib.parsefilelist(args.FILE, True))
     for line in lines:
         sys.stdout.write(line)
