@@ -186,10 +186,7 @@ def parsefilelist(filelist=None, decompress=False):
     If decompress is defined, a file ending with `.gz` or `.bz2` is
     decompressed automatically.
     """
-    if decompress:
-        openhook = hook_compressed
-    else:
-        openhook = None
+    openhook = hook_compressed if decompress else None
 
     # Use stdin if filelist is empty
     filelist = filelist or '-'
