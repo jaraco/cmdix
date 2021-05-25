@@ -10,6 +10,11 @@ import stat
 import sys
 import textwrap
 
+try:
+    from backports.hook_compressed import hook_compressed
+except ImportError:
+    from fileinput import hook_compressed
+
 import cmdix
 
 
@@ -172,7 +177,7 @@ def parsefilelist(filelist=None, decompress=False):
     >>> target.write_binary(bz2.compress(b'Foo\nBar\nBiz'))
     >>> for filename in parsefilelist([str(target)], decompress=True):
     ...     for line in filename:
-    ...         print(line.decode().strip())
+    ...         print(line.strip())
     Foo
     Bar
     Biz
@@ -182,7 +187,7 @@ def parsefilelist(filelist=None, decompress=False):
     decompressed automatically.
     """
     if decompress:
-        openhook = fileinput.hook_compressed
+        openhook = hook_compressed
     else:
         openhook = None
 
