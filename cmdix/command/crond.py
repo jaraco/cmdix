@@ -63,7 +63,7 @@ def func(args):
 
 
 def checkjobs(scheduler, joblist, args, logger):
-    ''' Check if there are jobs available '''
+    '''Check if there are jobs available'''
     t = int(time.time() / 60 + 1) * 60  # start of the next minute
     scheduler.enterabs(t, 1, checkjobs, ())
     now = time.localtime(t)
