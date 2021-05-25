@@ -1,3 +1,11 @@
+"""
+>>> from unittest import mock
+>>> args = mock.Mock()
+>>> args.FILE = [__file__]
+>>> func(args)
+"...
+"""
+
 from .. import lib
 import pydoc
 
