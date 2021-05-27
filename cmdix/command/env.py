@@ -1,7 +1,7 @@
 # TODO: implement command execution.
 
 import os
-
+from cmdix import run_subcommand
 
 def parseargs(p):
     p.set_defaults(func=func)
@@ -16,9 +16,29 @@ def parseargs(p):
         help="start with an empty environment",
         default=os.environ,
     )
+    p.add_argument(
+        "variable",
+        nargs=1,
+    )
+    p.add_argument(
+        "new_command",
+        nargs="+"
+    )
     return p
 
 
 def func(args):
-    for k, v in args.env.items():
-        print(k + '=' + v)
+    if not args.variable:
+        for k, v in args.env.items():
+            print(k + '=' + v)
+    else:
+        variable = args.variable[0]
+        if '=' not in variable:
+            var = os.environ.get(variable)
+            if var: print(var)
+        else:
+            key, value = variable.split("=")
+            os.environ.update({key:value})
+            if args.new_command:
+                subcommand, *new_args = args.new_command
+                return run_subcommand(subcommand, new_args)
