@@ -1,1 +1,6 @@
 venv/
+*.egg*
+
+__pycache__/
+
+build/
