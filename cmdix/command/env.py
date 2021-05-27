@@ -17,28 +17,31 @@ def parseargs(p):
         default=os.environ,
     )
     p.add_argument(
-        "variable",
+        "--export",
         nargs=1,
+        help="Set argument with --export NAME=VALUE"
     )
     p.add_argument(
-        "new_command",
-        nargs="+"
+        "--eval",
+        nargs="+",
+        help="Run any commands with newly updated environment, " 
+            "--eval COMMAND ARGS"
     )
     return p
 
 
 def func(args):
-    if not args.variable:
+    if not args.export:
         for k, v in args.env.items():
             print(k + '=' + v)
     else:
-        variable = args.variable[0]
+        variable = args.export[0]
         if '=' not in variable:
             var = os.environ.get(variable)
             if var: print(var)
         else:
             key, value = variable.split("=")
             os.environ.update({key:value})
-            if args.new_command:
-                subcommand, *new_args = args.new_command
+            if args.eval:
+                subcommand, *new_args = args.eval
                 return run_subcommand(subcommand, new_args)
