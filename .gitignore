@@ -4,3 +4,6 @@ venv/
 __pycache__/
 
 build/
+
+#Editor Settings
+.vscode
