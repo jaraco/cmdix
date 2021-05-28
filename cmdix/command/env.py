@@ -23,10 +23,11 @@ def parseargs(p):
     )
     p.add_argument(
         "--eval",
-        nargs="+",
-        help="Run any commands with newly updated environment, " 
-            "--eval COMMAND ARGS"
+        action="store_true",
+        help= 'Run any commands with newly updated env vars, ' 
+            '--eval [COMMAND] [ARGS]. If using additional flags, separate with "--" ex. "ls -- -l"'
     )
+    p.add_argument('new_args', nargs='*')
     return p
 
 
@@ -43,5 +44,5 @@ def func(args):
             key, value = variable.split("=")
             os.environ.update({key:value})
             if args.eval:
-                subcommand, *new_args = args.eval
+                subcommand, *new_args = args.new_args
                 return run_subcommand(subcommand, new_args)
