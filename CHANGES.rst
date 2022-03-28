@@ -1,3 +1,10 @@
+v0.4.0
+======
+
+Refreshed packaging.
+
+Require Python 3.7 or later.
+
 v0.3.2
 ======
 
