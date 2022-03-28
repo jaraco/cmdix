@@ -3,11 +3,10 @@ import sys
 import argparse
 import os
 import shlex
-import pathlib
 import platform
 
 import importlib_metadata
-import importlib_resources
+import importlib_resources as resources
 
 from . import command
 from .exception import CommandNotFoundException
@@ -68,7 +67,7 @@ def listcommands():
     """
     Returns a list of all available commands
     """
-    paths = map(pathlib.Path, importlib_resources.contents(command))
+    paths = resources.files(command).iterdir()
     all = (path.stem for path in paths if not path.name.startswith('_'))
     return filter(_is_available, all)
 
