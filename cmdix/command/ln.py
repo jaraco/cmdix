@@ -1,4 +1,5 @@
 import os
+import sys
 
 
 def parseargs(p):
@@ -10,8 +11,8 @@ def parseargs(p):
     """
     p.set_defaults(func=func)
     p.description = "Create symbolic or hard links"
-    p.add_argument("TARGET", nargs=1)
-    p.add_argument("LINK_NAME", nargs='?')
+    p.add_argument("source_file", nargs='+')
+    p.add_argument("target", nargs='?', default='.')
     p.add_argument(
         "-s",
         "--symbolic",
@@ -29,28 +30,38 @@ def parseargs(p):
     return p
 
 
+def handle_target(args):
+    """
+    ln allows for source_file to contain nargs='+' and target
+    to indicate a target file or target dir.
+
+    argparse can't know if an argument is a target, as
+    source_file will consume all positional parameters. This
+    function adjusts for that expectation.
+    """
+    if len(args.source_file) > 1:
+        args.target = args.source_file[-1]
+        args.source_file = args.source_file[:-1]
+
+
 def func(args):
-    src = args.TARGET
-    if args.LINK_NAME:
-        dst = args[1]
-    else:
-        dst = os.path.basename(src)
+    handle_target(args)
 
     if args.symbolic:
         f = os.symlink
-        linktype = 'soft'
     else:
         f = os.link
-        linktype = 'hard'
 
-    for src in args:
+    for src in args.source_file:
+        dst = (
+            os.path.join(args.target, os.path.basename(src))
+            if os.path.isdir(args.target)
+            else args.target
+        )
+
         if args.verbose:
-            print("'{0}' -> '{1}'".format(src, dst))
+            print(f'{dst} => {src}')
         try:
             f(src, dst)
         except Exception as err:
-            print(
-                "ln: creating {0} link '{1}' => '{2}': {3}\n".format(
-                    linktype, dst, src, err.strerror
-                )
-            )
+            print(f"ln: {err}", file=sys.stderr)

@@ -1,3 +1,8 @@
+v1.0.0
+======
+
+#10: Fixed argument handling in ln.
+
 v0.4.0
 ======
 
