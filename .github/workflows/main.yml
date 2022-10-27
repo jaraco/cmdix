@@ -17,9 +17,10 @@ jobs:
         - ubuntu-latest
         - macos-latest
         - windows-latest
-        include:
-        - python: pypy3.9
-          platform: ubuntu-latest
+        # disabled for #11
+        #include:
+        #- python: pypy3.9
+        #  platform: ubuntu-latest
         # tests hang on Unix on Python < 3.9
         exclude:
         - python: "3.7"
