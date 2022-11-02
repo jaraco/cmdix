@@ -1,3 +1,8 @@
+v1.0.2
+======
+
+#12: Fixed argument reference in ``mv``.
+
 v1.0.1
 ======
 
