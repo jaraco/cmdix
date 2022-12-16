@@ -1,5 +1,5 @@
 from . import BaseTestCase
-from ..command import login
+from cmdix.command import login
 
 
 class TestCase(BaseTestCase):

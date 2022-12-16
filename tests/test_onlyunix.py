@@ -4,7 +4,7 @@ import platform
 import pytest
 
 import cmdix
-from .. import exception
+from cmdix import exception
 
 
 @pytest.fixture
