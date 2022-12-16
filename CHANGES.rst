@@ -1,7 +1,7 @@
 v2.0.0
 ======
 
-SMTPd no longer acts as a relay, but instead invokes ``aiosmtpd.main``.
+Removed smtpd command, incompatible with Python 3.12.
 
 v1.0.2
 ======
