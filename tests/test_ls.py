@@ -8,13 +8,13 @@ from . import BaseTestCase
 
 
 class TestCase(BaseTestCase):
-    def test_ls(self):
+    def test_ls(self, capsys):
         self.setup_filesystem()
-        out = self.runcommandline('ls')[0]
-        assert out == 'dir1\ndir2\nfile1\nfile2.txt\nfile3.empty\n'
+        self.runcommandline('ls')
+        assert capsys.readouterr().out == 'dir1\ndir2\nfile1\nfile2.txt\nfile3.empty\n'
 
     @pytest.mark.xfail("platform.system() == 'Windows'")
-    def test_ls_l(self):
+    def test_ls_l(self, capsys):
         os.mkdir('biz', mode=0o755)
         self.createfile('foo', size=100)
         self.createfile('bar', size=999999)
@@ -25,7 +25,7 @@ class TestCase(BaseTestCase):
         uid = os.getuid()
         gid = os.getgid()
         date = time.strftime('%Y-%m-%d %H:%m', time.localtime())
-        out = self.runcommandline('ls -l')[0]
+        self.runcommandline('ls -l')
         expected = (
             textwrap.dedent(
                 """
@@ -37,4 +37,4 @@ class TestCase(BaseTestCase):
             .lstrip()
             .format(**locals())
         )
-        assert out == expected
+        assert capsys.readouterr().out == expected

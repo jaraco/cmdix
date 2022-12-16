@@ -2,7 +2,7 @@ from . import BaseTestCase
 
 
 class TestCase(BaseTestCase):
-    def test_cal_1arg(self):
+    def test_cal_1arg(self, capsys):
         expected = '''\
                                   123
 
@@ -41,10 +41,10 @@ Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa
 24 25 26 27 28 29 30      28 29 30                  26 27 28 29 30 31
 31
 '''
-        out = self.runcommandline('cal -S 123')[0]
-        assert out == expected
+        self.runcommandline('cal -S 123')
+        assert capsys.readouterr().out == expected
 
-    def test_cal_2args(self):
+    def test_cal_2args(self, capsys):
         expected = '''\
    December 4000
 Mo Tu We Th Fr Sa Su
@@ -54,10 +54,10 @@ Mo Tu We Th Fr Sa Su
 18 19 20 21 22 23 24
 25 26 27 28 29 30 31
 '''
-        out = self.runcommandline('cal -M 12 4000')[0]
-        assert out == expected
+        self.runcommandline('cal -M 12 4000')
+        assert capsys.readouterr().out == expected
 
-    def test_cal_y(self):
+    def test_cal_y(self, capsys):
         expected = '''\
                                   2000
 
@@ -133,5 +133,5 @@ Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa
 26 27 28 29 30 31         23 24 25 26 27 28 29      28 29 30 31
                           30
 '''
-        out = self.runcommandline('cal -y 2000 3000')[0]
-        assert out == expected
+        self.runcommandline('cal -y 2000 3000')
+        assert capsys.readouterr().out == expected

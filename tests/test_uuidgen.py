@@ -2,9 +2,11 @@ from . import BaseTestCase
 
 
 class TestCase(BaseTestCase):
-    def test_uuidgen(self):
+    def test_uuidgen(self, capsys):
         # Make sure uuid1() generates UUIDs that are actually version 1.
-        for uuid in [self.runcommandline('uuidgen')[0] for i in range(10)]:
+        for iter in range(10):
+            self.runcommandline('uuidgen')
+            uuid = capsys.readouterr().out
             ell = uuid.rstrip().split('-')
 
             # Check uuid-length

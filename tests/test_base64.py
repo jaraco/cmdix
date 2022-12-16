@@ -2,17 +2,17 @@ from . import BaseTestCase
 
 
 class TestCase(BaseTestCase):
-    def test_base64_decode(self):
+    def test_base64_decode(self, capsys):
         self.createfile('foo', content='SGF2ZSBhIGxvdCBvZiBmdW4uLi4K')
-        output = self.runcommandline('base64 -d foo')[0]
-        assert output == 'Have a lot of fun...\n'
+        self.runcommandline('base64 -d foo')
+        assert capsys.readouterr().out == 'Have a lot of fun...\n'
 
-    def test_base64_encode(self):
+    def test_base64_encode(self, capsys):
         self.createfile('foo', size=50)
-        output = self.runcommandline('base64 -w 30 foo')[0]
+        self.runcommandline('base64 -w 30 foo')
         expected = (
             'MDAwMDAwMDAwMDAwMDAwMDAwMDAwMD\n'
             'AwMDAwMDAwMDAwMDAwMDAwMDAwMDAw\n'
             'MDAwMDA=\n'
         )
-        assert output == expected
+        assert capsys.readouterr().out == expected

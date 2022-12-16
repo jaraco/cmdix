@@ -12,7 +12,7 @@ class TestCase(BaseTestCase):
         with pytest.raises(StdErrException):
             self.runcommandline('tar -tf foo')
 
-    def test_tar(self):
+    def test_tar(self, capsys):
         self.setup_filesystem()
         good = [
             'dir1/',
@@ -36,8 +36,8 @@ class TestCase(BaseTestCase):
 
         for archive in ('foo.tar', 'foo.tar.bz2', 'foo.tar.gz'):
             # Create an archive
-            res = self.runcommandline('tar -cf {0} dir1 dir2 file1'.format(archive))
-            assert res[0] == ''
+            self.runcommandline('tar -cf {0} dir1 dir2 file1'.format(archive))
+            assert capsys.readouterr().out == ''
             list_ = []
             for tarinfo in tarfile.open(archive):
                 name = tarinfo.name
@@ -48,7 +48,8 @@ class TestCase(BaseTestCase):
             assert list_ == good
 
             # List the archive
-            x = self.runcommandline('tar -tf {0}'.format(archive))[0].split()
+            self.runcommandline('tar -tf {0}'.format(archive))
+            x = capsys.readouterr().out.split()
             x.sort()
             assert x == good
 

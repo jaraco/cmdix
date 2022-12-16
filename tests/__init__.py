@@ -27,16 +27,14 @@ class BaseTestCase:
         """
         pathlib.Path(self.workdir, filename).write_text(os.urandom(size))
 
-    def runcommandline(self, commandline, stdin=None):
+    def runcommandline(self, commandline):
         """
         Run commandline as a subprocess.
 
         :param commandline: A string containing the commandline, i.e. 'ls -l X'
         :return:            A tuple containing the unicoded stdout and stderr
         """
-        with CapturedOutput() as output:
-            cmdix.runcommandline(commandline)
-        return output
+        cmdix.runcommandline(commandline)
 
     @pytest.fixture(autouse=True)
     def tmpdir_as_cwd(self, tmpdir):
@@ -86,24 +84,3 @@ class BaseTestCase:
 
     def setStdin(self, string):
         sys.stdin = io.StringIO(string)
-
-
-class CapturedOutput:
-    def __init__(self):
-        self.stdout = io.StringIO()
-        self.stderr = io.StringIO()
-
-    def __enter__(self):
-        sys.stdout = self.stdout
-        sys.stderr = self.stderr
-        return self
-
-    def __exit__(self, *args):
-        sys.stdout = sys.__stdout__
-        sys.stderr = sys.__stderr__
-
-    def __iter__(self):
-        return iter((self.stdout.getvalue(), self.stderr.getvalue()))
-
-    def __getitem__(self, item):
-        return tuple(self)[item]
