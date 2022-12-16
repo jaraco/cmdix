@@ -1,3 +1,8 @@
+v2.0.0
+======
+
+SMTPd no longer acts as a relay, but instead invokes ``aiosmtpd.main``.
+
 v1.0.2
 ======
 
