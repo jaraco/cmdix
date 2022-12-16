@@ -3,6 +3,7 @@ import os
 import os.path
 import sys
 import io
+import pathlib
 
 import pytest
 
@@ -18,18 +19,13 @@ class BaseTestCase:
         Create a temporary file containing `content`. If `content` is not
         defined, fill file with `size` times `fill`.
         """
-        with open(os.path.join(self.workdir, filename), 'w') as fd:
-            if content:
-                fd.write(content)
-            else:
-                fd.write(size * fill)
+        pathlib.Path(self.workdir, filename).write_text(content or fill * size)
 
     def createrandomfile(self, filename, size):
         """
         Create a temporary file containing random data
         """
-        with open(os.path.join(self.workdir, filename), 'w') as fd:
-            fd.write(os.urandom(size))
+        pathlib.Path(self.workdir, filename).write_text(os.urandom(size))
 
     def runcommandline(self, commandline, stdin=None):
         """
