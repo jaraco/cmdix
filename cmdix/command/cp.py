@@ -55,9 +55,9 @@ def func(args):
     else:
         _copy = shutil.copy
 
-    dstbase = args.pop()
+    (dest,) = args.DIRECTORY
     for src in args.SOURCE:
-        handle(_copy, args, dstbase, src)
+        handle(_copy, args, dest, src)
 
 
 def handle(_copy, args, dstbase, src):

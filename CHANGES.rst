@@ -1,3 +1,8 @@
+v2.0.1
+======
+
+Fixed argument reference in ``cp``.
+
 v2.0.0
 ======
 
