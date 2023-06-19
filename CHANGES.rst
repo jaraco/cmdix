@@ -1,3 +1,8 @@
+v2.0.2
+======
+
+#13: Fixed destination calculation in ``cp``.
+
 v2.0.1
 ======
 
