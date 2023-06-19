@@ -20,7 +20,6 @@ def mocked_dirs(monkeypatch):
     return dirs
 
 
-@pytest.mark.xfail(reason="logic is broken. Ref #13")
 def test_simple_cp_with_dest(mocked_dirs):
     args = types.SimpleNamespace(verbose=False)
     copy_fn = mock.Mock()
