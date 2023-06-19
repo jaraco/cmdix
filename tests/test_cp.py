@@ -25,4 +25,5 @@ def test_simple_cp_with_dest(mocked_dirs):
     copy_fn = mock.Mock()
     mocked_dirs.add('foo/bar')
     cp.handle_direct(_copy=copy_fn, args=args, dest='foo/bar', src='/baz/bing.py')
-    copy_fn.assert_called_with('/baz/bing.py', 'foo/bar/bing.py')
+    expected_dest = os.path.join('foo/bar', 'bing.py')
+    copy_fn.assert_called_with('/baz/bing.py', expected_dest)
