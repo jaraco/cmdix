@@ -58,39 +58,39 @@ def func(args):
         args.handle(_copy, args, dest, src)
 
 
-def handle_recursive(_copy, args, dstbase, src):
+def handle_recursive(_copy, args, dest, src):
     # Create the base destination directory if it does not exists
-    if not os.path.exists(dstbase):
-        os.mkdir(dstbase)
+    if not os.path.exists(dest):
+        os.mkdir(dest)
 
-    walk(_copy, args, dstbase, src)
+    walk(_copy, args, dest, src)
 
 
-def handle_direct(_copy, args, dstbase, src):
-    dstfile = os.path.join(dstbase, src) if os.path.isdir(dstbase) else dstbase
+def handle_direct(_copy, args, dest, src):
+    dstfile = os.path.join(dest, src) if os.path.isdir(dest) else dest
     _copy(src, dstfile)
     if args.verbose:
         print("'{0}' -> '{1}'".format(src, dstfile))
 
 
-def walk(_copy, args, dstbase, src):
+def walk(_copy, args, dest, src):
     # Walk the source directory
     for root, dirnames, filenames in os.walk(src):
-        if root == dstbase:
+        if root == dest:
             continue
         dstmid = root.lstrip(src)
 
         # Create subdirectories in destination directory
         for subdir in dirnames:
-            dstdir = os.path.join(dstbase, dstmid, subdir)
-            if not os.path.exists(dstbase):
+            dstdir = os.path.join(dest, dstmid, subdir)
+            if not os.path.exists(dest):
                 os.mkdir(dstdir)
             if args.verbose:
                 print("'{0}' -> '{1}'".format(root, dstdir))
 
         # Copy file
         for filename in filenames:
-            dstfile = os.path.join(dstbase, dstmid, filename)
+            dstfile = os.path.join(dest, dstmid, filename)
             srcfile = os.path.join(root, filename)
             if args.interactive and os.path.exists(dstfile):
                 q = input(
