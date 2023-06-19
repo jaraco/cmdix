@@ -49,11 +49,7 @@ def parseargs(p):
 
 
 def func(args):
-    # Set the _copy function
-    if args.preserve:
-        _copy = shutil.copy2
-    else:
-        _copy = shutil.copy
+    _copy = shutil.copy2 if args.preserve else shutil.copy
 
     (dest,) = args.DIRECTORY
     for src in args.SOURCE:
