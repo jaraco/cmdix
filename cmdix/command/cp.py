@@ -67,9 +67,7 @@ def handle_recursive(_copy, args, dstbase, src):
 
 
 def handle_direct(_copy, args, dstbase, src):
-    dstfile = dstbase
-    if os.path.isdir(dstbase):
-        dstfile = os.path.join(dstbase, src)
+    dstfile = os.path.join(dstbase, src) if os.path.isdir(dstbase) else dstbase
     _copy(src, dstfile)
     if args.verbose:
         print("'{0}' -> '{1}'".format(src, dstfile))
