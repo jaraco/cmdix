@@ -34,8 +34,10 @@ def parseargs(p):
         "-r",
         "-R",
         "--recursive",
-        action="store_true",
-        dest="recursive",
+        action="store_const",
+        default=handle_direct,
+        const=handle_recursive,
+        dest="handle",
         help="copy directories recursively",
     )
     p.add_argument(
@@ -53,23 +55,24 @@ def func(args):
 
     (dest,) = args.DIRECTORY
     for src in args.SOURCE:
-        handle(_copy, args, dest, src)
+        args.handle(_copy, args, dest, src)
 
 
-def handle(_copy, args, dstbase, src):
-    if args.recursive:
-        # Create the base destination directory if it does not exists
-        if not os.path.exists(dstbase):
-            os.mkdir(dstbase)
+def handle_recursive(_copy, args, dstbase, src):
+    # Create the base destination directory if it does not exists
+    if not os.path.exists(dstbase):
+        os.mkdir(dstbase)
 
-        walk(_copy, args, dstbase, src)
-    else:
-        dstfile = dstbase
-        if os.path.isdir(dstbase):
-            dstfile = os.path.join(dstbase, src)
-        _copy(src, dstfile)
-        if args.verbose:
-            print("'{0}' -> '{1}'".format(src, dstfile))
+    walk(_copy, args, dstbase, src)
+
+
+def handle_direct(_copy, args, dstbase, src):
+    dstfile = dstbase
+    if os.path.isdir(dstbase):
+        dstfile = os.path.join(dstbase, src)
+    _copy(src, dstfile)
+    if args.verbose:
+        print("'{0}' -> '{1}'".format(src, dstfile))
 
 
 def walk(_copy, args, dstbase, src):
