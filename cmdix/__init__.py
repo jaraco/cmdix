@@ -4,8 +4,8 @@ import argparse
 import os
 import shlex
 import platform
+from importlib import metadata
 
-import importlib_metadata as metadata
 import importlib_resources as resources
 
 from . import command
