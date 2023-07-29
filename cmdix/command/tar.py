@@ -30,7 +30,6 @@ def parseargs(p):
         "-c",
         "--create",
         action="store_true",
-        dest="create",
         help="create zipfile from source.",
     )
     p.add_argument(
@@ -40,22 +39,18 @@ def parseargs(p):
         "-x",
         "--extract",
         action="store_true",
-        dest="extract",
         help="extract tarfile into current directory.",
     )
     p.add_argument(
         "-j",
         "--bzip2",
         action="store_true",
-        dest="bzip2",
         help="(de)compress using bzip2",
     )
     p.add_argument(
         "-f", "--file", dest="archive", help="use archive file or device ARCHIVE"
     )
-    p.add_argument(
-        "-z", "--gzip", action="store_true", dest="gzip", help="(de)compress using gzip"
-    )
+    p.add_argument("-z", "--gzip", action="store_true", help="(de)compress using gzip")
     return p
 
 
