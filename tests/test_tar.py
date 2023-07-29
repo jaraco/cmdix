@@ -36,7 +36,7 @@ class TestCase(BaseTestCase):
 
         for archive in ('foo.tar', 'foo.tar.bz2', 'foo.tar.gz'):
             # Create an archive
-            self.runcommandline('tar -cf {0} dir1 dir2 file1'.format(archive))
+            self.runcommandline(f'tar -cf {archive} dir1 dir2 file1')
             assert capsys.readouterr().out == ''
             list_ = []
             for tarinfo in tarfile.open(archive):
@@ -48,7 +48,7 @@ class TestCase(BaseTestCase):
             assert list_ == good
 
             # List the archive
-            self.runcommandline('tar -tf {0}'.format(archive))
+            self.runcommandline(f'tar -tf {archive}')
             x = capsys.readouterr().out.split()
             x.sort()
             assert x == good

@@ -49,7 +49,7 @@ def func(args):
                 size = st.st_size
                 mtime = time.localtime(st.st_mtime)
                 if stat.S_ISLNK(st.st_mode):
-                    f += " -> {0}".format(os.readlink(path))
+                    f += f" -> {os.readlink(path)}"
                 ell.append((mode, nlink, uid, gid, size, mtime, f))
 
                 # Update sizelen

@@ -60,7 +60,7 @@ def func(args):
             while len(lines) <= args.lines:
                 try:
                     fd.seek(-pos, 2)
-                except IOError:
+                except OSError:
                     fd.seek(0)
                     break
                 finally:

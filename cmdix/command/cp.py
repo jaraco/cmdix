@@ -71,7 +71,7 @@ def handle_direct(_copy, args, dest, src):
     dstfile = os.path.join(dest, name) if os.path.isdir(dest) else dest
     _copy(src, dstfile)
     if args.verbose:
-        print("'{0}' -> '{1}'".format(src, dstfile))
+        print(f"'{src}' -> '{dstfile}'")
 
 
 def walk(_copy, args, dest, src):
@@ -87,7 +87,7 @@ def walk(_copy, args, dest, src):
             if not os.path.exists(dest):
                 os.mkdir(dstdir)
             if args.verbose:
-                print("'{0}' -> '{1}'".format(root, dstdir))
+                print(f"'{root}' -> '{dstdir}'")
 
         # Copy file
         for filename in filenames:
@@ -95,7 +95,7 @@ def walk(_copy, args, dest, src):
             srcfile = os.path.join(root, filename)
             if args.interactive and os.path.exists(dstfile):
                 q = input(
-                    "{0}: {1} already ".format(args.prog, dstfile)
+                    f"{args.prog}: {dstfile} already "
                     + "exists; do you wish to overwrite (y or n)?"
                 )
                 if q.upper() != 'Y':
@@ -103,4 +103,4 @@ def walk(_copy, args, dest, src):
                     continue
             _copy(srcfile, dstfile)
             if args.verbose:
-                print("'{0}' -> '{1}'".format(srcfile, dstfile))
+                print(f"'{srcfile}' -> '{dstfile}'")

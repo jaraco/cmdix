@@ -29,6 +29,6 @@ def parseargs(p):
 def func(args):
     for src in args.SOURCE:
         if args.verbose:
-            print("'{0}' -> '{1}'".format(src, args.DEST))
+            print(f"'{src}' -> '{args.DEST}'")
 
         shutil.move(src, args.DEST)

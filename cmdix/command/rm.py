@@ -54,18 +54,18 @@ def do_it(_raise, arg, args):
                 path = os.path.join(root, name)
                 os.remove(path)
                 if args.verbose:
-                    print("Removed file '{0}'\n".format(path))
+                    print(f"Removed file '{path}'\n")
             for name in dirs:
                 path = os.path.join(root, name)
                 os.rmdir(path)
                 if args.verbose:
-                    print("Removed directory '{0}'\n".format(path))
+                    print(f"Removed directory '{path}'\n")
         os.rmdir(arg)
     else:
         # Remove single file
         try:
             os.remove(arg)
             if args.verbose:
-                print("Removed '{0}'\n".format(arg))
+                print(f"Removed '{arg}'\n")
         except OSError as err:
             _raise(err)

@@ -79,7 +79,7 @@ def create(args):
             for nm in os.listdir(path):
                 addToZip(zf, os.path.join(path, nm), os.path.join(zippath, nm))
         else:
-            exception.StdErrException("Can't store {0}".format(path))
+            exception.StdErrException(f"Can't store {path}")
 
     zf = zipfile.ZipFile(args[0], 'w', allowZip64=True)
     for src in args[1:]:
@@ -115,10 +115,10 @@ def test(args):
     zf = zipfile.ZipFile(args[0], 'r')
     badfile = zf.testzip()
     if badfile:
-        sys.stderr("Error on file {0}\n".format(badfile))
+        sys.stderr(f"Error on file {badfile}\n")
         sys.exit(1)
     else:
-        print("{0} tested ok".format(args[0]) + "\n")
+        print(f"{args[0]} tested ok" + "\n")
         sys.exit(0)
 
 

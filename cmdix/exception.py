@@ -41,7 +41,7 @@ class CommandNotFoundException(Exception):
         self.prog = prog
 
     def __str__(self):
-        return "Command `{0}' not found.".format(self.prog)
+        return f"Command `{self.prog}' not found."
 
 
 class ExtraOperandException(StdErrException):

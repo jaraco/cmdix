@@ -51,10 +51,10 @@ def func(args):
         try:
             fdin = opener.open(url)
         except HTTPError as e:
-            exception.StdErrException("HTTP error opening {0}: {1}".format(url, e))
+            exception.StdErrException(f"HTTP error opening {url}: {e}")
 
         length = int(fdin.headers['content-length'])
-        print("Getting {0} bytes from {1}...".format(length, url))
+        print(f"Getting {length} bytes from {url}...")
 
         shutil.copyfileobj(fdin, fdout)
         print("Done")

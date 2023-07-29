@@ -134,7 +134,7 @@ def compress(args, compresstype, infile, outfile, suffix):
     else:
         if os.path.exists(zippath):
             q = input(
-                "{0}: {1} ".format(args.prog, zippath)
+                f"{args.prog}: {zippath} "
                 + "already exists; do you wish to overwrite (y or n)? "
             )
             if q.upper() != 'Y':
@@ -152,7 +152,7 @@ def decompress(args, compresstype, infile, suffix):
         unzippath = infile.rstrip(suffix)
         if os.path.exists(unzippath):
             q = input(
-                "{0}: {1} ".format(args.prog, unzippath)
+                f"{args.prog}: {unzippath} "
                 + "already exists; do you wish to overwrite (y or n)? "
             )
             if q.upper() != 'Y':

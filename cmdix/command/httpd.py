@@ -72,14 +72,14 @@ class WSGIAuth:
             start_response,
             401,
             "Authentication required",
-            [(b'WWW-Authenticate', b'Basic realm={0}'.format(self.realm))],
+            [(b'WWW-Authenticate', b'Basic realm={}'.format(self.realm))],
         )
 
 
 def wsgierror(start_response, code, text, headers=[]):
     h = [(b'Content-Type', b'text/html')]
     h.extend(headers)
-    start_response(b'{0} '.format(code), h)
+    start_response(b'{} '.format(code), h)
     return [
         b'''<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"><html><head>
                 <title>{code} {text}</title></head><body><h1>{code} {text}</h1>
@@ -144,8 +144,8 @@ def wsgishell(environ, start_response):
         stderrstr = ''.join(stderrio.readlines())
         start_response(b'200 ', [(b'Content-Type', b'text/html')])
         return [
-            str("<div class='stdout'>{0}</div>").format(stdoutstr),
-            str("<div class='stderr'>{0}</div>").format(stderrstr),
+            "<div class='stdout'>{}</div>".format(stdoutstr),
+            "<div class='stderr'>{}</div>".format(stderrstr),
         ]
     else:
         html = template.format(
@@ -203,15 +203,15 @@ def list_directory(urlpath, filepath):
     filelist.sort()
 
     res = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">\n'
-    res += '<html><head><title>{0}</title></head><body>\n'.format(path)
+    res += f'<html><head><title>{path}</title></head><body>\n'
     res += '<big><strong>Listing %s</strong></big><br>\n' % (path)
     if path != '/':
         item = '..'
-        res += 'D <a href=%s>%s</a><br/>\n' % (urljoin(path, item), item)
+        res += 'D <a href={}>{}</a><br/>\n'.format(urljoin(path, item), item)
     for item in dirlist:
-        res += 'D <a href=%s>%s</a><br/>\n' % (urljoin(path, item), item)
+        res += 'D <a href={}>{}</a><br/>\n'.format(urljoin(path, item), item)
     for item in filelist:
-        res += 'F <a href=%s>%s</a><br/>\n' % (urljoin(path, item), item)
+        res += 'F <a href={}>{}</a><br/>\n'.format(urljoin(path, item), item)
     res += '</body></html>'
     return str(res)
 

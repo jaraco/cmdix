@@ -34,7 +34,7 @@ def parseargs(p):
         "-r",
         "--sender",
         dest="sender",
-        default="{0}@{1}".format(lib.getcurrentusername(), platform.node()),
+        default=f"{lib.getcurrentusername()}@{platform.node()}",
         help="set the envelope sender address",
     )
     p.add_argument(

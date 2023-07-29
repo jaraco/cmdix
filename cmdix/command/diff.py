@@ -51,16 +51,16 @@ def func(args):
 
     # Open fromfile
     try:
-        with open(args.FILE1, 'U') as fd:
+        with open(args.FILE1) as fd:
             fromlines = fd.readlines()
-    except IOError:
+    except OSError:
         print("Error opening file " + args.FILE1, file=sys.stderr)
 
     # Open tofile
     try:
-        with open(args.FILE2, 'U') as fd:
+        with open(args.FILE2) as fd:
             tolines = fd.readlines()
-    except IOError:
+    except OSError:
         print("Error opening file " + args.FILE2, file=sys.stderr)
 
     # Create diff

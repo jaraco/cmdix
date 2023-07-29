@@ -55,7 +55,7 @@ def func(args):
 
     handler = logging.handlers.SysLogHandler(address, facility)
     if facility not in handler.facility_names:
-        err = "Unknown facility {0}. ".format(facility) + "Valid facilities are: "
+        err = f"Unknown facility {facility}. " + "Valid facilities are: "
         facilitylist = list(handler.facility_names.keys())
         facilitylist.sort()
         for f in facilitylist:

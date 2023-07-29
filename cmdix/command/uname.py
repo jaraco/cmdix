@@ -93,7 +93,7 @@ def parseargs(p):
 def processor_from_cpu_info():
     pattern = re.compile(r'model name\s+: (.*)')
     try:
-        with io.open('/proc/cpuinfo') as lines:
+        with open('/proc/cpuinfo') as lines:
             matched = next(filter(pattern.match, lines))
             return pattern.match(matched).group(1)
     except Exception:
@@ -112,7 +112,7 @@ def get_processor():
 
     if platform.system() == 'Darwin':
         cmd = 'sysctl -n machdep.cpu.brand_string'.split()
-        return subprocess.check_output(cmd, universal_newlines=True).strip()
+        return subprocess.check_output(cmd, text=True).strip()
 
     return processor_from_cpu_info() or 'unknown'
 

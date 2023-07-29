@@ -31,7 +31,7 @@ def func(args):
         totproc, avgproc = proc.split('/')
 
     print(
-        " {0:%H:%M:%S} up ".format(datetime.datetime.today())
-        + " {0},  {1} users,  ".format(uptime, 'TODO')
-        + "load average: {0}, {1}, {2}".format(load5, load10, load15)
+        f" {datetime.datetime.today():%H:%M:%S} up "
+        + " {},  {} users,  ".format(uptime, 'TODO')
+        + f"load average: {load5}, {load10}, {load15}"
     )

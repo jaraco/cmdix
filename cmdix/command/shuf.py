@@ -89,7 +89,7 @@ def input_range(args, outfd):
 def echo(args, outfd):
     if args.inputrange:
         exception.StdErrException(
-            "{0}: cannot combine -e and -i options".format(args.prog)
+            f"{args.prog}: cannot combine -e and -i options"
         )
     lines = args.file
     random.shuffle(lines)

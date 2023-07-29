@@ -51,7 +51,7 @@ def func(args):
         sigint = signals[sig.lstrip('SIG')]
     else:
         raise exception.StdErrException(
-            "kill: {0}: invalid signal specification".format(sig)
+            f"kill: {sig}: invalid signal specification"
         )
 
     for pid in args.pid:
@@ -59,7 +59,7 @@ def func(args):
             pid = int(pid)
         except ValueError:
             raise exception.StdErrException(
-                "kill: {0}: arguments must be process or job IDs".format(pid)
+                f"kill: {pid}: arguments must be process or job IDs"
             )
 
         os.kill(pid, sigint)
@@ -74,7 +74,7 @@ def add_arguments(p, signals):
             action="store_const",
             dest="signal",
             const=sigint,
-            help="send signal {0}".format(signame),
+            help=f"send signal {signame}",
         )
 
     # Add an integer option for each signal
@@ -85,5 +85,5 @@ def add_arguments(p, signals):
                 action="store_const",
                 dest="signal",
                 const=sigint,
-                help="send signal {0}".format(sigint),
+                help=f"send signal {sigint}",
             )

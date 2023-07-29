@@ -105,7 +105,7 @@ class Sh(cmd.Cmd):
         i.e. "!dir()"
         """
         try:
-            exec("r = {0}".format(line))
+            exec(f"r = {line}")
         except Exception as err:
             return pprint.pformat(err) + '\n'
         else:

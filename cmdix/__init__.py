@@ -45,7 +45,7 @@ def _is_available(name):
 
 def _get_command(name):
     # Try to import the command module
-    importstring = 'cmdix.command.{0}'.format(name)
+    importstring = f'cmdix.command.{name}'
     try:
         return __import__(importstring, fromlist=1).parseargs
     except ImportError:
@@ -75,7 +75,7 @@ def listcommands():
 def _gen_script_definitions():
     print('console_scripts =')
     for cmd in listcommands():
-        print('\t{cmd} = cmdix:run'.format(**locals()))
+        print(f'\t{cmd} = cmdix:run')
 
 
 def get_parser(commandname):
@@ -158,7 +158,7 @@ def run_subcommand(commandname, argv):
     try:
         cmd = getcommand(commandname)
     except CommandNotFoundException:
-        print("Command `{0}` not found.".format(commandname), file=sys.stderr)
+        print(f"Command `{commandname}` not found.", file=sys.stderr)
         return
     p = cmd(argparse.ArgumentParser(prog=commandname))
     args = p.parse_args(argv)

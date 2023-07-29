@@ -86,4 +86,4 @@ def func(args):
             "id: cannot print only names " + "or real IDs in default format"
         )
 
-    print("uid={0}({1}) gid={2}({3})".format(uid, username, gid, username))
+    print(f"uid={uid}({username}) gid={gid}({username})")

@@ -51,7 +51,7 @@ def func(args):
         try:
             with open('/etc/fstab') as fd:
                 lines = fd.readlines()
-        except IOError:
+        except OSError:
             print("Error: Couldn't read /etc/ftab", file=sys.stderr)
             return
 
@@ -69,7 +69,7 @@ def func(args):
         # Display currently mounted filesystems
         try:
             print(open('/etc/mtab').read().strip())
-        except IOError:
+        except OSError:
             print("Error: Couldn't read /etc/mtab", file=sys.stderr)
 
 
@@ -78,12 +78,12 @@ def mount_c(source, dest, fstype, options=0, data='', verbose=False):
     Frontend to libc mount
     """
     if verbose:
-        print("Trying to mount {0} on {1} as type {2}".format(source, dest, fstype))
+        print(f"Trying to mount {source} on {dest} as type {fstype}")
     libc = ctypes.CDLL(ctypes.util.find_library('c'))
     res = libc.mount(str(source), str(dest), str(fstype), options, str(data))
     if res < 0:
         print(
-            "Error: Mounting {0} on {1} failed!".format(source, dest), file=sys.stderr
+            f"Error: Mounting {source} on {dest} failed!", file=sys.stderr
         )
 
 
@@ -93,7 +93,7 @@ def get_available_filesystems():
         with open('/proc/filesystems') as fd:
             for line in fd.readlines():
                 ell.append(line.split()[-1])
-    except IOError:
+    except OSError:
         print(
             "Error reading supported filesystems from /proc/filesystems",
             file=sys.stderr,

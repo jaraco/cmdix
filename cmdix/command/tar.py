@@ -71,7 +71,7 @@ def func(args):
             tar = tarfile.open(fileobj=infile)
         except tarfile.TarError:
             raise StdErrException(
-                "Could not parse file {0}. Are you sure it is a tar-archive?".format(
+                "Could not parse file {}. Are you sure it is a tar-archive?".format(
                     infile.name
                 )
             )

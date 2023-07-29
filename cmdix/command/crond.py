@@ -77,7 +77,7 @@ def checkjobs(scheduler, joblist, args, logger):
         ):
             cmd = job.cmd
             if args.verbose:
-                logger.info("Running job {0}".format(cmd))
+                logger.info(f"Running job {cmd}")
 
             if args.dryrun:
                 break
@@ -88,12 +88,12 @@ def checkjobs(scheduler, joblist, args, logger):
             ).communicate()
             if args.verbose:
                 if stdout:
-                    logger.info("{0}: {1}".format(cmd, stdout.strip()))
+                    logger.info(f"{cmd}: {stdout.strip()}")
                 if stderr:
-                    logger.error("{0}: {1}".format(cmd, stderr.strip()))
+                    logger.error(f"{cmd}: {stderr.strip()}")
         else:
             if args.verbose:
-                logger.info("Skipping job {0}".format(job))
+                logger.info(f"Skipping job {job}")
 
 
 def read_and_load(Job, args, joblist):
@@ -113,6 +113,6 @@ def read_and_load(Job, args, joblist):
             )
             joblist.append(job)
             if args.verbose:
-                print('Read {0}'.format(job))
+                print(f'Read {job}')
         elif split:
-            print('Ignoring invalid line {0}'.format(line))
+            print(f'Ignoring invalid line {line}')

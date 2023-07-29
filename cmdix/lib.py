@@ -202,7 +202,7 @@ def showbanner(width=None):
     Returns the command banner.
     The banner is centered if width is defined.
     """
-    subtext = "-= Cmdix version {0} =-".format(cmdix.__version__)
+    subtext = f"-= Cmdix version {cmdix.__version__} =-"
     banner = textwrap.dedent(
         r"""
           ___  __  __  ____  ____  _  _

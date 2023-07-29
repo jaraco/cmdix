@@ -19,7 +19,7 @@ def hasher(algorithm, p):
 
     p.set_defaults(func=myhash)
     p.description = (
-        "Print or check {0} ".format(algorithm.upper())
+        f"Print or check {algorithm.upper()} "
         + "checksums. With no FILE, or when FILE is -, read "
         + "standard input."
     )

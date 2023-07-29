@@ -35,7 +35,7 @@ def func(args):
             user = pwd.getpwnam(args.owner)
         except KeyError:
             raise StdErrException(
-                "{0}: invalid user: '{1}'".format(args.prog, args.owner)
+                f"{args.prog}: invalid user: '{args.owner}'"
             )
         uid = user.pw_uid
 
