@@ -103,7 +103,7 @@ def create(args):
     if args.archive:
         outfile = open(args.archive, 'wb')
     else:
-        outfile = sys.stout
+        outfile = sys.stdout
     # Set mode
     if args.gzip:
         mode = 'w:gz'
