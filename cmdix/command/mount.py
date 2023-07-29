@@ -82,9 +82,7 @@ def mount_c(source, dest, fstype, options=0, data='', verbose=False):
     libc = ctypes.CDLL(ctypes.util.find_library('c'))
     res = libc.mount(str(source), str(dest), str(fstype), options, str(data))
     if res < 0:
-        print(
-            f"Error: Mounting {source} on {dest} failed!", file=sys.stderr
-        )
+        print(f"Error: Mounting {source} on {dest} failed!", file=sys.stderr)
 
 
 def get_available_filesystems():

@@ -50,9 +50,7 @@ def func(args):
     elif sig.lstrip('SIG') in signals:
         sigint = signals[sig.lstrip('SIG')]
     else:
-        raise exception.StdErrException(
-            f"kill: {sig}: invalid signal specification"
-        )
+        raise exception.StdErrException(f"kill: {sig}: invalid signal specification")
 
     for pid in args.pid:
         try:

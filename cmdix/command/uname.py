@@ -1,6 +1,5 @@
 import platform
 import subprocess
-import io
 import re
 import contextlib
 
