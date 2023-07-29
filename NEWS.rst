@@ -1,3 +1,19 @@
+v3.0.0
+======
+
+Features
+--------
+
+- Added support for ``ls -a``.
+- Require Python 3.8 or later.
+
+
+Deprecations and Removals
+-------------------------
+
+- Removed the login command, as it's based on deprecated and insecure libraries (crypt, spwd).
+
+
 v2.0.2
 ======
 
