@@ -22,7 +22,20 @@ def parseargs(p):
     p.add_argument(
         "-l", "--longlist", action="store_true", help="use a long listing format"
     )
+    p.add_argument(
+        "-a",
+        "--all",
+        dest="filter",
+        default=hide_dot,
+        action="store_const",
+        const=None,
+        help="show all files",
+    )
     return p
+
+
+def hide_dot(filename):
+    return not filename.startswith('.')
 
 
 def func(args):
@@ -36,7 +49,7 @@ def func(args):
         ell = []
         sizelen = 0  # Length of the largest filesize integer
         nlinklen = 0  # Length of the largest nlink integer
-        for f in dirlist:
+        for f in filter(args.filter, dirlist):
             path = os.path.join(arg, f)
             if not args.longlist:
                 print(f)
