@@ -99,11 +99,7 @@ def func(args):
 
 def list_(tar):
     for tarinfo in tar:
-        name = tarinfo.name
-        if tarinfo.isdir():
-            name += '/'
-        print(name)
-    tar.close()
+        print(tarinfo.name + '/' * tarinfo.isdir())
 
 
 def create(args):
