@@ -19,13 +19,17 @@ class BaseTestCase:
         Create a temporary file containing `content`. If `content` is not
         defined, fill file with `size` times `fill`.
         """
-        pathlib.Path(self.workdir, filename).write_text(content or fill * size)
+        pathlib.Path(self.workdir, filename).write_text(
+            content or fill * size, encoding='utf-8'
+        )
 
     def createrandomfile(self, filename, size):
         """
         Create a temporary file containing random data
         """
-        pathlib.Path(self.workdir, filename).write_text(os.urandom(size))
+        pathlib.Path(self.workdir, filename).write_text(
+            os.urandom(size), encoding='utf-8'
+        )
 
     def runcommandline(self, commandline):
         """

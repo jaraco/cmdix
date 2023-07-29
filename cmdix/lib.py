@@ -16,6 +16,7 @@ except ImportError:
     from fileinput import hook_compressed
 
 import cmdix
+from .compat import py39
 
 
 def filelist2fds(filelist, mode='r'):
@@ -44,7 +45,8 @@ def filelist2fds(filelist, mode='r'):
             yield sys.stdin
         for filename in glob.iglob(f):
             if filename:
-                with open(filename, mode) as fd:
+                encoding = None if 'b' in mode else 'utf-8'
+                with open(filename, mode, encoding=encoding) as fd:
                     yield fd
             else:
                 print(f"Cannot access {filename}: No such file or directory")
@@ -192,7 +194,7 @@ def parsefilelist(filelist=None, decompress=False):
     filelist = filelist or '-'
 
     for filename in filelist:
-        yield fileinput.FileInput([filename], openhook=openhook)
+        yield fileinput.FileInput([filename], openhook=openhook, **py39.encoding)
 
 
 def showbanner(width=None):
