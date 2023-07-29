@@ -19,7 +19,6 @@ class TestCase:
         'chmod',
         'chown',
         'id',
-        'login',
         'mount',
         'tee',
         'uptime',
