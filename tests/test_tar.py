@@ -39,11 +39,12 @@ class TestCase(BaseTestCase):
             self.runcommandline(f'tar -cf {archive} dir1 dir2 file1')
             assert capsys.readouterr().out == ''
             list_ = []
-            for tarinfo in tarfile.open(archive):
-                name = tarinfo.name
-                if tarinfo.isdir():
-                    name += '/'
-                list_.append(name)
+            with tarfile.open(archive) as obj:
+                for tarinfo in obj:
+                    name = tarinfo.name
+                    if tarinfo.isdir():
+                        name += '/'
+                    list_.append(name)
             list_.sort()
             assert list_ == good
 

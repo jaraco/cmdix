@@ -1,6 +1,8 @@
-from ..exception import StdErrException
 import sys
 import tarfile
+import contextlib
+
+from ..exception import StdErrException
 
 
 def parseargs(p):
@@ -57,31 +59,37 @@ def parseargs(p):
     return p
 
 
+@contextlib.contextmanager
+def _open_fallback(filename, fallback=sys.stdin, mode='r'):
+    if not filename:
+        yield fallback
+        return
+
+    with open(filename, mode=mode) as fd:
+        yield fd
+
+
 def func(args):
     if bool(args.list) + bool(args.create) + bool(args.extract) > 1:
         print("You may not specify more than one of '-ctx'", file=sys.stderr)
         sys.exit(2)
 
     if args.extract or args.list:
-        if args.archive:
-            infile = open(args.archive, 'rb')
-        else:
-            infile = sys.stdin
-        try:
-            tar = tarfile.open(fileobj=infile)
-        except tarfile.TarError:
-            raise StdErrException(
-                "Could not parse file {}. Are you sure it is a tar-archive?".format(
-                    infile.name
+        with _open_fallback(args.archive, mode='rb') as infile:
+            try:
+                with tarfile.open(fileobj=infile) as tar:
+                    if args.extract:
+                        tar.extractall()
+
+                    elif args.list:
+                        list_(tar)
+
+            except tarfile.TarError:
+                raise StdErrException(
+                    "Could not parse file {}. Are you sure it is a tar-archive?".format(
+                        infile.name
+                    )
                 )
-            )
-
-    if args.extract:
-        tar.extractall()
-        tar.close()
-
-    elif args.list:
-        list_(tar)
 
     elif args.create:
         create(args)
@@ -99,21 +107,15 @@ def list_(tar):
 
 
 def create(args):
-    # Set outfile
-    if args.archive:
-        outfile = open(args.archive, 'wb')
-    else:
-        outfile = sys.stdout
-    # Set mode
-    if args.gzip:
-        mode = 'w:gz'
-    elif args.bzip2:
-        mode = 'w:bz2'
-    else:
-        mode = 'w'
-    tar = tarfile.open(fileobj=outfile, mode=mode)
-    for arg in args.FILE:
-        tar.add(arg)
-    tar.close()
-    if args.archive:
-        outfile.close()
+    with _open_fallback(args.archive, mode='wb', fallback=sys.stdout) as outfile:
+        # Set mode
+        if args.gzip:
+            mode = 'w:gz'
+        elif args.bzip2:
+            mode = 'w:bz2'
+        else:
+            mode = 'w'
+
+        with tarfile.open(fileobj=outfile, mode=mode) as tar:
+            for arg in args.FILE:
+                tar.add(arg)
