@@ -144,8 +144,8 @@ def wsgishell(environ, start_response):
         stderrstr = ''.join(stderrio.readlines())
         start_response(b'200 ', [(b'Content-Type', b'text/html')])
         return [
-            "<div class='stdout'>{}</div>".format(stdoutstr),
-            "<div class='stderr'>{}</div>".format(stderrstr),
+            f"<div class='stdout'>{stdoutstr}</div>",
+            f"<div class='stderr'>{stderrstr}</div>",
         ]
     else:
         html = template.format(
@@ -207,11 +207,11 @@ def list_directory(urlpath, filepath):
     res += '<big><strong>Listing %s</strong></big><br>\n' % (path)
     if path != '/':
         item = '..'
-        res += 'D <a href={}>{}</a><br/>\n'.format(urljoin(path, item), item)
+        res += f'D <a href={urljoin(path, item)}>{item}</a><br/>\n'
     for item in dirlist:
-        res += 'D <a href={}>{}</a><br/>\n'.format(urljoin(path, item), item)
+        res += f'D <a href={urljoin(path, item)}>{item}</a><br/>\n'
     for item in filelist:
-        res += 'F <a href={}>{}</a><br/>\n'.format(urljoin(path, item), item)
+        res += f'F <a href={urljoin(path, item)}>{item}</a><br/>\n'
     res += '</body></html>'
     return str(res)
 
