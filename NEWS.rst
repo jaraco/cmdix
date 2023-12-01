@@ -1,3 +1,12 @@
+v3.1.0
+======
+
+Features
+--------
+
+- Implement support for env with subprocess. (#5)
+
+
 v3.0.0
 ======
 
