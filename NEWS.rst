@@ -1,3 +1,12 @@
+v3.1.1
+======
+
+Bugfixes
+--------
+
+- env now honors ``-`` and options in the command (#14)
+
+
 v3.1.0
 ======
 
