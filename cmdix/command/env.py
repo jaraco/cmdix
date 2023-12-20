@@ -1,3 +1,4 @@
+import abc
 import os
 import re
 import subprocess
@@ -32,7 +33,25 @@ def print_env(args):
         print(k + '=' + v)
 
 
-class VarsCheck:
+class Latching(metaclass=abc.ABCMeta):
+    """
+    A callable that once it returns something True, always returns that value.
+    """
+
+    def __call__(self, input):
+        try:
+            return self.__saved
+        except AttributeError:
+            if result := self._check(input):
+                self.__saved = result
+            return result
+
+    @abc.abstractmethod
+    def _check(self, input):
+        ...  # pragma: no cover
+
+
+class VarsCheck(Latching):
     """
     Partition inputs to env into vars and cmd args.
 
@@ -43,14 +62,8 @@ class VarsCheck:
     ['blue', 'z=3']
     """
 
-    nonvar = False
-
-    def __call__(self, input):
-        return self.nonvar or self._check(input)
-
     def _check(self, input):
-        self.nonvar = not re.match(r'\w+=.*$', input)
-        return self.nonvar
+        return not re.match(r'\w+=.*$', input)
 
     def partition(self, inputs):
         vars, cmd = partition(self, inputs)
