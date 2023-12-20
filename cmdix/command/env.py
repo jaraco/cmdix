@@ -1,9 +1,11 @@
 import abc
+import argparse
+import itertools
 import os
 import re
 import subprocess
 
-from more_itertools import partition
+from more_itertools import partition, replace
 
 
 def parseargs(p):
@@ -68,6 +70,37 @@ class VarsCheck(Latching):
     def partition(self, inputs):
         vars, cmd = partition(self, inputs)
         return map(_split, vars), cmd
+
+
+class OptsCheck(Latching):
+    def _check(self, input):
+        return not input.startswith('-')
+
+
+class CustomParser(argparse.ArgumentParser):
+    """
+    Override default argument parsing to provide env-specific behaviors.
+    """
+
+    def parse_args(self, args):
+        return super().parse_args(self._replace_args(args))
+
+    @staticmethod
+    def _replace_args(args):
+        """
+        Separate env options from the rest of the command.
+
+        Argparse expects `--` to separate options from position args,
+        so inject that after any env options.
+
+        Also, replace `-` with `-i` (in env options).
+
+        >>> CustomParser._replace_args(['--help', '-', 'ENV=val', 'cmd', '-m'])
+        ['--help', '-i', '--', 'ENV=val', 'cmd', '-m']
+        """
+        env_opts, rest = partition(OptsCheck(), args)
+        repl_opts = replace(env_opts, '-'.__eq__, ('-i',))
+        return list(itertools.chain(repl_opts, ('--',), rest))
 
 
 def _split(var):
