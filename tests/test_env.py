@@ -6,13 +6,16 @@ import pytest
 from . import BaseTestCase
 
 
+issue15 = pytest.mark.xfail('platform.system() == "Windows"')
+
+
 class TestCase(BaseTestCase):
-    @pytest.mark.xfail('platform.system() == "Windows"')
+    @issue15
     def test_env_dash_i(self, capfd):
         self.runcommandline('env -i FOO=bar env')
         assert capfd.readouterr().out == 'FOO=bar\n'
 
-    @pytest.mark.xfail('platform.system() == "Windows"')
+    @issue15
     def test_dash_as_dash_i(self, capfd):
         self.runcommandline('env - FOO=bar env')
         assert capfd.readouterr().out == 'FOO=bar\n'
@@ -21,6 +24,7 @@ class TestCase(BaseTestCase):
         self.runcommandline('env')
         assert capfd.readouterr().out
 
+    @issue15
     def test_command_opts(self, capfd):
         # invoke Python's help (not env's help)
         cmd = ['env', sys.executable, '--help']
