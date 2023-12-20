@@ -9,6 +9,7 @@ from more_itertools import partition, replace
 
 
 def parseargs(p):
+    p.__class__ = CustomParser
     p.set_defaults(func=func)
     p.description = "Set each NAME to VALUE in the environment and run " + "COMMAND."
     p.usage = '%(prog)s [OPTION]... [-] [NAME=VALUE]... [COMMAND [ARG]...]'
