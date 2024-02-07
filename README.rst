@@ -14,7 +14,7 @@
 .. image:: https://readthedocs.org/projects/cmdix/badge/?version=latest
    :target: https://cmdix.readthedocs.io/en/latest/?badge=latest
 
-.. image:: https://img.shields.io/badge/skeleton-2023-informational
+.. image:: https://img.shields.io/badge/skeleton-2024-informational
    :target: https://blog.jaraco.com/skeleton
 
 cmdix is a pure Python implementation of various standard UNIX commands,
