@@ -50,8 +50,7 @@ class Latching(metaclass=abc.ABCMeta):
             return result
 
     @abc.abstractmethod
-    def _check(self, input):
-        ...  # pragma: no cover
+    def _check(self, input): ...  # pragma: no cover
 
 
 class VarsCheck(Latching):

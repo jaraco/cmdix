@@ -83,9 +83,7 @@ def wsgierror(start_response, code, text, headers=[]):
     return [
         b'''<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"><html><head>
                 <title>{code} {text}</title></head><body><h1>{code} {text}</h1>
-                </body></html>'''.format(
-            code=code, text=text
-        )
+                </body></html>'''.format(code=code, text=text)
     ]
 
 

@@ -45,9 +45,7 @@ class Sh(cmd.Cmd):
             # Copy all commands from cmdix to 'do_foo' functions
             for command in cmdix.listcommands():
                 x = """self.do_{0} = lambda l: \
-                       cmdix.runcommandline('{0} '+ l)""".format(
-                    command
-                )
+                       cmdix.runcommandline('{0} '+ l)""".format(command)
                 exec(x)
         return cmd.Cmd.__init__(self, *args, **kwargs)
 
