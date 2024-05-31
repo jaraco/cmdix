@@ -13,6 +13,11 @@ class TestCase(BaseTestCase):
         self.runcommandline('ls')
         assert capsys.readouterr().out == 'dir1\ndir2\nfile1\nfile2.txt\nfile3.empty\n'
 
+    def test_ls_file(self, capsys):
+        self.setup_filesystem()
+        self.runcommandline('ls file2.txt')
+        assert capsys.readouterr().out == 'file2.txt\n'
+
     @pytest.mark.xfail("platform.system() == 'Windows'")
     def test_ls_l(self, capsys):
         os.mkdir('biz', mode=0o755)
