@@ -77,14 +77,10 @@ def func(args):
                 ell.append((mode, nlink, uid, gid, size, mtime, name))
 
                 # Update sizelen
-                _sizelen = len(str(size))
-                if _sizelen > sizelen:
-                    sizelen = _sizelen
+                sizelen = max(len(str(size)), sizelen)
 
                 # Update nlinklen
-                _nlinklen = len(str(nlink))
-                if _nlinklen > nlinklen:
-                    nlinklen = _nlinklen
+                nlinklen = max(len(str(nlink)), nlinklen)
 
         for mode, nlink, uid, gid, size, mtime, name in ell:
             modtime = time.strftime('%Y-%m-%d %H:%m', mtime)
