@@ -86,12 +86,12 @@ def func(args):
             else:
                 found.append(FileInfo.from_path(path))
 
-        sizelen = field_width('size', found)
-        nlinklen = field_width('nlink', found)
+        size_width = field_width('size', found)
+        nlink_width = field_width('nlink', found)
 
         for info in found:
             print(
-                "{mode} {nlink:>{nlinklen}} {uid:<5} {gid:<5} {size:>{sizelen}} {modtime} {name}".format(
+                "{mode} {nlink:>{nlink_width}} {uid:<5} {gid:<5} {size:>{size_width}} {modtime} {name}".format(
                     modtime=time.strftime('%Y-%m-%d %H:%m', info.mtime),
                     **vars(info),
                     **locals(),
