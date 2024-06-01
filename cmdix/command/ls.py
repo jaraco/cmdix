@@ -1,8 +1,9 @@
 from .. import lib
-import os
+import operator
 import pathlib
-import stat
 import time
+import types
+from stat import S_ISLNK
 
 
 def parseargs(p):
@@ -48,6 +49,25 @@ def resolve_items(arg):
     return arg.iterdir()
 
 
+class FileInfo(types.SimpleNamespace):
+    @classmethod
+    def from_path(cls, path):
+        stat = path.lstat()
+        return cls(
+            mode=lib.mode2string(stat.st_mode),
+            nlink=stat.st_nlink,
+            uid=stat.st_uid,
+            gid=stat.st_gid,
+            size=stat.st_size,
+            mtime=time.localtime(stat.st_mtime),
+            name=(
+                f"{path.name} -> {path.readlink()}"
+                if S_ISLNK(stat.st_mode)
+                else path.name
+            ),
+        )
+
+
 def func(args):
     filelist = args.FILE
     if not args.FILE:
@@ -56,44 +76,23 @@ def func(args):
     for arg in map(pathlib.Path, filelist):
         dirlist = sorted(resolve_items(arg))
         found = []
-        sizelen = 0  # Length of the largest filesize integer
-        nlinklen = 0  # Length of the largest nlink integer
         for path in filter(args.filter, dirlist):
             if not args.longlist:
                 print(path.name)
             else:
-                st = os.lstat(path)
-                mode = lib.mode2string(st.st_mode)
-                nlink = st.st_nlink
-                uid = st.st_uid
-                gid = st.st_gid
-                size = st.st_size
-                mtime = time.localtime(st.st_mtime)
-                name = (
-                    f"{path.name} -> {path.readlink()}"
-                    if stat.S_ISLNK(st.st_mode)
-                    else path.name
-                )
-                found.append((mode, nlink, uid, gid, size, mtime, name))
+                found.append(FileInfo.from_path(path))
 
-                # Update sizelen
-                sizelen = max(len(str(size)), sizelen)
+        sizelen = max(
+            map(len, map(str, map(operator.attrgetter('size'), found))), default=0
+        )
+        nlinklen = max(
+            map(len, map(str, map(operator.attrgetter('nlink'), found))), default=0
+        )
 
-                # Update nlinklen
-                nlinklen = max(len(str(nlink)), nlinklen)
-
-        for mode, nlink, uid, gid, size, mtime, name in found:
-            modtime = time.strftime('%Y-%m-%d %H:%m', mtime)
+        for info in found:
+            modtime = time.strftime('%Y-%m-%d %H:%m', info.mtime)
             print(
-                "{0} {1:>{nlink}} {2:<5} {3:<5} {4:>{size}} {5} {6}".format(
-                    mode,
-                    nlink,
-                    uid,
-                    gid,
-                    size,
-                    modtime,
-                    name,
-                    size=sizelen,
-                    nlink=nlinklen,
+                "{mode} {nlink:>{nlinklen}} {uid:<5} {gid:<5} {size:>{sizelen}} {modtime} {name}".format(
+                    **vars(info), **locals()
                 )
             )
