@@ -20,7 +20,7 @@ def parseargs(p):
         + "directory by default). Sort entries "
         + "alphabetically if none of -cftuvSUX nor --sort."
     )
-    p.add_argument('FILE', nargs="*", default=['.'])
+    p.add_argument('FILE', nargs="*", default=[pathlib.Path()], type=pathlib.Path)
     p.add_argument(
         "-l",
         "--longlist",
@@ -79,7 +79,7 @@ def field_width(attr, infos):
 
 
 def func(args):
-    for arg in map(pathlib.Path, args.FILE):
+    for arg in args.FILE:
         found = list(
             map(FileInfo.from_path, filter(args.filter, sorted(resolve_items(arg))))
         )
