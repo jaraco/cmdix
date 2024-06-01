@@ -29,7 +29,7 @@ class TestCase(BaseTestCase):
         dirsize = os.stat('biz').st_size
         uid = os.getuid()
         gid = os.getgid()
-        date = time.strftime('%Y-%m-%d %H:%m', time.localtime())
+        date = time.strftime('%Y-%m-%d %H:%M', time.localtime())
         self.runcommandline('ls -l')
         expected = (
             textwrap.dedent(

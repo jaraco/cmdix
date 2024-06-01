@@ -90,7 +90,7 @@ def func(args):
         for info in found:
             print(
                 args.template.format(
-                    modtime=time.strftime('%Y-%m-%d %H:%m', info.mtime),
+                    modtime=time.strftime('%Y-%m-%d %H:%M', info.mtime),
                     **vars(info),
                     **locals(),
                 )
