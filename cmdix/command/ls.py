@@ -90,9 +90,10 @@ def func(args):
         nlinklen = field_width('nlink', found)
 
         for info in found:
-            modtime = time.strftime('%Y-%m-%d %H:%m', info.mtime)
             print(
                 "{mode} {nlink:>{nlinklen}} {uid:<5} {gid:<5} {size:>{sizelen}} {modtime} {name}".format(
-                    **vars(info), **locals()
+                    modtime=time.strftime('%Y-%m-%d %H:%m', info.mtime),
+                    **vars(info),
+                    **locals(),
                 )
             )
