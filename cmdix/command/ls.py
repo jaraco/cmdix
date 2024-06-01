@@ -22,7 +22,13 @@ def parseargs(p):
     )
     p.add_argument('FILE', nargs="*")
     p.add_argument(
-        "-l", "--longlist", action="store_true", help="use a long listing format"
+        "-l",
+        "--longlist",
+        action="store_const",
+        help="use a long listing format",
+        const="{mode} {nlink:>{nlink_width}} {uid:<5} {gid:<5} {size:>{size_width}} {modtime} {name}",
+        default="{name}",
+        dest="template",
     )
     p.add_argument(
         "-a",
@@ -77,12 +83,6 @@ def func(args):
     if not args.FILE:
         filelist = ['.']
 
-    tmpl = (
-        "{mode} {nlink:>{nlink_width}} {uid:<5} {gid:<5} {size:>{size_width}} {modtime} {name}"
-        if args.longlist
-        else "{name}"
-    )
-
     for arg in map(pathlib.Path, filelist):
         found = list(
             map(FileInfo.from_path, filter(args.filter, sorted(resolve_items(arg))))
@@ -93,7 +93,7 @@ def func(args):
 
         for info in found:
             print(
-                tmpl.format(
+                args.template.format(
                     modtime=time.strftime('%Y-%m-%d %H:%m', info.mtime),
                     **vars(info),
                     **locals(),
