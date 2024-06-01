@@ -68,6 +68,10 @@ class FileInfo(types.SimpleNamespace):
         )
 
 
+def field_width(attr, infos):
+    return max(map(len, map(str, map(operator.attrgetter(attr), infos))), default=0)
+
+
 def func(args):
     filelist = args.FILE
     if not args.FILE:
@@ -82,12 +86,8 @@ def func(args):
             else:
                 found.append(FileInfo.from_path(path))
 
-        sizelen = max(
-            map(len, map(str, map(operator.attrgetter('size'), found))), default=0
-        )
-        nlinklen = max(
-            map(len, map(str, map(operator.attrgetter('nlink'), found))), default=0
-        )
+        sizelen = field_width('size', found)
+        nlinklen = field_width('nlink', found)
 
         for info in found:
             modtime = time.strftime('%Y-%m-%d %H:%m', info.mtime)
