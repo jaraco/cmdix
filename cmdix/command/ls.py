@@ -84,10 +84,9 @@ def func(args):
     )
 
     for arg in map(pathlib.Path, filelist):
-        dirlist = sorted(resolve_items(arg))
-        found = []
-        for path in filter(args.filter, dirlist):
-            found.append(FileInfo.from_path(path))
+        found = list(
+            map(FileInfo.from_path, filter(args.filter, sorted(resolve_items(arg))))
+        )
 
         size_width = field_width('size', found)
         nlink_width = field_width('nlink', found)
