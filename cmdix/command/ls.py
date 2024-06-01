@@ -55,7 +55,7 @@ def func(args):
 
     for arg in map(pathlib.Path, filelist):
         dirlist = sorted(resolve_items(arg))
-        ell = []
+        found = []
         sizelen = 0  # Length of the largest filesize integer
         nlinklen = 0  # Length of the largest nlink integer
         for path in filter(args.filter, dirlist):
@@ -74,7 +74,7 @@ def func(args):
                     if stat.S_ISLNK(st.st_mode)
                     else path.name
                 )
-                ell.append((mode, nlink, uid, gid, size, mtime, name))
+                found.append((mode, nlink, uid, gid, size, mtime, name))
 
                 # Update sizelen
                 sizelen = max(len(str(size)), sizelen)
@@ -82,7 +82,7 @@ def func(args):
                 # Update nlinklen
                 nlinklen = max(len(str(nlink)), nlinklen)
 
-        for mode, nlink, uid, gid, size, mtime, name in ell:
+        for mode, nlink, uid, gid, size, mtime, name in found:
             modtime = time.strftime('%Y-%m-%d %H:%m', mtime)
             print(
                 "{0} {1:>{nlink}} {2:<5} {3:<5} {4:>{size}} {5} {6}".format(
