@@ -1,7 +1,7 @@
 from .. import lib
+import datetime
 import operator
 import pathlib
-import time
 import types
 from stat import S_ISLNK
 
@@ -26,7 +26,7 @@ def parseargs(p):
         "--longlist",
         action="store_const",
         help="use a long listing format",
-        const="{mode} {nlink:>{nlink_width}} {uid:<5} {gid:<5} {size:>{size_width}} {modtime} {name}",
+        const="{mode} {nlink:>{nlink_width}} {uid:<5} {gid:<5} {size:>{size_width}} {mtime:%Y-%m-%d %H:%M} {name}",
         default="{name}",
         dest="template",
     )
@@ -65,7 +65,7 @@ class FileInfo(types.SimpleNamespace):
             uid=stat.st_uid,
             gid=stat.st_gid,
             size=stat.st_size,
-            mtime=time.localtime(stat.st_mtime),
+            mtime=datetime.datetime.fromtimestamp(stat.st_mtime),
             name=(
                 f"{path.name} -> {path.readlink()}"
                 if S_ISLNK(stat.st_mode)
@@ -88,10 +88,4 @@ def func(args):
         nlink_width = field_width('nlink', found)
 
         for info in found:
-            print(
-                args.template.format(
-                    modtime=time.strftime('%Y-%m-%d %H:%M', info.mtime),
-                    **vars(info),
-                    **locals(),
-                )
-            )
+            print(args.template.format(**vars(info), **locals()))
