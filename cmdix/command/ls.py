@@ -77,21 +77,24 @@ def func(args):
     if not args.FILE:
         filelist = ['.']
 
+    tmpl = (
+        "{mode} {nlink:>{nlink_width}} {uid:<5} {gid:<5} {size:>{size_width}} {modtime} {name}"
+        if args.longlist
+        else "{name}"
+    )
+
     for arg in map(pathlib.Path, filelist):
         dirlist = sorted(resolve_items(arg))
         found = []
         for path in filter(args.filter, dirlist):
-            if not args.longlist:
-                print(path.name)
-            else:
-                found.append(FileInfo.from_path(path))
+            found.append(FileInfo.from_path(path))
 
         size_width = field_width('size', found)
         nlink_width = field_width('nlink', found)
 
         for info in found:
             print(
-                "{mode} {nlink:>{nlink_width}} {uid:<5} {gid:<5} {size:>{size_width}} {modtime} {name}".format(
+                tmpl.format(
                     modtime=time.strftime('%Y-%m-%d %H:%m', info.mtime),
                     **vars(info),
                     **locals(),
