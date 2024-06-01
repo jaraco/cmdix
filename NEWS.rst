@@ -1,3 +1,12 @@
+v3.1.2
+======
+
+Bugfixes
+--------
+
+- Add support for listing files by name. (#16)
+
+
 v3.1.1
 ======
 
