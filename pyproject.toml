@@ -28,7 +28,7 @@ dependencies = [
 dynamic = ["version"]
 
 [project.urls]
-Homepage = "https://github.com/jaraco/cmdix"
+Source = "https://github.com/jaraco/cmdix"
 
 [project.optional-dependencies]
 test = [
