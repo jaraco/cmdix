@@ -86,15 +86,12 @@ def mount_c(source, dest, fstype, options=0, data='', verbose=False):
 
 
 def get_available_filesystems():
-    ell = []
     try:
         with open('/proc/filesystems') as fd:
-            for line in fd.readlines():
-                ell.append(line.split()[-1])
+            return [line.split()[-1] for line in fd]
     except OSError:
         print(
             "Error reading supported filesystems from /proc/filesystems",
             file=sys.stderr,
         )
-        return ell
-    return ell
+    return []
