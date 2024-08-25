@@ -134,4 +134,9 @@ expand = "cmdix:run"
 seq = "cmdix:run"
 wget = "cmdix:run"
 
+
 [tool.setuptools_scm]
+
+
+[tool.pytest-enabler.mypy]
+# Disabled due to jaraco/skeleton#143
