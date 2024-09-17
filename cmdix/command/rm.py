@@ -1,5 +1,6 @@
-import os
-import os.path
+import pathlib
+import stat
+import types
 
 
 def parseargs(p):
@@ -11,7 +12,7 @@ def parseargs(p):
     """
     p.set_defaults(func=func)
     p.description = "print name of current/working directory"
-    p.add_argument('FILE', nargs='+')
+    p.add_argument('FILE', nargs='+', type=pathlib.Path)
     p.add_argument(
         "-f",
         "--force",
@@ -37,35 +38,51 @@ def parseargs(p):
     return p
 
 
-def func(args):
-    def _raise(err):
-        if not args.force:
-            raise err
+class Handler(types.SimpleNamespace):
+    verbose: bool
+    force: bool
 
-    for arg in args.FILE:
-        do_it(_raise, arg, args)
+    @classmethod
+    def from_args(cls, args):
+        return cls(**vars(args))
 
+    def run(self, path):
+        action = self.remove_dir if self.recursive else self.remove_file
+        return action(path)
 
-def do_it(_raise, arg, args):
-    if args.recursive and os.path.isdir(arg):
-        # Remove directory recursively
-        for root, dirs, files in os.walk(arg, topdown=False, onerror=_raise):
+    def remove_dir(self, path):
+        """
+        Remove directory recursively.
+        """
+        if not path.is_dir():
+            self.remove_file(path)
+
+        for root, subs, files in path.walk():
             for name in files:
-                path = os.path.join(root, name)
-                os.remove(path)
-                if args.verbose:
-                    print(f"Removed file '{path}'\n")
-            for name in dirs:
-                path = os.path.join(root, name)
-                os.rmdir(path)
-                if args.verbose:
-                    print(f"Removed directory '{path}'\n")
-        os.rmdir(arg)
-    else:
-        # Remove single file
+                self.remove_file(root / name)
+            for name in subs:
+                self.remove_dir(root / name)
+            subs.clear()
+
+        self.try_op(root, root.rmdir)
+        self.verbose and print(root)
+
+    def remove_file(self, path):
+        """
+        Remove a single file.
+        """
+        self.try_op(path, path.unlink)
+        self.verbose and print(path)
+
+    def try_op(self, path, op):
+        exceptions = (OSError,) if self.force else ()
         try:
-            os.remove(arg)
-            if args.verbose:
-                print(f"Removed '{arg}'\n")
-        except OSError as err:
-            _raise(err)
+            op()
+        except exceptions:
+            path.chmod(stat.S_IWRITE)
+            op()
+
+
+def func(args):
+    handler = Handler.from_args(args)
+    tuple(map(handler.run, args.FILE))

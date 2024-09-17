@@ -1,0 +1,1 @@
+Rewrite rm so it honors --force.
