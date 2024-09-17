@@ -1,3 +1,12 @@
+v3.1.3
+======
+
+Bugfixes
+--------
+
+- Rewrite rm so it honors --force. (#17)
+
+
 v3.1.2
 ======
 
