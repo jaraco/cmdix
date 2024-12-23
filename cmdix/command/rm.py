@@ -2,6 +2,8 @@ import pathlib
 import stat
 import types
 
+from ..compat.py311 import walk
+
 
 def parseargs(p):
     """
@@ -57,7 +59,7 @@ class Handler(types.SimpleNamespace):
         if not path.is_dir():
             self.remove_file(path)
 
-        for root, subs, files in path.walk():
+        for root, subs, files in walk(path):
             for name in files:
                 self.remove_file(root / name)
             for name in subs:
