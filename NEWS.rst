@@ -1,3 +1,12 @@
+v3.1.4
+======
+
+Bugfixes
+--------
+
+- Restore rm compatibility with Python 3.11.
+
+
 v3.1.3
 ======
 
