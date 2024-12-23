@@ -11,8 +11,6 @@ class TestCase(BaseTestCase):
         self.createfile('foo', size=50)
         self.runcommandline('base64 -w 30 foo')
         expected = (
-            'MDAwMDAwMDAwMDAwMDAwMDAwMDAwMD\n'
-            'AwMDAwMDAwMDAwMDAwMDAwMDAwMDAw\n'
-            'MDAwMDA=\n'
+            'MDAwMDAwMDAwMDAwMDAwMDAwMDAwMD\nAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw\nMDAwMDA=\n'
         )
         assert capsys.readouterr().out == expected

@@ -34,7 +34,7 @@ def parseargs(p):
         "-s",
         action="store_true",
         dest="stderr",
-        help="Log the message to standard error, as well as the " "system log.",
+        help="Log the message to standard error, as well as the system log.",
     )
     return p
 
