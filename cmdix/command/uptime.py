@@ -3,6 +3,7 @@ import os
 import platform
 import subprocess
 
+
 def parseargs(p):
     p.set_defaults(func=func)
     p.description = "Tell how long the system has been running"
@@ -12,16 +13,19 @@ def parseargs(p):
     )
     return p
 
+
 def get_uptime_unix():
     with open('/proc/uptime') as f:
         uptimeseconds = float(f.readline().split()[0])
     uptime = str(datetime.timedelta(seconds=uptimeseconds))[:-10]
     return uptime
 
+
 def get_loadavg_unix():
     with open('/proc/loadavg') as f:
         load5, load10, load15, proc, unknown = f.readline().split()[:5]
     return load5, load10, load15
+
 
 def get_uptime_windows():
     process = subprocess.Popen('net stats srv', stdout=subprocess.PIPE)
@@ -34,8 +38,10 @@ def get_uptime_windows():
             return str(uptime).split('.')[0]
     return None
 
+
 def get_loadavg_windows():
     return 'N/A', 'N/A', 'N/A'
+
 
 def func(args):
     if platform.system() == 'Windows':
