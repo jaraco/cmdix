@@ -2,6 +2,8 @@ import datetime
 import platform
 import subprocess
 
+import dateutil.parser
+
 
 def parseargs(p):
     p.set_defaults(func=func)
@@ -27,12 +29,12 @@ def get_loadavg_unix():
 
 
 def get_uptime_windows():
-    process = subprocess.Popen('net stats srv', stdout=subprocess.PIPE)
+    process = subprocess.Popen('net stats workstation', stdout=subprocess.PIPE)
     stdout = process.communicate()[0].decode('utf-8')
     for line in stdout.split('\n'):
         if 'Statistics since' in line:
             start_time = line.split('Statistics since ')[1]
-            start_time = datetime.datetime.strptime(start_time, '%m/%d/%Y %I:%M %p')
+            start_time = dateutil.parser.parse(start_time)
             uptime = datetime.datetime.now() - start_time
             return str(uptime).split('.')[0]
     return None
