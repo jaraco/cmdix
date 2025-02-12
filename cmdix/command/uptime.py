@@ -1,17 +1,9 @@
 import datetime
+import os
+import platform
+import subprocess
 
-from .. import onlyunix
-
-
-@onlyunix
 def parseargs(p):
-    """
-    Add arguments and `func` to `p`.
-
-    :param p: ArgumentParser
-    :return:  ArgumentParser
-    """
-    # TODO: List number of users
     p.set_defaults(func=func)
     p.description = "Tell how long the system has been running"
     p.epilog = (
@@ -20,18 +12,41 @@ def parseargs(p):
     )
     return p
 
-
-def func(args):
+def get_uptime_unix():
     with open('/proc/uptime') as f:
         uptimeseconds = float(f.readline().split()[0])
-        uptime = str(datetime.timedelta(seconds=uptimeseconds))[:-10]
+    uptime = str(datetime.timedelta(seconds=uptimeseconds))[:-10]
+    return uptime
 
+def get_loadavg_unix():
     with open('/proc/loadavg') as f:
         load5, load10, load15, proc, unknown = f.readline().split()[:5]
-        totproc, avgproc = proc.split('/')
+    return load5, load10, load15
+
+def get_uptime_windows():
+    process = subprocess.Popen('net stats srv', stdout=subprocess.PIPE)
+    stdout = process.communicate()[0].decode('utf-8')
+    for line in stdout.split('\n'):
+        if 'Statistics since' in line:
+            start_time = line.split('Statistics since ')[1]
+            start_time = datetime.datetime.strptime(start_time, '%m/%d/%Y %I:%M %p')
+            uptime = datetime.datetime.now() - start_time
+            return str(uptime).split('.')[0]
+    return None
+
+def get_loadavg_windows():
+    return 'N/A', 'N/A', 'N/A'
+
+def func(args):
+    if platform.system() == 'Windows':
+        uptime = get_uptime_windows()
+        load5, load10, load15 = get_loadavg_windows()
+    else:
+        uptime = get_uptime_unix()
+        load5, load10, load15 = get_loadavg_unix()
 
     print(
-        f" {datetime.datetime.today():%H:%M:%S} up "
+        f" {datetime.datetime.now():%H:%M:%S} up "
         + " {},  {} users,  ".format(uptime, 'TODO')
         + f"load average: {load5}, {load10}, {load15}"
     )
