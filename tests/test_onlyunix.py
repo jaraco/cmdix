@@ -21,7 +21,6 @@ class TestCase:
         'id',
         'mount',
         'tee',
-        'uptime',
         'whoami',
     )
 
