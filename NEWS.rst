@@ -1,3 +1,18 @@
+v3.2.0
+======
+
+Features
+--------
+
+- Added Windows support to uptime command. (#19)
+
+
+Bugfixes
+--------
+
+- In test_rm_f, actually pass -f. (#21)
+
+
 v3.1.4
 ======
 
