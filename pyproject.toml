@@ -27,7 +27,6 @@ requires-python = ">=3.10"
 license = "MIT"
 dependencies = [
 	"importlib_resources",
-	'backports.hook_compressed; python_version < "3.10"',
 	"more_itertools",
 	"python-dateutil",
 ]
@@ -75,7 +74,6 @@ type = [
 	"pytest-mypy >= 1.0.1; platform_python_implementation != 'PyPy'",
 
 	# local
-	"types-backports",
 ]
 
 

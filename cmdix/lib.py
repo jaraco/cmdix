@@ -9,14 +9,9 @@ import signal
 import stat
 import sys
 import textwrap
-
-try:
-    from backports.hook_compressed import hook_compressed
-except ImportError:
-    from fileinput import hook_compressed
+from fileinput import hook_compressed
 
 import cmdix
-from .compat import py39
 
 
 def filelist2fds(filelist, mode='r'):
@@ -194,7 +189,7 @@ def parsefilelist(filelist=None, decompress=False):
     filelist = filelist or '-'
 
     for filename in filelist:
-        yield fileinput.FileInput([filename], openhook=openhook, **py39.encoding)
+        yield fileinput.FileInput([filename], openhook=openhook, encoding='utf-8')
 
 
 def showbanner(width=None):
