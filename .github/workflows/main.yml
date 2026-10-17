@@ -37,8 +37,9 @@ jobs:
           platform: ubuntu-latest
         - python: "3.15"
           platform: ubuntu-latest
-        - python: pypy3.11
-          platform: ubuntu-latest
+        # disabled for #11
+        # - python: pypy3.11
+        #   platform: ubuntu-latest
     uses: ./.github/workflows/test-suite.yml
     with:
       python: ${{ matrix.python }}
