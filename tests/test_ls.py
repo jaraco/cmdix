@@ -1,7 +1,8 @@
 import os
 import stat
-import time
 import textwrap
+import time
+
 import pytest
 
 from . import BaseTestCase
@@ -32,7 +33,8 @@ class TestCase(BaseTestCase):
         date = time.strftime('%Y-%m-%d %H:%M', time.localtime())
         self.runcommandline('ls -l')
         expected = (
-            textwrap.dedent(
+            textwrap
+            .dedent(
                 """
             --w-r---wx 1 {uid:<5} {gid:<5} 999999 {date} bar
             drwxr-xr-x 2 {uid:<5} {gid:<5} {dirsize:>6} {date} biz

@@ -4,7 +4,7 @@ import os
 import shutil
 import sys
 
-from .exception import StdOutException, StdErrException
+from .exception import StdErrException, StdOutException
 
 
 def compressor(p, comptype='gzip', decompress=False):
@@ -128,7 +128,7 @@ def compressorfunc(args):
 
 def compress(args, compresstype, infile, outfile, suffix):
     zippath = infile + suffix
-    infile = open(infile, 'rb')
+    infile = open(infile, 'rb')  # noqa: SIM115 returned to the caller
     if len(args.FILE) == 0 or args.stdout:
         outfile = sys.stdout
     else:
@@ -158,5 +158,5 @@ def decompress(args, compresstype, infile, suffix):
             if q.upper() != 'Y':
                 StdOutException("not overwritten", 2)
 
-        outfile = open(unzippath, 'wb')
+        outfile = open(unzippath, 'wb')  # noqa: SIM115 returned to the caller
     return infile, outfile

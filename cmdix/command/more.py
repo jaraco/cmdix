@@ -6,8 +6,9 @@
 "...
 """
 
-from .. import lib
 import pydoc
+
+from .. import lib
 
 
 def parseargs(p):

@@ -61,9 +61,7 @@ class ExtraOperandException(StdErrException):
 
     def __str__(self):
         return (
-            "{0}: extra operand `{1}'. Try {0} --help' for more ".format(
-                self.program, self.operand
-            )
+            f"{self.program}: extra operand `{self.operand}'. Try {self.program} --help' for more "
             + "information."
         )
 
@@ -83,6 +81,6 @@ class MissingOperandException(StdErrException):
 
     def __str__(self):
         return (
-            "{0}: missing operand. Try `{0} --help'".format(self.program)
+            f"{self.program}: missing operand. Try `{self.program} --help'"
             + " for more information."
         )

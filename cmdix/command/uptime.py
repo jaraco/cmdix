@@ -24,7 +24,7 @@ def get_uptime_unix():
 
 def get_loadavg_unix():
     with open('/proc/loadavg') as f:
-        load5, load10, load15, proc, unknown = f.readline().split()[:5]
+        load5, load10, load15 = f.readline().split()[:3]
     return load5, load10, load15
 
 

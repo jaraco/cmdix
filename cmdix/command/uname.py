@@ -1,7 +1,7 @@
-import platform
-import subprocess
-import re
 import contextlib
+import platform
+import re
+import subprocess
 
 
 def parseargs(p):
@@ -95,7 +95,7 @@ def processor_from_cpu_info():
         with open('/proc/cpuinfo') as lines:
             matched = next(filter(pattern.match, lines))
             return pattern.match(matched).group(1)
-    except Exception:
+    except Exception:  # noqa: BLE001, S110 fall back to other detection
         pass
 
 
@@ -110,7 +110,7 @@ def get_processor():
         return platform.processor()
 
     if platform.system() == 'Darwin':
-        cmd = 'sysctl -n machdep.cpu.brand_string'.split()
+        cmd = ['sysctl', '-n', 'machdep.cpu.brand_string']
         return subprocess.check_output(cmd, text=True).strip()
 
     return processor_from_cpu_info() or 'unknown'

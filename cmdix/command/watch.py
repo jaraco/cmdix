@@ -55,7 +55,7 @@ def addsts(interval, cmd, text, sts):
     now = time.strftime("%H:%M:%S")
     text = f"{now}, every {interval:g} sec: {cmd}\n{text}"
     if sts:
-        msg = "Exit status: %d; signal: %d" % (sts >> 8, sts & 0xFF)
+        msg = f"Exit status: {sts >> 8}; signal: {sts & 0xFF}"
         if text and not text.endswith("\n"):
             msg = "\n" + msg
         text += msg

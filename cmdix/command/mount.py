@@ -59,7 +59,7 @@ def func(args):
         mounted_something = False
         for line in lines:
             line = line.partition('#')[0]  # Remove comments
-            source, dest, fstype, options, freq, passno = line.split()
+            source, dest, fstype, _options, _freq, _passno = line.split()
             if source == args.SOURCE or dest == args.SOURCE or args.all:
                 mount_c(dest, dest, fstype, args.verbose)
                 mounted_something = True
@@ -68,7 +68,8 @@ def func(args):
     else:
         # Display currently mounted filesystems
         try:
-            print(open('/etc/mtab').read().strip())
+            with open('/etc/mtab') as mtab:
+                print(mtab.read().strip())
         except OSError:
             print("Error: Couldn't read /etc/mtab", file=sys.stderr)
 

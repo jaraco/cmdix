@@ -27,5 +27,7 @@ def mount():
 
 
 def setHostname():
-    hostname = open('/etc/hostname').readline()
-    open('/proc/sys/kernel/hostname', 'w').write(hostname)
+    with open('/etc/hostname') as src:
+        hostname = src.readline()
+    with open('/proc/sys/kernel/hostname', 'w') as dst:
+        dst.write(hostname)

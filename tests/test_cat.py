@@ -1,4 +1,5 @@
 import gzip
+
 from . import BaseTestCase
 
 

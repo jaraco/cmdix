@@ -1,5 +1,5 @@
-from .. import lib
 import cmd
+import functools
 import os
 import platform
 import pprint
@@ -8,6 +8,8 @@ import subprocess
 import sys
 
 import cmdix
+
+from .. import lib
 
 
 def parseargs(p):
@@ -44,10 +46,16 @@ class Sh(cmd.Cmd):
         if not nocoreutils:
             # Copy all commands from cmdix to 'do_foo' functions
             for command in cmdix.listcommands():
-                x = """self.do_{0} = lambda l: \
-                       cmdix.runcommandline('{0} '+ l)""".format(command)
-                exec(x)
-        return cmd.Cmd.__init__(self, *args, **kwargs)
+                setattr(
+                    self,
+                    f'do_{command}',
+                    functools.partial(self._run_command, command),
+                )
+        cmd.Cmd.__init__(self, *args, **kwargs)
+
+    @staticmethod
+    def _run_command(command, line):
+        return cmdix.runcommandline(f'{command} ' + line)
 
     def default(self, line):
         """
@@ -57,15 +65,14 @@ class Sh(cmd.Cmd):
         try:
             subprocess.call(ell)
         except OSError as err:
-            if not os.path.dirname(ell[0]):
-                # Scan $PATH
-                if os.getenv('PATH'):
-                    for path in os.getenv('PATH').split(':'):
-                        cmd = [os.path.join(path, ell[0])] + ell[1:]
-                        try:
-                            subprocess.call(cmd)
-                        except Exception:
-                            pass
+            # Scan $PATH
+            if not os.path.dirname(ell[0]) and os.getenv('PATH'):
+                for path in os.getenv('PATH').split(':'):
+                    cmd = [os.path.join(path, ell[0])] + ell[1:]
+                    try:
+                        subprocess.call(cmd)
+                    except Exception:  # noqa: BLE001, S110 try the next path
+                        pass
 
             print(err.strerror, file=sys.stderr)
 
@@ -103,8 +110,8 @@ class Sh(cmd.Cmd):
         i.e. "!dir()"
         """
         try:
-            exec(f"r = {line}")
-        except Exception as err:
+            exec(f"r = {line}")  # noqa: S102 evaluating Python is the point
+        except Exception as err:  # noqa: BLE001 report any error to the user
             return pprint.pformat(err) + '\n'
         else:
             return pprint.pformat(line) + '\n'
@@ -118,8 +125,8 @@ class Sh(cmd.Cmd):
     def postcmd(self, stop, line):
         self.updateprompt()
         if stop:
-            for line in stop:
-                print(line, end='')
+            for out in stop:
+                print(out, end='')
 
     def onecmd(self, line):
         try:

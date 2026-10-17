@@ -1,5 +1,6 @@
-from ..exception import StdErrException
 import logging
+
+from ..exception import StdErrException
 
 
 def parseargs(p):

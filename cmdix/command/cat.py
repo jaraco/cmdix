@@ -1,5 +1,5 @@
-import sys
 import itertools
+import sys
 
 from .. import lib
 

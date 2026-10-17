@@ -1,9 +1,11 @@
+import contextlib
 import shutil
 import sys
-from urllib.request import build_opener
 from urllib.error import HTTPError
+from urllib.request import build_opener
 
 import cmdix
+
 from .. import exception
 
 
@@ -34,11 +36,6 @@ def parseargs(p):
 
 
 def func(args):
-    if args.outputdocument:
-        fdout = open(args.outputdocument, 'w')
-    else:
-        fdout = sys.stdout
-
     if args.useragent:
         useragent = args.useragent
     else:
@@ -47,14 +44,19 @@ def func(args):
     opener = build_opener()
     opener.addheaders = [('User-agent', useragent)]
 
-    for url in args.url:
-        try:
-            fdin = opener.open(url)
-        except HTTPError as e:
-            exception.StdErrException(f"HTTP error opening {url}: {e}")
+    with (
+        open(args.outputdocument, 'w')
+        if args.outputdocument
+        else contextlib.nullcontext(sys.stdout)
+    ) as fdout:
+        for url in args.url:
+            try:
+                fdin = opener.open(url)
+            except HTTPError as e:
+                exception.StdErrException(f"HTTP error opening {url}: {e}")
 
-        length = int(fdin.headers['content-length'])
-        print(f"Getting {length} bytes from {url}...")
+            length = int(fdin.headers['content-length'])
+            print(f"Getting {length} bytes from {url}...")
 
-        shutil.copyfileobj(fdin, fdout)
-        print("Done")
+            shutil.copyfileobj(fdin, fdout)
+            print("Done")

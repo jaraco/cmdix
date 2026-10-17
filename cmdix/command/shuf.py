@@ -1,3 +1,4 @@
+import contextlib
 import random
 import sys
 
@@ -46,29 +47,24 @@ def parseargs(p):
 
 
 def func(args):
-    outfd = sys.stdout
-
     # Write to file if -o is specified
-    if args.output:
-        outfd = open(args.output, 'w')
+    with (
+        open(args.output, 'w') if args.output else contextlib.nullcontext(sys.stdout)
+    ) as outfd:
+        if args.echo:
+            echo(args, outfd)
 
-    if args.echo:
-        echo(args, outfd)
+        elif args.inputrange:
+            input_range(args, outfd)
 
-    elif args.inputrange:
-        input_range(args, outfd)
-
-    else:
-        other(args, outfd)
+        else:
+            other(args, outfd)
 
 
 def other(args, outfd):
     # Use stdin for input if no file is specified
-    if not args.file:
-        fd = sys.stdin
-    else:
-        fd = open(args.file)
-    lines = fd.readlines()
+    with open(args.file) if args.file else contextlib.nullcontext(sys.stdin) as fd:
+        lines = fd.readlines()
     random.shuffle(lines)
     if args.headcount:
         lines = lines[0 : int(args.headcount)]

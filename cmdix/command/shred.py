@@ -40,11 +40,10 @@ def func(args):
     for arg in args.FILE:
         for i in range(args.iterations):
             size = os.stat(arg).st_size
-            fd = open(arg, mode='w')
-            log.debug('Size: %s', size)
-            fd.seek(0)
-            for i in range(size):
-                # Get random byte
-                b = "".join(chr(random.randrange(0, 256)))
-                fd.write(b)
-            fd.close()
+            with open(arg, mode='w') as fd:
+                log.debug('Size: %s', size)
+                fd.seek(0)
+                for i in range(size):
+                    # Get random byte
+                    b = "".join(chr(random.randrange(0, 256)))
+                    fd.write(b)

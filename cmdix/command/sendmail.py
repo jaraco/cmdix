@@ -1,7 +1,7 @@
+import itertools
 import platform
 import smtplib
 import socket
-import itertools
 
 from .. import lib
 

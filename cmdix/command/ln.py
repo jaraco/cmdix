@@ -63,5 +63,5 @@ def func(args):
             print(f'{dst} => {src}')
         try:
             f(src, dst)
-        except Exception as err:
+        except Exception as err:  # noqa: BLE001 report any failure and continue
             print(f"ln: {err}", file=sys.stderr)

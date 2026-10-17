@@ -1,8 +1,9 @@
-from .. import exception
 import os
 import signal
 
 import cmdix
+
+from .. import exception
 
 
 def parseargs(p):
@@ -79,7 +80,7 @@ def add_arguments(p, signals):
     for sigint in set(signals.values()):
         if sigint < 10:
             p.add_argument(
-                "-%i" % sigint,
+                f"-{sigint}",
                 action="store_const",
                 dest="signal",
                 const=sigint,

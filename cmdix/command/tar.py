@@ -1,6 +1,6 @@
+import contextlib
 import sys
 import tarfile
-import contextlib
 
 from ..exception import StdErrException
 
@@ -81,9 +81,7 @@ def func(args):
 
             except tarfile.TarError:
                 raise StdErrException(
-                    "Could not parse file {}. Are you sure it is a tar-archive?".format(
-                        infile.name
-                    )
+                    f"Could not parse file {infile.name}. Are you sure it is a tar-archive?"
                 )
 
     elif args.create:

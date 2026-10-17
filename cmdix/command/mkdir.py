@@ -46,7 +46,7 @@ def func(args):
             # Create a list of directories to create
             while not os.path.exists(path):
                 pathlist.insert(0, path)
-                path, tail = os.path.split(path)
+                path, _tail = os.path.split(path)
 
             # Create all directories in pathlist
             for path in pathlist:

@@ -38,13 +38,16 @@ def parseargs(p):
 
 def func(args):
     if args.logfile:
-        logfile = open(args.logfile, 'a')
+        # The log file stays open for the life of the daemon.
+        logfile = open(args.logfile, 'a')  # noqa: SIM115
     else:
         logfile = sys.stdout
 
     scheduler = sched.scheduler(time.time, time.sleep)
     joblist = []
-    Job = collections.namedtuple('Job', 'min, hour, mday, mon, wday, user, cmd')
+    Job = collections.namedtuple(  # noqa: PYI024
+        'Job', 'min, hour, mday, mon, wday, user, cmd'
+    )
 
     # Create logger
     logger = logging.getLogger("crond")

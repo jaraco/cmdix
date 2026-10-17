@@ -5,7 +5,6 @@ import pytest
 
 from . import BaseTestCase
 
-
 issue15 = pytest.mark.xfail('platform.system() == "Windows"')
 
 

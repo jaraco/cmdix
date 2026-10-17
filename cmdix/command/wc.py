@@ -71,7 +71,7 @@ def report(args, fdict, maxlen, totchars, totlines, totwords):
 
 def count(fdict):
     totchars = totlines = totwords = 0
-    for filename, v in fdict.items():
+    for v in fdict.values():
         totchars += v['chars']
         totlines += v['lines']
         totwords += v['words']
@@ -84,8 +84,9 @@ def make_fdict(args):
         args.FILE = ['-']
     for filename in args.FILE:
         fdict[filename] = {'chars': 0, 'lines': 0, 'words': 0}
-        for line in fileinput.input(filename, openhook=fileinput.hook_compressed):
-            fdict[filename]['chars'] += len(line)
-            fdict[filename]['lines'] += 1
-            fdict[filename]['words'] += len(line.split())
+        with fileinput.input(filename, openhook=fileinput.hook_compressed) as lines:
+            for line in lines:
+                fdict[filename]['chars'] += len(line)
+                fdict[filename]['lines'] += 1
+                fdict[filename]['words'] += len(line.split())
     return fdict

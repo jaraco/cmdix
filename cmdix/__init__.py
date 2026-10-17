@@ -1,16 +1,14 @@
-import sys
-
 import argparse
 import os
-import shlex
 import platform
+import shlex
+import sys
 from importlib import metadata
 
 import importlib_resources as resources
 
 from . import command
 from .exception import CommandNotFoundException
-
 
 __version__ = metadata.version(__name__)
 

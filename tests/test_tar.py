@@ -3,6 +3,7 @@ import tarfile
 import pytest
 
 from cmdix.exception import StdErrException
+
 from . import BaseTestCase
 
 

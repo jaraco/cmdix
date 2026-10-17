@@ -1,7 +1,7 @@
-from ..exception import StdErrException
 import os
 
 from .. import onlyunix
+from ..exception import StdErrException
 
 try:
     import pwd

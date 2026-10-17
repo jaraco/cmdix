@@ -1,6 +1,7 @@
-from .. import lib
 import base64 as _base64
 import textwrap
+
+from .. import lib
 
 
 def parseargs(p):

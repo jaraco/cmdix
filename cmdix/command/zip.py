@@ -102,9 +102,8 @@ def extract(args):
         tgtdir = os.path.dirname(tgt)
         if not os.path.exists(tgtdir):
             os.makedirs(tgtdir)
-        fp = open(tgt, 'wb')
-        fp.write(zf.read(path))
-        fp.close()
+        with open(tgt, 'wb') as fp:
+            fp.write(zf.read(path))
     zf.close()
 
 

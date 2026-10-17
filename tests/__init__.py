@@ -1,9 +1,9 @@
 import filecmp
+import io
 import os
 import os.path
-import sys
-import io
 import pathlib
+import sys
 
 import pytest
 

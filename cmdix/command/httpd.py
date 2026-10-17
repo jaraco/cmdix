@@ -1,11 +1,11 @@
-from wsgiref import simple_server
 import base64
+import io
 import mimetypes
 import os
 import ssl
 import sys
-import io
 from urllib.parse import parse_qs, urljoin
+from wsgiref import simple_server
 
 import cmdix
 
@@ -64,9 +64,8 @@ class WSGIAuth:
             encodedinfo = bytes(authinfo.encode())
             decodedinfo = base64.b64decode(encodedinfo).decode()
             username, password = decodedinfo.split(':', 1)
-            if username in self.userdict:
-                if self.userdict[username] == password:
-                    return self.app(environ, start_response)
+            if username in self.userdict and self.userdict[username] == password:
+                return self.app(environ, start_response)
 
         return wsgierror(
             start_response,
@@ -76,7 +75,7 @@ class WSGIAuth:
         )
 
 
-def wsgierror(start_response, code, text, headers=[]):
+def wsgierror(start_response, code, text, headers=()):
     h = [(b'Content-Type', b'text/html')]
     h.extend(headers)
     start_response(b'{} '.format(code), h)
@@ -93,9 +92,7 @@ def wsgiserver(app, args):
     """
     # Set protocol version
     if args.ssl_version:
-        if args.ssl_version == 'SSLv23':
-            ssl_version = ssl.PROTOCOL_SSLv23
-        elif args.ssl_version == 'SSLv3':
+        if args.ssl_version in ('SSLv23', 'SSLv3'):
             ssl_version = ssl.PROTOCOL_SSLv23
         elif args.ssl_version == 'TLSv1':
             ssl_version = ssl.PROTOCOL_TLSv1
@@ -202,7 +199,7 @@ def list_directory(urlpath, filepath):
 
     res = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">\n'
     res += f'<html><head><title>{path}</title></head><body>\n'
-    res += '<big><strong>Listing %s</strong></big><br>\n' % (path)
+    res += f'<big><strong>Listing {path}</strong></big><br>\n'
     if path != '/':
         item = '..'
         res += f'D <a href={urljoin(path, item)}>{item}</a><br/>\n'

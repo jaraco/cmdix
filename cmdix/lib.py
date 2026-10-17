@@ -189,7 +189,9 @@ def parsefilelist(filelist=None, decompress=False):
     filelist = filelist or '-'
 
     for filename in filelist:
-        yield fileinput.FileInput([filename], openhook=openhook, encoding='utf-8')
+        yield fileinput.FileInput(  # noqa: SIM115 yielded to the caller
+            [filename], openhook=openhook, encoding='utf-8'
+        )
 
 
 def showbanner(width=None):

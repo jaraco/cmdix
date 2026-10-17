@@ -1,3 +1,4 @@
+import contextlib
 import sys
 
 from .. import onlyunix
@@ -27,14 +28,11 @@ def parseargs(p):
 
 
 def func(args):
-    fdlist = []
-    for filename in args.FILE:
-        if args.append:
-            fdlist.append(open(filename, 'a'))
-        else:
-            fdlist.append(open(filename, 'w'))
+    mode = 'a' if args.append else 'w'
+    with contextlib.ExitStack() as stack:
+        fdlist = [stack.enter_context(open(filename, mode)) for filename in args.FILE]
 
-    for line in sys.stdin.readlines():
-        sys.stdout.write(line)
-        for fd in fdlist:
-            fd.write(line)
+        for line in sys.stdin.readlines():
+            sys.stdout.write(line)
+            for fd in fdlist:
+                fd.write(line)

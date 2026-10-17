@@ -1,7 +1,6 @@
 import os
 
-from .. import onlyunix
-from .. import exception
+from .. import exception, onlyunix
 
 try:
     import grp

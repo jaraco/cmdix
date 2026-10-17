@@ -17,7 +17,7 @@ def parseargs(p):
         "-i",
         "--ignore-environment",
         action="store_const",
-        const=dict(),
+        const={},
         dest="env",
         help="start with an empty environment",
         default=os.environ,

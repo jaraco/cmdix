@@ -1,5 +1,6 @@
-from .. import lib
 import time
+
+from .. import lib
 
 
 def parseargs(p):
