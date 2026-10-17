@@ -2,6 +2,8 @@ import logging
 import os
 import random
 
+log = logging.getLogger(__name__)
+
 
 def parseargs(p):
     """
@@ -39,7 +41,7 @@ def func(args):
         for i in range(args.iterations):
             size = os.stat(arg).st_size
             fd = open(arg, mode='w')
-            logging.debug('Size:', size)
+            log.debug('Size: %s', size)
             fd.seek(0)
             for i in range(size):
                 # Get random byte
