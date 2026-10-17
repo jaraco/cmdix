@@ -26,6 +26,6 @@ class TestCase(BaseTestCase):
     @issue15
     def test_command_opts(self, capfd):
         # invoke Python's help (not env's help)
-        cmd = ['env', sys.executable, '--help']
+        cmd = ['env', 'PYTHON_COLORS=0', sys.executable, '--help']
         self.runcommandline(subprocess.list2cmdline(cmd))
         assert "-m mod" in capfd.readouterr().out
