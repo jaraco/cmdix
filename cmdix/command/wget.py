@@ -45,16 +45,17 @@ def func(args):
     opener.addheaders = [('User-agent', useragent)]
 
     with (
-        open(args.outputdocument, 'w')
+        open(args.outputdocument, 'wb')
         if args.outputdocument
-        else contextlib.nullcontext(sys.stdout)
+        else contextlib.nullcontext(sys.stdout.buffer)
     ) as fdout:
         for url in args.url:
             try:
                 fdin = opener.open(url)
             except HTTPError as e:
-                exception.StdErrException(f"HTTP error opening {url}: {e}")
+                raise exception.StdErrException(f"HTTP error opening {url}: {e}")
 
+            sys.stdout.flush()
             length = int(fdin.headers['content-length'])
             print(f"Getting {length} bytes from {url}...")
 

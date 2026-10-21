@@ -138,25 +138,26 @@ def compress(args, compresstype, infile, outfile, suffix):
                 + "already exists; do you wish to overwrite (y or n)? "
             )
             if q.upper() != 'Y':
-                StdErrException("not overwritten", 2)
+                raise StdErrException("not overwritten", 2)
 
         outfile = compresstype(zippath, 'wb', compresslevel=args.compresslevel)
     return infile, outfile
 
 
 def decompress(args, compresstype, infile, suffix):
+    filepath = infile
     infile = compresstype(infile, 'rb', compresslevel=args.compresslevel)
     if len(args.FILE) == 0 or args.stdout:
         outfile = sys.stdout
     else:
-        unzippath = infile.rstrip(suffix)
+        unzippath = filepath.rstrip(suffix)
         if os.path.exists(unzippath):
             q = input(
                 f"{args.prog}: {unzippath} "
                 + "already exists; do you wish to overwrite (y or n)? "
             )
             if q.upper() != 'Y':
-                StdOutException("not overwritten", 2)
+                raise StdOutException("not overwritten", 2)
 
         outfile = open(unzippath, 'wb')  # noqa: SIM115 returned to the caller
     return infile, outfile

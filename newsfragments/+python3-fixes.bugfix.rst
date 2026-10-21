@@ -1,0 +1,1 @@
+``httpd``, ``wget`` and ``compressor`` now work under Python 3: the WSGI response uses native strings, the downloaded document is written as binary, and declining to overwrite an existing file raises an error instead of being ignored.

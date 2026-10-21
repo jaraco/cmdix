@@ -59,7 +59,7 @@ class WSGIAuth:
         if 'HTTP_AUTHORIZATION' in environ:
             authtype, authinfo = environ['HTTP_AUTHORIZATION'].split(None, 1)
             if authtype.upper() != 'BASIC':
-                start_response(b'200 ', [(b'Content-Type', b'text/html')])
+                start_response('200 ', [('Content-Type', 'text/html')])
                 return [b"Only basic authentication is supported"]
             encodedinfo = bytes(authinfo.encode())
             decodedinfo = base64.b64decode(encodedinfo).decode()
@@ -71,18 +71,18 @@ class WSGIAuth:
             start_response,
             401,
             "Authentication required",
-            [(b'WWW-Authenticate', b'Basic realm={}'.format(self.realm))],
+            [('WWW-Authenticate', f'Basic realm={self.realm}')],
         )
 
 
 def wsgierror(start_response, code, text, headers=()):
-    h = [(b'Content-Type', b'text/html')]
+    h = [('Content-Type', 'text/html')]
     h.extend(headers)
-    start_response(b'{} '.format(code), h)
+    start_response(f'{code} ', h)
     return [
-        b'''<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"><html><head>
+        f'''<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"><html><head>
                 <title>{code} {text}</title></head><body><h1>{code} {text}</h1>
-                </body></html>'''.format(code=code, text=text)
+                </body></html>'''.encode()
     ]
 
 
